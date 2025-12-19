@@ -1,0 +1,97 @@
+{
+    "folders": [
+        {
+            "name": "🏠 Root",
+            "path": "."
+        },
+        {
+            "name": "📱 Mobile App",
+            "path": "./apps/mobile"
+        },
+        {
+            "name": "🚀 API",
+            "path": "./apps/api"
+        },
+        {
+            "name": "🛠 DevOps",
+            "path": "./devops"
+        },
+        {
+            "name": "📚 Docs",
+            "path": "./docs"
+        }
+    ],
+    "settings": {
+        "dart.flutterSdkPath": null,
+        "dart.projectSearchDepth": 5,
+        "dart.enableSdkFormatter": true,
+        "dart.lineLength": 80,
+        "editor.formatOnSave": true,
+        "[dart]": {
+            "editor.formatOnSave": true,
+            "editor.formatOnType": true,
+            "editor.rulers": [
+                80
+            ],
+            "editor.selectionHighlight": false,
+            "editor.suggest.snippetsPreventQuickSuggestions": false,
+            "editor.suggestSelection": "first",
+            "editor.tabCompletion": "onlySnippets",
+            "editor.wordBasedSuggestions": "off"
+        },
+        "dart.openDevTools": "flutter",
+        "dart.debugExternalPackageLibraries": false,
+        "dart.debugSdkLibraries": false,
+        "files.associations": {
+            "*.dart": "dart"
+        },
+        "files.exclude": {
+            "**/build": true,
+            "**/.dart_tool": true,
+            "**/.packages": true,
+            "**/pubspec.lock": false
+        }
+    },
+    "launch": {
+        "version": "0.2.0",
+        "configurations": [
+            {
+                "name": "🚀 GitHub Mobile - Debug",
+                "request": "launch",
+                "type": "dart",
+                "cwd": "apps/mobile",
+                "program": "apps/mobile/lib/main.dart",
+                "args": [
+                    "--flavor",
+                    "development"
+                ],
+                "env": {
+                    "FLUTTER_MODE": "debug"
+                }
+            },
+            {
+                "name": "⚡ GitHub Mobile - Profile",
+                "request": "launch",
+                "type": "dart",
+                "cwd": "apps/mobile",
+                "program": "apps/mobile/lib/main.dart",
+                "flutterMode": "profile",
+                "args": [
+                    "--flavor",
+                    "development"
+                ]
+            }
+        ]
+    },
+    "extensions": {
+        "recommendations": [
+            "dart-code.flutter",
+            "dart-code.dart-code",
+            "ms-vscode.vscode-json",
+            "usernamehw.errorlens",
+            "streetsidesoftware.code-spell-checker",
+            "ms-vscode.vscode-yaml",
+            "ms-vscode.vscode-typescript-next"
+        ]
+    }
+}
