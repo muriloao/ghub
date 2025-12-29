@@ -59,27 +59,14 @@
                 "name": "🚀 GitHub Mobile - Debug",
                 "request": "launch",
                 "type": "dart",
-                "cwd": "apps/mobile",
-                "program": "apps/mobile/lib/main.dart",
-                "args": [
-                    "--flavor",
-                    "development"
-                ],
-                "env": {
-                    "FLUTTER_MODE": "debug"
-                }
+                "program": "${workspaceFolder:🏠 Root}/apps/mobile/lib/main.dart",
             },
             {
                 "name": "⚡ GitHub Mobile - Profile",
                 "request": "launch",
                 "type": "dart",
-                "cwd": "apps/mobile",
-                "program": "apps/mobile/lib/main.dart",
+                "program": "${workspaceFolder:🏠 Root}/apps/mobile/lib/main.dart",
                 "flutterMode": "profile",
-                "args": [
-                    "--flavor",
-                    "development"
-                ]
             }
         ]
     },
