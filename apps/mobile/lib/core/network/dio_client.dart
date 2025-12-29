@@ -1,30 +1,22 @@
 import 'package:dio/dio.dart';
-import 'package:riverpod_annotation/riverpod_annotation.dart';
-import 'package:ghub_mobile/core/network/interceptors.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import '../constants/app_constants.dart';
 
-part 'dio_client.g.dart';
-
-@riverpod
-Dio dioClient(DioClientRef ref) {
-  final dio = Dio();
-
-  // Configuração base
-  dio.options = BaseOptions(
-    baseUrl: 'https://api.github.com',
-    connectTimeout: const Duration(seconds: 30),
-    receiveTimeout: const Duration(seconds: 30),
-    headers: {
-      'Accept': 'application/vnd.github.v3+json',
-      'User-Agent': 'ghub-mobile-app',
-    },
+final dioProvider = Provider<Dio>((ref) {
+  final dio = Dio(
+    BaseOptions(
+      baseUrl: AppConstants.baseUrl,
+      connectTimeout: AppConstants.connectionTimeout,
+      receiveTimeout: AppConstants.receiveTimeout,
+      headers: {
+        'Content-Type': 'application/json',
+        'Accept': 'application/json',
+      },
+    ),
   );
 
-  // Adicionar interceptors
-  dio.interceptors.addAll([
-    LoggingInterceptor(),
-    AuthInterceptor(),
-    ErrorInterceptor(),
-  ]);
+  // Add interceptors for logging and token management
+  dio.interceptors.add(LogInterceptor(requestBody: true, responseBody: true));
 
   return dio;
-}
+});
