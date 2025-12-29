@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Registration Screen</title>
+<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&amp;family=Noto+Sans:wght@400;500;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<script id="tailwind-config">
+        tailwind.config = {
+          darkMode: "class",
+          theme: {
+            extend: {
+              colors: {
+                "primary": "#e225f4",
+                "background-light": "#f8f5f8",
+                "background-dark": "#211022",
+                "surface-dark": "#2d1b2e", // Slightly lighter for inputs/cards
+                "border-dark": "#523b54",
+              },
+              fontFamily: {
+                "display": ["Space Grotesk", "sans-serif"],
+                "body": ["Noto Sans", "sans-serif"],
+              },
+              borderRadius: {"DEFAULT": "0.25rem", "lg": "0.5rem", "xl": "0.75rem", "full": "9999px"},
+            },
+          },
+        }
+      </script>
+<style>
+        /* Custom scrollbar for webkit */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #211022;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #523b54;
+            border-radius: 4px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #e225f4;
+        }
+    </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="bg-background-light dark:bg-background-dark font-display antialiased overflow-x-hidden">
+<div class="relative flex min-h-screen w-full flex-col overflow-hidden max-w-md mx-auto shadow-2xl bg-background-light dark:bg-background-dark">
+<!-- Background decorative elements for gamer vibe -->
+<div class="absolute top-[-20%] right-[-10%] w-64 h-64 bg-primary/20 rounded-full blur-3xl pointer-events-none"></div>
+<div class="absolute bottom-[-10%] left-[-20%] w-80 h-80 bg-blue-600/10 rounded-full blur-3xl pointer-events-none"></div>
+<!-- Top App Bar -->
+<div class="relative z-10 flex items-center p-4 pb-2 justify-between">
+<button class="text-gray-900 dark:text-white flex size-12 shrink-0 items-center justify-center rounded-full hover:bg-black/5 dark:hover:bg-white/10 transition-colors">
+<span class="material-symbols-outlined text-[24px]">arrow_back</span>
+</button>
+<h2 class="text-gray-900 dark:text-white text-lg font-bold leading-tight tracking-[-0.015em] flex-1 text-center pr-12">Create Account</h2>
+</div>
+<!-- Scrollable Content -->
+<div class="flex-1 flex flex-col px-6 pt-4 pb-8 relative z-10 overflow-y-auto">
+<!-- Headline -->
+<div class="mb-8 text-center">
+<h1 class="text-gray-900 dark:text-white tracking-tight text-[32px] font-bold leading-tight mb-2 uppercase drop-shadow-[0_0_10px_rgba(226,37,244,0.3)]">
+                    Join The Nexus
+                </h1>
+<p class="text-gray-600 dark:text-gray-300 text-sm font-normal leading-normal">
+                    Centralize your stats. Dominate the game.
+                </p>
+</div>
+<!-- Form -->
+<form class="flex flex-col gap-5">
+<!-- Gamertag Input -->
+<div class="flex flex-col gap-2">
+<label class="text-gray-900 dark:text-white text-base font-medium leading-normal">Gamertag</label>
+<div class="relative">
+<input class="form-input flex w-full min-w-0 resize-none overflow-hidden rounded-xl text-gray-900 dark:text-white focus:outline-0 focus:ring-2 focus:ring-primary/50 border border-gray-300 dark:border-border-dark bg-white dark:bg-surface-dark h-14 placeholder:text-gray-400 dark:placeholder:text-[#b79cba] px-[15px] text-base font-normal leading-normal transition-all" placeholder="Enter your username" type="text"/>
+<span class="material-symbols-outlined absolute right-4 top-1/2 -translate-y-1/2 text-gray-400 dark:text-[#b79cba]">person</span>
+</div>
+</div>
+<!-- Email Input -->
+<div class="flex flex-col gap-2">
+<label class="text-gray-900 dark:text-white text-base font-medium leading-normal">Email Address</label>
+<div class="relative">
+<input class="form-input flex w-full min-w-0 resize-none overflow-hidden rounded-xl text-gray-900 dark:text-white focus:outline-0 focus:ring-2 focus:ring-primary/50 border border-gray-300 dark:border-border-dark bg-white dark:bg-surface-dark h-14 placeholder:text-gray-400 dark:placeholder:text-[#b79cba] px-[15px] text-base font-normal leading-normal transition-all" placeholder="user@example.com" type="email"/>
+<span class="material-symbols-outlined absolute right-4 top-1/2 -translate-y-1/2 text-gray-400 dark:text-[#b79cba]">mail</span>
+</div>
+</div>
+<!-- Password Input -->
+<div class="flex flex-col gap-2">
+<label class="text-gray-900 dark:text-white text-base font-medium leading-normal">Password</label>
+<div class="relative">
+<input class="form-input flex w-full min-w-0 resize-none overflow-hidden rounded-xl text-gray-900 dark:text-white focus:outline-0 focus:ring-2 focus:ring-primary/50 border border-gray-300 dark:border-border-dark bg-white dark:bg-surface-dark h-14 placeholder:text-gray-400 dark:placeholder:text-[#b79cba] px-[15px] text-base font-normal leading-normal transition-all" placeholder="••••••••" type="password"/>
+<button class="absolute right-4 top-1/2 -translate-y-1/2 text-gray-400 dark:text-[#b79cba] hover:text-primary transition-colors" type="button">
+<span class="material-symbols-outlined">visibility_off</span>
+</button>
+</div>
+</div>
+<!-- Confirm Password Input -->
+<div class="flex flex-col gap-2">
+<label class="text-gray-900 dark:text-white text-base font-medium leading-normal">Confirm Password</label>
+<div class="relative">
+<input class="form-input flex w-full min-w-0 resize-none overflow-hidden rounded-xl text-gray-900 dark:text-white focus:outline-0 focus:ring-2 focus:ring-primary/50 border border-gray-300 dark:border-border-dark bg-white dark:bg-surface-dark h-14 placeholder:text-gray-400 dark:placeholder:text-[#b79cba] px-[15px] text-base font-normal leading-normal transition-all" placeholder="••••••••" type="password"/>
+<button class="absolute right-4 top-1/2 -translate-y-1/2 text-gray-400 dark:text-[#b79cba] hover:text-primary transition-colors" type="button">
+<span class="material-symbols-outlined">visibility_off</span>
+</button>
+</div>
+</div>
+<!-- Submit Button -->
+<button class="mt-4 flex w-full items-center justify-center rounded-xl bg-primary h-14 text-white text-base font-bold tracking-wide uppercase hover:bg-primary/90 hover:shadow-[0_0_20px_rgba(226,37,244,0.4)] transition-all active:scale-[0.98]">
+                    Start Game
+                </button>
+</form>
+<!-- Divider -->
+<div class="flex items-center gap-4 py-8">
+<div class="h-px flex-1 bg-gray-300 dark:bg-border-dark"></div>
+<p class="text-gray-500 dark:text-gray-400 text-xs font-medium uppercase tracking-wider">Or register with</p>
+<div class="h-px flex-1 bg-gray-300 dark:bg-border-dark"></div>
+</div>
+<!-- Social Logins -->
+<div class="flex justify-center gap-6">
+<button class="group flex items-center justify-center size-14 rounded-full border border-gray-300 dark:border-border-dark bg-white dark:bg-surface-dark hover:border-primary/50 hover:bg-primary/10 transition-all">
+<!-- Google Icon SVG -->
+<svg class="size-6 text-gray-700 dark:text-white group-hover:text-primary transition-colors" fill="currentColor" viewbox="0 0 24 24">
+<path d="M12.0003 20.45c-4.6667 0-8.45-3.7833-8.45-8.45 0-4.6667 3.7833-8.45 8.45-8.45 2.0667 0 4.0167.7333 5.5333 2.0833l-2.4 2.4c-0.8333-0.7833-1.95-1.2667-3.1333-1.2667-2.9 0-5.25 2.35-5.25 5.25s2.35 5.25 5.25 5.25c2.6167 0 4.8167-1.85 5.1667-4.3333h-5.1667v-3.1h8.3833c.1.5333.15 1.0833.15 1.65 0 4.85-3.2333 8.9667-8.5333 8.9667z"></path>
+</svg>
+</button>
+<button class="group flex items-center justify-center size-14 rounded-full border border-gray-300 dark:border-border-dark bg-white dark:bg-surface-dark hover:border-primary/50 hover:bg-primary/10 transition-all">
+<!-- Apple Icon SVG -->
+<svg class="size-6 text-gray-700 dark:text-white group-hover:text-primary transition-colors" fill="currentColor" viewbox="0 0 24 24">
+<path d="M17.05 20.28c-.98.95-2.05.88-3.08.47-1.09-.42-2.09-.48-3.24 0-1.44.62-2.2.44-3.06-.47C2.7 15.25 3.66 7.59 11.1 7.5c1.44 0 2.2.88 3.09.89 1.02.01 2.29-.88 3.64-.88 2.96 0 5.14 1.7 5.75 2.5-5.06 2.81-3.66 9.42 1.5 11.5-.75 1.94-2.42 5.09-4.83 5.09-.75 0-1.6-.33-2.65-.62.91.26 1.83.62 2.65.62 2.41 0 4.08-3.15 4.83-5.09-5.16-2.08-6.56-8.69-1.5-11.5-.61-.8-2.79-2.5-5.75-2.5-1.35 0-2.62.89-3.64.88-.89-.01-1.65-.89-3.09-.89C3.66 7.59 2.7 15.25 7.67 20.28c.86.91 1.62 1.09 3.06.47 1.15-.48 2.15-.42 3.24 0 1.03.41 2.1.48 3.08-.47zM12.03 7.25c-.15-2.23 1.69-4.04 3.76-4.25.29 2.37-2.08 4.29-3.76 4.25z"></path>
+</svg>
+</button>
+<button class="group flex items-center justify-center size-14 rounded-full border border-gray-300 dark:border-border-dark bg-white dark:bg-surface-dark hover:border-primary/50 hover:bg-primary/10 transition-all">
+<!-- Discord Icon placeholder (Using Material icon as fallback to generic gamepad for gamer theme) -->
+<span class="material-symbols-outlined text-gray-700 dark:text-white group-hover:text-primary text-[28px]">sports_esports</span>
+</button>
+</div>
+<!-- Footer -->
+<div class="mt-auto pt-8 flex justify-center">
+<p class="text-gray-500 dark:text-gray-400 text-sm">
+                    Already a player? 
+                    <a class="text-primary font-bold hover:underline hover:text-primary/80 transition-colors ml-1" href="#">Log In</a>
+</p>
+</div>
+</div>
+</div>
+</body></html>

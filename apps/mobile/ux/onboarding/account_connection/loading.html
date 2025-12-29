@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Loading Component</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&amp;family=Noto+Sans:wght@300;400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "primary": "#e225f4",
+                        "background-light": "#f8f5f8",
+                        "background-dark": "#211022",
+                    },
+                    fontFamily: {
+                        "display": ["Space Grotesk", "sans-serif"],
+                        "body": ["Noto Sans", "sans-serif"]
+                    },
+                    borderRadius: {"DEFAULT": "0.25rem", "lg": "0.5rem", "xl": "0.75rem", "full": "9999px"},
+                },
+            },
+        }
+    </script>
+<style>
+        /* Custom animation for the spinner pulse effect */
+        @keyframes pulse-ring {
+            0% { transform: scale(0.8); opacity: 0.5; }
+            50% { transform: scale(1); opacity: 1; }
+            100% { transform: scale(0.8); opacity: 0.5; }
+        }
+        @keyframes spin-slow {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        .animate-pulse-ring {
+            animation: pulse-ring 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+        }
+        .animate-spin-slow {
+            animation: spin-slow 3s linear infinite;
+        }
+    </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="bg-background-light dark:bg-background-dark min-h-screen flex flex-col justify-between font-display relative overflow-hidden text-slate-900 dark:text-white antialiased">
+<!-- Background decorative elements for depth -->
+<div class="absolute top-0 left-0 w-full h-full overflow-hidden pointer-events-none z-0">
+<div class="absolute top-[-10%] left-[-10%] w-[50%] h-[50%] rounded-full bg-primary/10 blur-[100px]"></div>
+<div class="absolute bottom-[-10%] right-[-10%] w-[50%] h-[50%] rounded-full bg-primary/5 blur-[80px]"></div>
+</div>
+<!-- Main Content Area: Centered -->
+<div class="flex-1 flex flex-col items-center justify-center w-full px-6 z-10">
+<!-- Central Loader: Hexagonal / Tech Aesthetic -->
+<div class="relative w-32 h-32 flex items-center justify-center mb-10">
+<!-- Outer Glow Ring -->
+<div class="absolute w-full h-full rounded-full border-2 border-primary/20 animate-pulse-ring"></div>
+<!-- Rotating Segmented Ring -->
+<div class="absolute w-24 h-24 rounded-full border-t-2 border-r-2 border-primary animate-spin-slow shadow-[0_0_15px_rgba(226,37,244,0.5)]"></div>
+<!-- Inner Hexagon Icon (Material Symbol) -->
+<span class="material-symbols-outlined text-4xl text-primary animate-pulse">
+                hexagon
+            </span>
+</div>
+<!-- Status & Progress Section -->
+<div class="w-full max-w-xs flex flex-col gap-4">
+<div class="flex justify-between items-end px-1">
+<p class="text-white/90 text-lg font-medium tracking-wide">Syncing Data...</p>
+<p class="text-primary font-bold font-mono text-sm">45%</p>
+</div>
+<!-- Progress Bar Component -->
+<div class="h-1.5 w-full bg-white/10 rounded-full overflow-hidden">
+<div class="h-full bg-primary rounded-full shadow-[0_0_10px_#e225f4]" style="width: 45%;"></div>
+</div>
+<p class="text-white/40 text-xs font-normal text-center mt-2 tracking-wider uppercase">Connecting to Secure Server</p>
+</div>
+</div>
+<!-- Bottom Actions & Meta -->
+<div class="flex flex-col items-center pb-8 gap-6 z-10 w-full px-6">
+<!-- Cancel Button Component -->
+<button class="group flex items-center justify-center gap-2 px-6 h-10 rounded-full bg-white/5 hover:bg-white/10 active:bg-white/20 transition-all border border-white/10 backdrop-blur-sm cursor-pointer w-full max-w-[200px]">
+<span class="text-white/70 text-sm font-medium group-hover:text-white transition-colors">Cancel</span>
+</button>
+<!-- Meta Text Component -->
+<p class="text-white/20 text-xs font-mono">v2.0.4</p>
+</div>
+</body></html>
