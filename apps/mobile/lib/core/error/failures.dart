@@ -1,41 +1,53 @@
 import 'package:equatable/equatable.dart';
 
-/// Classe base para todas as falhas da aplicação
 abstract class Failure extends Equatable {
+  const Failure();
+
+  @override
+  List<Object> get props => [];
+}
+
+class ServerFailure extends Failure {
   final String message;
 
-  const Failure(this.message);
+  const ServerFailure({required this.message});
 
   @override
   List<Object> get props => [message];
 }
 
-/// Falha de conexão/rede
-class NetworkFailure extends Failure {
-  const NetworkFailure(super.message);
-}
-
-/// Falha de autenticação
-class AuthFailure extends Failure {
-  const AuthFailure(super.message);
-}
-
-/// Falha de validação
-class ValidationFailure extends Failure {
-  const ValidationFailure(super.message);
-}
-
-/// Falha no servidor
-class ServerFailure extends Failure {
-  const ServerFailure(super.message);
-}
-
-/// Falha de cache
 class CacheFailure extends Failure {
-  const CacheFailure(super.message);
+  final String message;
+
+  const CacheFailure({required this.message});
+
+  @override
+  List<Object> get props => [message];
 }
 
-/// Falha genérica
-class UnknownFailure extends Failure {
-  const UnknownFailure(super.message);
+class NetworkFailure extends Failure {
+  final String message;
+
+  const NetworkFailure({required this.message});
+
+  @override
+  List<Object> get props => [message];
+}
+
+class AuthenticationFailure extends Failure {
+  final String message;
+
+  const AuthenticationFailure({required this.message});
+
+  @override
+  List<Object> get props => [message];
+}
+
+class ValidationFailure extends Failure {
+  final String message;
+
+  const ValidationFailure({required this.message});
+
+  @override
+  List<Object> get props => [message];
 }
