@@ -1,0 +1,208 @@
+import 'package:dio/dio.dart';
+import 'package:google_sign_in/google_sign_in.dart';
+import 'package:url_launcher/url_launcher.dart';
+import '../../../../core/error/exceptions.dart';
+import '../models/auth_result_model.dart';
+import '../models/signup_request_model.dart';
+
+abstract class AuthRemoteDataSource {
+  Future<AuthResultModel> signUp(SignUpRequestModel request);
+
+  Future<AuthResultModel> loginWithCredentials({
+    required String email,
+    required String password,
+  });
+
+  Future<AuthResultModel> loginWithGoogle();
+
+  Future<AuthResultModel> loginWithSteam();
+
+  Future<void> logout();
+}
+
+class AuthRemoteDataSourceImpl implements AuthRemoteDataSource {
+  final Dio dio;
+  final GoogleSignIn googleSignIn;
+
+  AuthRemoteDataSourceImpl({required this.dio, required this.googleSignIn});
+
+  @override
+  Future<AuthResultModel> signUp(SignUpRequestModel request) async {
+    try {
+      final response = await dio.post(
+        '/auth/signup',
+        data: request.toServerJson(),
+      );
+
+      if (response.statusCode == 201 || response.statusCode == 200) {
+        return AuthResultModel.fromJson(response.data);
+      } else {
+        throw ServerException(message: 'Cadastro falhou');
+      }
+    } on DioException catch (e) {
+      if (e.response?.statusCode == 409) {
+        throw const AuthenticationException(
+          message: 'Email ou gamertag já existe',
+        );
+      } else if (e.response?.statusCode == 400) {
+        throw AuthenticationException(
+          message: e.response?.data['message'] ?? 'Dados inválidos',
+        );
+      } else if (e.type == DioExceptionType.connectionTimeout ||
+          e.type == DioExceptionType.receiveTimeout) {
+        throw const NetworkException(message: 'Timeout de conexão');
+      } else {
+        throw ServerException(
+          message: e.response?.data['message'] ?? 'Erro no servidor',
+        );
+      }
+    } catch (e) {
+      throw ServerException(message: e.toString());
+    }
+  }
+
+  @override
+  Future<AuthResultModel> loginWithCredentials({
+    required String email,
+    required String password,
+  }) async {
+    try {
+      final response = await dio.post(
+        '/auth/login',
+        data: {'email': email, 'password': password},
+      );
+
+      if (response.statusCode == 200) {
+        return AuthResultModel.fromJson(response.data);
+      } else {
+        throw ServerException(message: 'Login failed');
+      }
+    } on DioException catch (e) {
+      if (e.response?.statusCode == 401) {
+        throw const AuthenticationException(message: 'Credenciais inválidas');
+      } else if (e.type == DioExceptionType.connectionTimeout ||
+          e.type == DioExceptionType.receiveTimeout) {
+        throw const NetworkException(message: 'Timeout de conexão');
+      } else {
+        throw ServerException(
+          message: e.response?.data['message'] ?? 'Erro no servidor',
+        );
+      }
+    } catch (e) {
+      throw ServerException(message: e.toString());
+    }
+  }
+
+  @override
+  Future<AuthResultModel> loginWithGoogle() async {
+    try {
+      final GoogleSignInAccount? googleUser = await googleSignIn.signIn();
+
+      if (googleUser == null) {
+        throw const AuthenticationException(
+          message: 'Login com Google cancelado',
+        );
+      }
+
+      final GoogleSignInAuthentication googleAuth =
+          await googleUser.authentication;
+
+      final response = await dio.post(
+        '/auth/google',
+        data: {
+          'accessToken': googleAuth.accessToken,
+          'idToken': googleAuth.idToken,
+        },
+      );
+
+      if (response.statusCode == 200) {
+        return AuthResultModel.fromJson(response.data);
+      } else {
+        throw ServerException(message: 'Login com Google failed');
+      }
+    } on DioException catch (e) {
+      throw ServerException(
+        message: e.response?.data['message'] ?? 'Erro no servidor',
+      );
+    } catch (e) {
+      if (e is AuthenticationException) rethrow;
+      throw ServerException(message: e.toString());
+    }
+  }
+
+  @override
+  Future<AuthResultModel> loginWithSteam() async {
+    try {
+      // Primeiro, obter a URL de login do Steam do backend
+      final steamUrlResponse = await dio.post('/auth/steam/url');
+
+      if (steamUrlResponse.statusCode != 200) {
+        throw ServerException(message: 'Erro ao obter URL do Steam');
+      }
+
+      final steamLoginUrl = steamUrlResponse.data['url'];
+      final sessionId = steamUrlResponse.data['sessionId'];
+
+      // Abrir o navegador com a URL do Steam
+      final uri = Uri.parse(steamLoginUrl);
+      if (!await launchUrl(uri, mode: LaunchMode.externalApplication)) {
+        throw const AuthenticationException(
+          message: 'Não foi possível abrir o navegador',
+        );
+      }
+
+      // Polling para verificar se o usuário completou a autenticação
+      int attempts = 0;
+      const maxAttempts = 60; // 5 minutos (5 segundos * 60)
+
+      while (attempts < maxAttempts) {
+        await Future.delayed(const Duration(seconds: 5));
+
+        try {
+          final response = await dio.get('/auth/steam/callback/$sessionId');
+
+          if (response.statusCode == 200 &&
+              response.data['authenticated'] == true) {
+            return AuthResultModel.fromJson(response.data);
+          }
+        } catch (e) {
+          // Continua tentando até o timeout
+        }
+
+        attempts++;
+      }
+
+      throw const AuthenticationException(
+        message: 'Tempo limite excedido. Por favor, tente novamente.',
+      );
+    } on DioException catch (e) {
+      if (e.response?.statusCode == 401) {
+        throw const AuthenticationException(
+          message: 'Falha na autenticação Steam',
+        );
+      } else if (e.type == DioExceptionType.connectionTimeout ||
+          e.type == DioExceptionType.receiveTimeout) {
+        throw const NetworkException(message: 'Timeout de conexão');
+      } else {
+        throw ServerException(
+          message: e.response?.data['message'] ?? 'Erro no servidor',
+        );
+      }
+    } catch (e) {
+      if (e is AuthenticationException) rethrow;
+      throw ServerException(message: e.toString());
+    }
+  }
+
+  @override
+  Future<void> logout() async {
+    try {
+      await dio.post('/auth/logout');
+      await googleSignIn.signOut();
+    } on DioException catch (e) {
+      throw ServerException(
+        message: e.response?.data['message'] ?? 'Erro ao fazer logout',
+      );
+    }
+  }
+}
