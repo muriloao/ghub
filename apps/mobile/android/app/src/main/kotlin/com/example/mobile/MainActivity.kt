@@ -1,4 +1,4 @@
-package com.github.mobile.ghub_mobile
+package com.example.mobile
 
 import io.flutter.embedding.android.FlutterActivity
 
