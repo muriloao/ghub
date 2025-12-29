@@ -1,11 +1,17 @@
-# Build runner configuration for code generation
 targets:
   $default:
     builders:
       json_serializable:
         options:
+          # Creates `Part of '<path>';` at the top of generated files
           explicit_to_json: true
           field_rename: snake
+
       freezed:
         options:
-          # Add any freezed-specific options here if needed
+          # Generate a copyWith method for freezed classes
+          copy_with: true
+          # Generate a map method
+          map: true
+          # Generate when and maybeWhen methods
+          when: true
