@@ -20,4 +20,5 @@ class AppConstants {
   static const String onboardingLoadingRoute = '/onboarding/loading';
   static const String homeRoute = '/home';
   static const String splashRoute = '/';
+  static const String steamCallbackRoute = '/onboarding/callback';
 }

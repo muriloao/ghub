@@ -45,7 +45,9 @@ class SocialLoginButtons extends ConsumerWidget {
           label: 'Steam',
           onTap: isLoading
               ? null
-              : () => ref.read(authNotifierProvider.notifier).loginWithSteam(),
+              : () => ref
+                    .read(authNotifierProvider.notifier)
+                    .loginWithSteam(context),
         ),
       ],
     );

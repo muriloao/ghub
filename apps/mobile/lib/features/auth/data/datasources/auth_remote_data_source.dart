@@ -1,9 +1,10 @@
 import 'package:dio/dio.dart';
+import 'package:flutter/material.dart';
 import 'package:google_sign_in/google_sign_in.dart';
-import 'package:url_launcher/url_launcher.dart';
 import '../../../../core/error/exceptions.dart';
 import '../models/auth_result_model.dart';
 import '../models/signup_request_model.dart';
+import '../services/steam_auth_service.dart';
 
 abstract class AuthRemoteDataSource {
   Future<AuthResultModel> signUp(SignUpRequestModel request);
@@ -15,7 +16,7 @@ abstract class AuthRemoteDataSource {
 
   Future<AuthResultModel> loginWithGoogle();
 
-  Future<AuthResultModel> loginWithSteam();
+  Future<AuthResultModel> loginWithSteam(BuildContext context);
 
   Future<void> logout();
 }
@@ -23,8 +24,11 @@ abstract class AuthRemoteDataSource {
 class AuthRemoteDataSourceImpl implements AuthRemoteDataSource {
   final Dio dio;
   final GoogleSignIn googleSignIn;
+  late final SteamAuthService steamAuthService;
 
-  AuthRemoteDataSourceImpl({required this.dio, required this.googleSignIn});
+  AuthRemoteDataSourceImpl({required this.dio, required this.googleSignIn}) {
+    steamAuthService = SteamAuthService(dio);
+  }
 
   @override
   Future<AuthResultModel> signUp(SignUpRequestModel request) async {
@@ -131,63 +135,9 @@ class AuthRemoteDataSourceImpl implements AuthRemoteDataSource {
   }
 
   @override
-  Future<AuthResultModel> loginWithSteam() async {
+  Future<AuthResultModel> loginWithSteam(BuildContext context) async {
     try {
-      // Primeiro, obter a URL de login do Steam do backend
-      final steamUrlResponse = await dio.post('/auth/steam/url');
-
-      if (steamUrlResponse.statusCode != 200) {
-        throw ServerException(message: 'Erro ao obter URL do Steam');
-      }
-
-      final steamLoginUrl = steamUrlResponse.data['url'];
-      final sessionId = steamUrlResponse.data['sessionId'];
-
-      // Abrir o navegador com a URL do Steam
-      final uri = Uri.parse(steamLoginUrl);
-      if (!await launchUrl(uri, mode: LaunchMode.externalApplication)) {
-        throw const AuthenticationException(
-          message: 'Não foi possível abrir o navegador',
-        );
-      }
-
-      // Polling para verificar se o usuário completou a autenticação
-      int attempts = 0;
-      const maxAttempts = 60; // 5 minutos (5 segundos * 60)
-
-      while (attempts < maxAttempts) {
-        await Future.delayed(const Duration(seconds: 5));
-
-        try {
-          final response = await dio.get('/auth/steam/callback/$sessionId');
-
-          if (response.statusCode == 200 &&
-              response.data['authenticated'] == true) {
-            return AuthResultModel.fromJson(response.data);
-          }
-        } catch (e) {
-          // Continua tentando até o timeout
-        }
-
-        attempts++;
-      }
-
-      throw const AuthenticationException(
-        message: 'Tempo limite excedido. Por favor, tente novamente.',
-      );
-    } on DioException catch (e) {
-      if (e.response?.statusCode == 401) {
-        throw const AuthenticationException(
-          message: 'Falha na autenticação Steam',
-        );
-      } else if (e.type == DioExceptionType.connectionTimeout ||
-          e.type == DioExceptionType.receiveTimeout) {
-        throw const NetworkException(message: 'Timeout de conexão');
-      } else {
-        throw ServerException(
-          message: e.response?.data['message'] ?? 'Erro no servidor',
-        );
-      }
+      return await steamAuthService.authenticateWithSteam(context);
     } catch (e) {
       if (e is AuthenticationException) rethrow;
       throw ServerException(message: e.toString());

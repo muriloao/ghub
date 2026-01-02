@@ -1,5 +1,7 @@
+import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:equatable/equatable.dart';
+import 'package:ghub_mobile/features/auth/domain/entities/auth_result.dart';
 
 import '../../domain/entities/user.dart';
 import '../../domain/usecases/login_with_credentials.dart';
@@ -110,15 +112,23 @@ class AuthNotifier extends StateNotifier<AuthState> {
     );
   }
 
-  Future<void> loginWithSteam() async {
+  Future<void> loginWithSteam(BuildContext context) async {
     state = const AuthLoading();
 
-    final result = await _loginWithSteam();
+    final result = await _loginWithSteam(context);
 
     result.fold(
       (failure) => state = AuthError(failure.toString()),
       (authResult) => state = AuthAuthenticated(authResult.user),
     );
+  }
+
+  /// Login direto usando um AuthResult já obtido
+  Future<void> loginWithAuthResult(AuthResult authResult) async {
+    state = const AuthLoading();
+    // Simular pequeno delay para UX
+    await Future.delayed(const Duration(milliseconds: 500));
+    state = AuthAuthenticated(authResult.user);
   }
 
   Future<void> signUp(SignUpRequest request) async {

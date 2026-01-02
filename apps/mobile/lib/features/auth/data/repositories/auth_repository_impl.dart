@@ -1,4 +1,5 @@
 import 'package:dartz/dartz.dart';
+import 'package:flutter/material.dart';
 import '../../../../core/error/exceptions.dart';
 import '../../../../core/error/failures.dart';
 import '../../domain/entities/auth_result.dart';
@@ -108,9 +109,11 @@ class AuthRepositoryImpl implements AuthRepository {
   }
 
   @override
-  Future<Either<Failure, AuthResult>> loginWithSteam() async {
+  Future<Either<Failure, AuthResult>> loginWithSteam(
+    BuildContext context,
+  ) async {
     try {
-      final result = await remoteDataSource.loginWithSteam();
+      final result = await remoteDataSource.loginWithSteam(context);
 
       await localDataSource.cacheAuthData(
         accessToken: result.accessToken,

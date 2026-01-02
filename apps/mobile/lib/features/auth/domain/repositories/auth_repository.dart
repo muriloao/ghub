@@ -1,4 +1,5 @@
 import 'package:dartz/dartz.dart';
+import 'package:flutter/material.dart';
 import '../../../../core/error/failures.dart';
 import '../entities/auth_result.dart';
 import '../entities/user.dart';
@@ -14,7 +15,7 @@ abstract class AuthRepository {
 
   Future<Either<Failure, AuthResult>> loginWithGoogle();
 
-  Future<Either<Failure, AuthResult>> loginWithSteam();
+  Future<Either<Failure, AuthResult>> loginWithSteam(BuildContext context);
 
   Future<Either<Failure, void>> logout();
 

@@ -3,7 +3,6 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import '../../../../core/constants/app_constants.dart';
 import '../../../../core/theme/app_theme.dart';
-import '../providers/onboarding_providers.dart';
 import '../providers/onboarding_notifier.dart';
 import '../widgets/onboarding_app_bar.dart';
 import '../widgets/onboarding_header.dart';
