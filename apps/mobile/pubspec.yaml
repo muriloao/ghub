@@ -43,6 +43,8 @@ dependencies:
   # Authentication
   google_sign_in: ^6.2.2
   url_launcher: ^6.3.1
+  app_links: ^6.4.0
+  crypto: ^3.0.5
 
   # Storage
   shared_preferences: ^2.3.3
