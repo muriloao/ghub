@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:go_router/go_router.dart';
 import '../../../../core/theme/app_theme.dart';
 import '../widgets/loading_spinner.dart';
 import '../widgets/loading_progress.dart';
@@ -152,7 +153,7 @@ class _OnboardingLoadingPageState extends ConsumerState<OnboardingLoadingPage>
                       width: 200,
                       height: 40,
                       child: OutlinedButton(
-                        onPressed: () => Navigator.of(context).pop(),
+                        onPressed: () => context.pop(),
                         style: OutlinedButton.styleFrom(
                           backgroundColor: Colors.white.withOpacity(0.05),
                           side: BorderSide(

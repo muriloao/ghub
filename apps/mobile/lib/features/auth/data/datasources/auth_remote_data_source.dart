@@ -16,7 +16,7 @@ abstract class AuthRemoteDataSource {
 
   Future<AuthResultModel> loginWithGoogle();
 
-  Future<AuthResultModel> loginWithSteam(BuildContext context);
+  Future<void> loginWithSteam(BuildContext context);
 
   Future<void> logout();
 }
@@ -135,9 +135,9 @@ class AuthRemoteDataSourceImpl implements AuthRemoteDataSource {
   }
 
   @override
-  Future<AuthResultModel> loginWithSteam(BuildContext context) async {
+  Future<void> loginWithSteam(BuildContext context) async {
     try {
-      return await steamAuthService.authenticateWithSteam(context);
+      await steamAuthService.authenticateWithSteam(context);
     } catch (e) {
       if (e is AuthenticationException) rethrow;
       throw ServerException(message: e.toString());

@@ -1,0 +1,296 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Game Details Screen</title>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&amp;family=Noto+Sans:wght@400;500;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "primary": "#e225f4",
+                        "background-light": "#f8f5f8",
+                        "background-dark": "#211022",
+                        "surface": "#2d1b2e",
+                        "surface-highlight": "#3d2b3e",
+                    },
+                    fontFamily: {
+                        "display": ["Space Grotesk", "sans-serif"],
+                        "body": ["Noto Sans", "sans-serif"],
+                    },
+                    borderRadius: {"DEFAULT": "0.25rem", "lg": "0.5rem", "xl": "0.75rem", "full": "9999px"},
+                },
+            },
+        }
+    </script>
+<style>
+        .no-scrollbar::-webkit-scrollbar {
+            display: none;
+        }
+        .no-scrollbar {
+            -ms-overflow-style: none;
+            scrollbar-width: none;
+        }
+    </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="bg-background-light dark:bg-background-dark text-slate-900 dark:text-white font-display antialiased selection:bg-primary selection:text-white">
+<div class="relative min-h-screen w-full flex flex-col max-w-md mx-auto bg-background-light dark:bg-background-dark shadow-2xl overflow-hidden border-x border-white/5">
+<!-- Hero Section -->
+<div class="relative h-80 w-full group">
+<!-- Background Image -->
+<div class="absolute inset-0 bg-cover bg-center" data-alt="Futuristic cyberpunk city street at night with neon lights and gaming atmosphere" style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuBoSb-v92VrkH9UfJ7Rf84UMZVjD06BmwpnqM8hNImkoLMnXXASJWgQCfSgy3bw8ZCokugJXxsAuqAx50Y0Z2hj6j6rm4RtVWAdlgto7fSdoNdMZgFMPRSkphsjAb0yppJoy0sg3vdo5qhLT4uxlFEe29kueId8zYUpTLyK9jHlxKFrPBTogciINUFGO-QIZfCGuyVGtNndjSy3kIZ1qO2EigQ4WBPx9dbGL2uYSUzMol5XtZK3ZdEFRAtAz2xdUFjvMTxbjSJ2amEy');">
+</div>
+<!-- Gradients -->
+<div class="absolute inset-0 bg-gradient-to-t from-background-dark via-background-dark/60 to-transparent"></div>
+<div class="absolute inset-0 bg-gradient-to-b from-black/60 via-transparent to-transparent"></div>
+<!-- Navbar Elements -->
+<div class="absolute top-0 left-0 right-0 p-4 flex justify-between items-center z-10 pt-12">
+<button class="flex items-center justify-center w-10 h-10 rounded-full bg-black/40 backdrop-blur-md border border-white/10 text-white hover:bg-primary/20 transition-colors">
+<span class="material-symbols-outlined text-sm">arrow_back_ios_new</span>
+</button>
+<div class="flex gap-3">
+<button class="flex items-center justify-center w-10 h-10 rounded-full bg-black/40 backdrop-blur-md border border-white/10 text-white hover:bg-primary/20 transition-colors">
+<span class="material-symbols-outlined text-xl">ios_share</span>
+</button>
+<button class="flex items-center justify-center w-10 h-10 rounded-full bg-black/40 backdrop-blur-md border border-white/10 text-white hover:bg-primary/20 transition-colors">
+<span class="material-symbols-outlined text-xl">favorite</span>
+</button>
+</div>
+</div>
+<!-- Hero Content -->
+<div class="absolute bottom-0 left-0 w-full p-5 flex flex-col gap-2">
+<div class="flex items-center gap-2 mb-1">
+<span class="px-2 py-0.5 rounded text-[10px] font-bold bg-white/10 text-primary border border-primary/30 backdrop-blur-sm uppercase tracking-wider">RPG</span>
+<span class="px-2 py-0.5 rounded text-[10px] font-bold bg-white/10 text-gray-300 border border-white/10 backdrop-blur-sm uppercase tracking-wider">2020</span>
+</div>
+<h1 class="text-4xl font-bold text-white leading-tight drop-shadow-lg tracking-tight">Cyberpunk 2077</h1>
+<div class="flex items-center gap-2 text-gray-300 text-sm font-body">
+<span class="opacity-80">CD PROJEKT RED</span>
+<span class="w-1 h-1 rounded-full bg-gray-500"></span>
+<div class="flex gap-1.5 opacity-80">
+<span class="material-symbols-outlined text-base">computer</span>
+<span class="material-symbols-outlined text-base">stadia_controller</span>
+<span class="material-symbols-outlined text-base">videogame_asset</span>
+</div>
+</div>
+</div>
+</div>
+<!-- Sticky Tabs -->
+<div class="sticky top-0 z-40 bg-background-dark/95 backdrop-blur-xl border-b border-white/5">
+<div class="flex px-2">
+<a class="flex-1 relative flex flex-col items-center justify-center py-4 text-white group cursor-pointer" href="#overview">
+<span class="text-sm font-bold tracking-wide group-hover:text-primary transition-colors">Overview</span>
+<span class="absolute bottom-0 h-[3px] w-full rounded-t-full bg-primary shadow-[0_0_10px_rgba(226,37,244,0.5)]"></span>
+</a>
+<a class="flex-1 relative flex flex-col items-center justify-center py-4 text-gray-400 group cursor-pointer hover:bg-white/5 transition-colors" href="#achievements">
+<span class="text-sm font-bold tracking-wide group-hover:text-gray-200 transition-colors">Achievements</span>
+<span class="absolute bottom-0 h-[3px] w-full rounded-t-full bg-transparent"></span>
+</a>
+<a class="flex-1 relative flex flex-col items-center justify-center py-4 text-gray-400 group cursor-pointer hover:bg-white/5 transition-colors" href="#buy">
+<span class="text-sm font-bold tracking-wide group-hover:text-gray-200 transition-colors">Buy Options</span>
+<span class="absolute bottom-0 h-[3px] w-full rounded-t-full bg-transparent"></span>
+</a>
+</div>
+</div>
+<!-- Scrollable Content -->
+<div class="flex-1 overflow-y-auto no-scrollbar pb-10">
+<!-- OVERVIEW SECTION -->
+<div class="p-5 flex flex-col gap-6" id="overview">
+<!-- Status Stats -->
+<div class="grid grid-cols-2 gap-3">
+<div class="flex flex-col gap-1 rounded-xl p-4 bg-surface border border-white/5 relative overflow-hidden group">
+<div class="absolute top-0 right-0 p-3 opacity-10 group-hover:opacity-20 transition-opacity">
+<span class="material-symbols-outlined text-4xl text-primary">play_circle</span>
+</div>
+<p class="text-gray-400 text-xs font-bold uppercase tracking-wider">Status</p>
+<div class="flex items-center gap-2">
+<p class="text-white text-lg font-bold">Playing</p>
+<span class="flex h-2 w-2 rounded-full bg-green-500 shadow-[0_0_8px_rgba(34,197,94,0.6)]"></span>
+</div>
+</div>
+<div class="flex flex-col gap-1 rounded-xl p-4 bg-surface border border-white/5 relative overflow-hidden group">
+<div class="absolute top-0 right-0 p-3 opacity-10 group-hover:opacity-20 transition-opacity">
+<span class="material-symbols-outlined text-4xl text-white">trophy</span>
+</div>
+<p class="text-gray-400 text-xs font-bold uppercase tracking-wider">Completion</p>
+<p class="text-white text-lg font-bold">45%</p>
+<div class="w-full bg-gray-700 h-1 rounded-full mt-1">
+<div class="bg-primary h-1 rounded-full" style="width: 45%"></div>
+</div>
+</div>
+<div class="col-span-2 flex flex-col gap-1 rounded-xl p-4 bg-surface border border-white/5 relative overflow-hidden">
+<div class="flex justify-between items-end">
+<div>
+<p class="text-gray-400 text-xs font-bold uppercase tracking-wider">Total Playtime</p>
+<p class="text-white text-3xl font-bold tracking-tighter">124<span class="text-lg text-gray-500 font-normal ml-1">hours</span></p>
+</div>
+<div class="text-right">
+<p class="text-xs text-gray-400">Last played</p>
+<p class="text-sm font-medium text-white">2 hours ago</p>
+</div>
+</div>
+</div>
+</div>
+<!-- Playtime Chart -->
+<div class="flex flex-col gap-3">
+<div class="flex justify-between items-center">
+<h2 class="text-lg font-bold text-white">Platform Breakdown</h2>
+<button class="text-primary text-xs font-bold uppercase tracking-wider hover:text-white transition-colors">Details</button>
+</div>
+<div class="p-5 bg-surface rounded-xl border border-white/5">
+<div class="flex flex-col gap-4">
+<!-- Steam Row -->
+<div class="flex flex-col gap-1.5">
+<div class="flex justify-between text-xs font-bold tracking-wide">
+<div class="flex items-center gap-2 text-white">
+<span class="material-symbols-outlined text-sm">computer</span>
+                                        PC (Steam)
+                                    </div>
+<span class="text-gray-400">82h</span>
+</div>
+<div class="w-full h-2 bg-background-dark rounded-full overflow-hidden">
+<div class="h-full bg-gradient-to-r from-blue-500 to-blue-400 rounded-full" style="width: 66%;"></div>
+</div>
+</div>
+<!-- PS5 Row -->
+<div class="flex flex-col gap-1.5">
+<div class="flex justify-between text-xs font-bold tracking-wide">
+<div class="flex items-center gap-2 text-white">
+<span class="material-symbols-outlined text-sm">stadia_controller</span>
+                                        PlayStation 5
+                                    </div>
+<span class="text-gray-400">42h</span>
+</div>
+<div class="w-full h-2 bg-background-dark rounded-full overflow-hidden">
+<div class="h-full bg-gradient-to-r from-blue-700 to-indigo-600 rounded-full" style="width: 34%;"></div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+<!-- ACHIEVEMENTS SECTION (Simulated View) -->
+<div class="px-5 pt-2 pb-6 border-t border-white/5" id="achievements">
+<div class="flex justify-between items-center py-4 sticky top-[60px] bg-background-dark z-30">
+<h2 class="text-xl font-bold text-white">Achievements</h2>
+<div class="flex bg-surface rounded-lg p-1 border border-white/5">
+<button class="px-3 py-1 bg-white/10 rounded text-xs text-white font-bold">All</button>
+<button class="px-3 py-1 text-xs text-gray-500 font-bold hover:text-white">Rare</button>
+</div>
+</div>
+<div class="flex flex-col gap-3">
+<!-- Achievement Item -->
+<div class="flex gap-4 p-4 rounded-xl bg-surface border border-white/5 hover:border-primary/50 transition-colors group">
+<div class="relative h-14 w-14 flex-shrink-0 bg-black rounded-lg overflow-hidden border border-white/10">
+<div class="absolute inset-0 bg-cover bg-center opacity-60 group-hover:opacity-100 transition-opacity" data-alt="Achievement icon showing a stylized cybernetic implant" style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuAiJzUsRC0oY4ePk4g9UfGiO9ixZ3uRuwOzbFlXfJYVwh-cC3VA-olHC3Js-bhPkaQBterBm93GZSLqd6x3OlPdARYXlKBkVBLxGW3GpzlU3U2_3KtCQpk22w8OUAQI3dKp08s-hLAWY6ZjPxGRCItsxMVz_YKrBtBThrioefRGfgLAgGypimM2K8ZyFuhkwxSDRz_BVZjb-3zxc6Czblk_yYi3Wmp09O0Bk8uiwBjgflgHNSRZqwnfyoBjrG04778WOi3hbhCz0sNC');"></div>
+</div>
+<div class="flex-1 flex flex-col justify-center gap-1">
+<div class="flex justify-between items-start">
+<h3 class="text-sm font-bold text-white leading-tight">Breathtaking</h3>
+<span class="text-[10px] font-bold text-primary bg-primary/10 px-2 py-0.5 rounded border border-primary/20">RARE</span>
+</div>
+<p class="text-xs text-gray-400 line-clamp-1">Collect all items that once belonged to Johnny Silverhand.</p>
+<div class="w-full h-1 bg-background-dark rounded-full mt-2">
+<div class="h-full bg-primary shadow-[0_0_8px_rgba(226,37,244,0.8)] rounded-full" style="width: 85%;"></div>
+</div>
+</div>
+</div>
+<!-- Achievement Item 2 -->
+<div class="flex gap-4 p-4 rounded-xl bg-surface border border-white/5 hover:border-white/20 transition-colors">
+<div class="relative h-14 w-14 flex-shrink-0 bg-black rounded-lg overflow-hidden border border-white/10">
+<div class="absolute inset-0 bg-cover bg-center opacity-40 grayscale" data-alt="Achievement icon showing a gun" style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuD5uBUZK4H9-FbCEcRFABTgzSH0xoX3tXq93r_0reV-xbO2u_396ISTAbXutz7plxnH8BWlmMJ2g2EX1AiOR6klLRFnMMh0V-BrM2li_sAvGOLZ8GZJG-VZ9G4hnYu_ZO_LOLd_iVx0AW_yh-zXi3lyzKOWs-CeM5fu-QTW30oaRCToecaUzszi3t38cz1eH-f4GHwZidA538vjpLG-iH63rVXXmh-zEnjW01TV2xe88zOfEJw_DO4dfrnDe5suE98qJZMgozu779H0');"></div>
+</div>
+<div class="flex-1 flex flex-col justify-center gap-1">
+<div class="flex justify-between items-start">
+<h3 class="text-sm font-bold text-gray-300 leading-tight">Gun Fu</h3>
+<span class="text-[10px] font-bold text-gray-500 bg-white/5 px-2 py-0.5 rounded border border-white/5">COMMON</span>
+</div>
+<p class="text-xs text-gray-500 line-clamp-1">Kill or incapacitate 3 enemies in quick succession.</p>
+<div class="w-full h-1 bg-background-dark rounded-full mt-2">
+<div class="h-full bg-gray-600 rounded-full" style="width: 20%;"></div>
+</div>
+</div>
+</div>
+<button class="w-full mt-2 py-3 rounded-lg border border-dashed border-white/20 text-gray-400 text-sm font-bold hover:bg-white/5 hover:text-white transition-colors flex items-center justify-center gap-2">
+<span class="material-symbols-outlined text-lg">group</span>
+                        Compare with Friends
+                    </button>
+</div>
+</div>
+<!-- BUY OPTIONS SECTION (Simulated View) -->
+<div class="px-5 pt-2 pb-12 border-t border-white/5" id="buy">
+<div class="flex justify-between items-center py-4">
+<h2 class="text-xl font-bold text-white">Buy Options</h2>
+<span class="text-xs text-gray-500">Not owned on Xbox</span>
+</div>
+<div class="flex flex-col gap-4">
+<!-- Price Card -->
+<div class="rounded-xl bg-surface border border-white/5 p-5 relative overflow-hidden">
+<!-- Background Glow -->
+<div class="absolute -top-10 -right-10 w-32 h-32 bg-primary/20 blur-3xl rounded-full pointer-events-none"></div>
+<div class="flex justify-between items-start mb-4">
+<div>
+<p class="text-gray-400 text-xs font-bold uppercase tracking-wider mb-1">Best Current Price</p>
+<div class="flex items-baseline gap-2">
+<span class="text-3xl font-bold text-white">$29.99</span>
+<span class="text-sm text-gray-500 line-through decoration-red-500">$59.99</span>
+<span class="text-xs font-bold text-green-400 bg-green-400/10 px-1.5 py-0.5 rounded">-50%</span>
+</div>
+<div class="flex items-center gap-1 mt-1 text-gray-400 text-xs">
+<span class="material-symbols-outlined text-sm">storefront</span>
+<span>Steam Store</span>
+</div>
+</div>
+<div class="h-10 w-10 bg-white rounded flex items-center justify-center" title="Steam">
+<!-- Placeholder for Steam Logo using text/icon -->
+<span class="material-symbols-outlined text-black">install_desktop</span>
+</div>
+</div>
+<!-- Sparkline Chart (CSS based) -->
+<div class="mb-5">
+<div class="flex justify-between text-[10px] text-gray-500 mb-1 uppercase tracking-wider">
+<span>30 Day Price History</span>
+<span>Low: $29.99</span>
+</div>
+<div class="h-12 w-full flex items-end gap-1">
+<div class="w-full bg-primary/20 rounded-t-sm h-[80%]"></div>
+<div class="w-full bg-primary/20 rounded-t-sm h-[80%]"></div>
+<div class="w-full bg-primary/20 rounded-t-sm h-[60%]"></div>
+<div class="w-full bg-primary/20 rounded-t-sm h-[60%]"></div>
+<div class="w-full bg-primary/20 rounded-t-sm h-[90%]"></div>
+<div class="w-full bg-primary/20 rounded-t-sm h-[90%]"></div>
+<div class="w-full bg-primary/20 rounded-t-sm h-[40%]"></div>
+<div class="w-full bg-primary/40 rounded-t-sm h-[40%]"></div>
+<div class="w-full bg-primary/60 rounded-t-sm h-[40%]"></div>
+<div class="w-full bg-primary rounded-t-sm h-[40%] relative group">
+<div class="absolute bottom-full mb-1 left-1/2 -translate-x-1/2 bg-white text-black text-[10px] px-1 rounded font-bold opacity-0 group-hover:opacity-100 transition-opacity">Now</div>
+</div>
+</div>
+</div>
+<div class="grid grid-cols-2 gap-3">
+<button class="flex items-center justify-center gap-2 py-3 rounded-lg bg-surface-highlight border border-white/10 text-white text-sm font-bold hover:bg-white/10 transition-colors">
+<span class="material-symbols-outlined text-lg">notifications</span>
+                                Alert
+                            </button>
+<button class="flex items-center justify-center gap-2 py-3 rounded-lg bg-primary text-white text-sm font-bold hover:bg-primary/90 shadow-[0_0_15px_rgba(226,37,244,0.4)] transition-all">
+<span class="material-symbols-outlined text-lg">shopping_cart</span>
+                                Buy Now
+                            </button>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</body></html>

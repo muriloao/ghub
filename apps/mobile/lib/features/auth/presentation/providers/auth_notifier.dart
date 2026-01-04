@@ -113,14 +113,12 @@ class AuthNotifier extends StateNotifier<AuthState> {
   }
 
   Future<void> loginWithSteam(BuildContext context) async {
-    state = const AuthLoading();
-
-    final result = await _loginWithSteam(context);
-
-    result.fold(
-      (failure) => state = AuthError(failure.toString()),
-      (authResult) => state = AuthAuthenticated(authResult.user),
-    );
+    try {
+      state = const AuthLoading();
+      await _loginWithSteam(context);
+    } catch (e) {
+      state = AuthError(e.toString());
+    }
   }
 
   /// Login direto usando um AuthResult já obtido

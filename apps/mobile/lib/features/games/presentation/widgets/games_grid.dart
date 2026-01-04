@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:go_router/go_router.dart';
 import 'game_card.dart';
+import '../../../../core/constants/app_constants.dart';
 import '../providers/games_providers.dart';
 import '../states/games_state.dart';
 import '../../domain/entities/game.dart';
@@ -243,14 +245,7 @@ class GamesGrid extends ConsumerWidget {
   }
 
   void _onGameTap(BuildContext context, Game game) {
-    // Navigate to game details page
-    // For now, just show a snackbar
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(
-        content: Text('Tapped on ${game.name}'),
-        backgroundColor: const Color(0xFFe225f4),
-      ),
-    );
+    context.push('${AppConstants.gameDetailRoute}/${game.id}');
   }
 
   Color _getStatusColor(GameStatus status) {

@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
+import '../../../../core/constants/app_constants.dart';
 import '../../domain/entities/game.dart';
 
 class GameCard extends StatelessWidget {
@@ -10,7 +12,11 @@ class GameCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
-      onTap: onTap,
+      onTap:
+          onTap ??
+          () {
+            context.push('${AppConstants.gameDetailRoute}/${game.id}');
+          },
       child: Container(
         decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(16),

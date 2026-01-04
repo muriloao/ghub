@@ -27,7 +27,7 @@ Configure as seguintes variáveis:
 
 ## Endpoints
 
-### POST /auth/steam/url
+### POST /onboarding/url
 
 Gera uma URL de autenticação Steam e um sessionId para rastreamento.
 
@@ -39,7 +39,7 @@ Gera uma URL de autenticação Steam e um sessionId para rastreamento.
 }
 ```
 
-### GET /auth/steam/callback/:sessionId
+### GET /onboarding/callback/:sessionId
 
 Verifica o status da autenticação para um sessionId específico.
 
@@ -68,20 +68,20 @@ Verifica o status da autenticação para um sessionId específico.
 }
 ```
 
-### GET /auth/steam/return/:sessionId (Interno)
+### GET /onboarding/return/:sessionId (Interno)
 
 Endpoint interno usado pelo Steam para retorno após autenticação.
 Não deve ser chamado diretamente pelo app.
 
 ## Fluxo de Autenticação
 
-1. **App chama** `POST /auth/steam/url`
+1. **App chama** `POST /onboarding/url`
 2. **API retorna** URL Steam e sessionId
 3. **App abre** navegador com URL Steam
 4. **Usuário autentica** no Steam
-5. **Steam redireciona** para `/auth/steam/return/:sessionId`
+5. **Steam redireciona** para `/onboarding/return/:sessionId`
 6. **API processa** resposta e marca sessão como autenticada
-7. **App faz polling** em `/auth/steam/callback/:sessionId` até receber sucesso
+7. **App faz polling** em `/onboarding/callback/:sessionId` até receber sucesso
 8. **API retorna** tokens e dados do usuário
 
 ## Desenvolvimento
@@ -118,8 +118,8 @@ npm run start:prod
 ## Integração com Flutter
 
 O app Flutter já está configurado para usar estes endpoints:
-- `POST /auth/steam/url` para obter URL de login
-- `GET /auth/steam/callback/:sessionId` para verificar status (polling a cada 5 segundos)
+- `POST /onboarding/url` para obter URL de login
+- `GET /onboarding/callback/:sessionId` para verificar status (polling a cada 5 segundos)
 
 ## TODO
 

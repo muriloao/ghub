@@ -16,7 +16,7 @@ class SteamAuthService {
   SteamAuthService(this._dio);
 
   /// Abre browser in-app para autenticação Steam e retorna os dados do usuário
-  Future<AuthResultModel> authenticateWithSteam(BuildContext context) async {
+  Future<void> authenticateWithSteam(BuildContext context) async {
     // Validar se a API key está configurada
     if (SteamConfig.apiKey == 'SEU_STEAM_API_KEY_AQUI') {
       throw const AuthenticationException(
@@ -34,20 +34,20 @@ class SteamAuthService {
 
     try {
       // Abrir browser in-app e aguardar callback via deep link
-      final steamId = await _launchSteamAuth(context, authUrl, nonce);
+      await _launchSteamAuth(context, authUrl, nonce);
 
-      // tela da steam que deve fazer
-      if (steamId == null) {
-        throw const AuthenticationException(
-          message: 'Autenticação Steam cancelada ou falhou',
-        );
-      }
+      // // tela da steam que deve fazer
+      // if (steamId == null) {
+      //   throw const AuthenticationException(
+      //     message: 'Autenticação Steam cancelada ou falhou',
+      //   );
+      // }
 
-      // Buscar dados do usuário Steam
-      final steamUser = await _fetchSteamUserData(steamId);
+      // // Buscar dados do usuário Steam
+      // final steamUser = await _fetchSteamUserData(steamId);
 
-      // Converter para nosso formato interno
-      return _createAuthResult(steamUser);
+      // // Converter para nosso formato interno
+      // return _createAuthResult(steamUser);
     } catch (e) {
       if (e is AuthenticationException) rethrow;
       throw AuthenticationException(message: 'Erro na autenticação Steam: $e');
@@ -74,7 +74,7 @@ class SteamAuthService {
     return '${SteamConfig.steamOpenIdUrl}/login?$queryString';
   }
 
-  Future<String?> _launchSteamAuth(
+  Future<void> _launchSteamAuth(
     BuildContext context,
     String authUrl,
     String nonce,
@@ -96,7 +96,7 @@ class SteamAuthService {
 
       // Retorna null - o deep link será capturado pelo DeepLinkService
       // e processado na SteamCallbackPage
-      return '76561198094544213'; // Simular Steam ID para teste
+      // return '76561198094544213'; // Simular Steam ID para teste
     } catch (e) {
       throw AuthenticationException(
         message: 'Erro ao iniciar autenticação Steam: $e',

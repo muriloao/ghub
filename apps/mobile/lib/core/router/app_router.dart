@@ -2,11 +2,13 @@ import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
+import '../../features/splash/presentation/pages/splash_page.dart';
 import '../../features/auth/presentation/pages/login_page.dart';
 import '../../features/auth/presentation/pages/signup_page.dart';
 import '../../features/onboarding/presentation/pages/onboarding_page.dart';
 import '../../features/onboarding/presentation/pages/onboarding_loading_page.dart';
 import '../../features/games/presentation/pages/games_page.dart';
+import '../../features/games/presentation/pages/game_detail_page.dart';
 import '../constants/app_constants.dart';
 import '../../features/auth/presentation/pages/steam_callback_page.dart';
 
@@ -34,10 +36,15 @@ class GoRouterObserver extends NavigatorObserver {
 
 final routerProvider = Provider<GoRouter>((ref) {
   return GoRouter(
-    initialLocation: AppConstants.loginRoute,
+    initialLocation: AppConstants.splashRoute,
     routerNeglect: false,
     observers: [GoRouterObserver()],
     routes: [
+      GoRoute(
+        path: AppConstants.splashRoute,
+        name: 'splash',
+        builder: (context, state) => const SplashPage(),
+      ),
       GoRoute(
         path: AppConstants.loginRoute,
         name: 'login',
@@ -78,6 +85,14 @@ final routerProvider = Provider<GoRouter>((ref) {
         path: AppConstants.homeRoute,
         name: 'home',
         builder: (context, state) => const GamesPage(),
+      ),
+      GoRoute(
+        path: '${AppConstants.gameDetailRoute}/:gameId',
+        name: 'game-detail',
+        builder: (context, state) {
+          final gameId = state.pathParameters['gameId']!;
+          return GameDetailPage(gameId: gameId);
+        },
       ),
       GoRoute(
         path: AppConstants.steamCallbackRoute,
