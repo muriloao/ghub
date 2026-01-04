@@ -1,11 +1,10 @@
+import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../providers/games_providers.dart';
 
 class GamesSearchBar extends ConsumerStatefulWidget {
-  final String steamId;
-
-  const GamesSearchBar({super.key, required this.steamId});
+  const GamesSearchBar({super.key});
 
   @override
   ConsumerState<GamesSearchBar> createState() => _GamesSearchBarState();
@@ -14,21 +13,39 @@ class GamesSearchBar extends ConsumerStatefulWidget {
 class _GamesSearchBarState extends ConsumerState<GamesSearchBar> {
   late TextEditingController _controller;
   bool _isListening = false;
+  Timer? _debounceTimer;
 
   @override
   void initState() {
     super.initState();
     _controller = TextEditingController();
+
+    // Sincronizar com o estado atual
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      final currentQuery = ref.read(searchQueryProvider);
+      if (currentQuery.isNotEmpty && _controller.text != currentQuery) {
+        _controller.text = currentQuery;
+      }
+    });
   }
 
   @override
   void dispose() {
+    _debounceTimer?.cancel();
     _controller.dispose();
     super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
+    // Watch para mudanças no query de fora (como clear)
+    final currentQuery = ref.watch(searchQueryProvider);
+
+    // Atualizar controller se o query mudou externamente
+    if (_controller.text != currentQuery) {
+      _controller.text = currentQuery;
+    }
+
     return Container(
       height: 48,
       decoration: BoxDecoration(
@@ -72,6 +89,7 @@ class _GamesSearchBarState extends ConsumerState<GamesSearchBar> {
         icon: Icon(Icons.clear, color: Colors.grey.shade400),
         onPressed: () {
           _controller.clear();
+          _debounceTimer?.cancel();
           ref.read(gamesNotifierProvider.notifier).clearSearch();
         },
       );
@@ -91,12 +109,10 @@ class _GamesSearchBarState extends ConsumerState<GamesSearchBar> {
   }
 
   void _debounceSearch(String query) {
-    // Simple debounce implementation
-    Future.delayed(const Duration(milliseconds: 500), () {
-      if (_controller.text == query && query.trim().isNotEmpty) {
+    _debounceTimer?.cancel();
+    _debounceTimer = Timer(const Duration(milliseconds: 500), () {
+      if (mounted) {
         ref.read(gamesNotifierProvider.notifier).setSearchQuery(query);
-      } else if (query.trim().isEmpty) {
-        ref.read(gamesNotifierProvider.notifier).clearSearch();
       }
     });
   }

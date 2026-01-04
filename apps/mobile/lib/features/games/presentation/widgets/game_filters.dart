@@ -4,9 +4,7 @@ import '../providers/games_providers.dart';
 import '../states/games_state.dart';
 
 class GameFilters extends ConsumerWidget {
-  final String steamId;
-
-  const GameFilters({super.key, required this.steamId});
+  const GameFilters({super.key});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {

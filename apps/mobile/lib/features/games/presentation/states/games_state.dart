@@ -1,4 +1,5 @@
 import 'package:equatable/equatable.dart';
+import 'package:ghub_mobile/features/auth/domain/entities/user.dart';
 import '../../domain/entities/game.dart';
 
 enum GameFilter {
@@ -14,6 +15,7 @@ enum GameFilter {
 enum GameViewMode { grid, list }
 
 class GamesState extends Equatable {
+  final User? user;
   final List<Game> allGames;
   final List<Game> displayGames;
   final GameFilter selectedFilter;
@@ -24,6 +26,7 @@ class GamesState extends Equatable {
   final String? errorMessage;
 
   const GamesState({
+    this.user,
     this.allGames = const [],
     this.displayGames = const [],
     this.selectedFilter = GameFilter.all,
@@ -35,6 +38,7 @@ class GamesState extends Equatable {
   });
 
   GamesState copyWith({
+    User? user,
     List<Game>? allGames,
     List<Game>? displayGames,
     GameFilter? selectedFilter,
@@ -45,6 +49,7 @@ class GamesState extends Equatable {
     String? errorMessage,
   }) {
     return GamesState(
+      user: user ?? this.user,
       allGames: allGames ?? this.allGames,
       displayGames: displayGames ?? this.displayGames,
       selectedFilter: selectedFilter ?? this.selectedFilter,
@@ -60,6 +65,7 @@ class GamesState extends Equatable {
 
   @override
   List<Object?> get props => [
+    user,
     allGames,
     displayGames,
     selectedFilter,

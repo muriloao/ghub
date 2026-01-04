@@ -58,9 +58,7 @@ class GamesGrid extends ConsumerWidget {
     return RefreshIndicator(
       color: const Color(0xFFe225f4),
       onRefresh: () async {
-        // Steam ID seria necessário aqui, mas como não temos contexto,
-        // vamos deixar o refreshGames sem parâmetro por enquanto
-        // await ref.read(gamesNotifierProvider.notifier).refreshGames(steamId);
+        await ref.read(gamesNotifierProvider.notifier).refreshGames(steamId);
       },
       child: viewMode == GameViewMode.grid
           ? _buildGridView(games)
@@ -101,7 +99,7 @@ class GamesGrid extends ConsumerWidget {
     return GestureDetector(
       onTap: () => _onGameTap(context, game),
       child: Container(
-        height: 80,
+        height: 90,
         decoration: BoxDecoration(
           color: Theme.of(context).brightness == Brightness.dark
               ? const Color(0xFF2d1b2e)

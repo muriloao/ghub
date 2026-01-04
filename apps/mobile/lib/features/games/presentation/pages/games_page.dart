@@ -1,11 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:go_router/go_router.dart';
 import '../../../auth/presentation/providers/auth_notifier.dart';
 import '../widgets/game_filters.dart';
 import '../widgets/games_search_bar.dart';
 import '../widgets/games_view_controls.dart';
 import '../widgets/games_grid.dart';
 import '../providers/games_providers.dart';
+import '../../../../core/constants/app_constants.dart';
 
 class GamesPage extends ConsumerStatefulWidget {
   const GamesPage({super.key});
@@ -27,12 +29,19 @@ class _GamesPageState extends ConsumerState<GamesPage> {
 
   void _loadUserGames() {
     final authState = ref.read(authNotifierProvider);
-    if (authState is AuthAuthenticated && authState.user.id != null) {
+    if (authState is AuthAuthenticated) {
       // Extrair Steam ID do user ID (formato: steam_76561198000000000)
       final userId = authState.user.id;
       if (userId.startsWith('steam_')) {
-        _steamId = userId.substring(6); // Remove 'steam_' prefix
-        ref.read(gamesNotifierProvider.notifier).loadGames(_steamId!);
+        final newSteamId = userId.substring(6);
+        if (_steamId != newSteamId) {
+          setState(() {
+            _steamId = newSteamId;
+          });
+          if (mounted) {
+            ref.read(gamesNotifierProvider.notifier).loadGames(newSteamId);
+          }
+        }
       }
     }
   }
@@ -42,8 +51,27 @@ class _GamesPageState extends ConsumerState<GamesPage> {
     final authState = ref.watch(authNotifierProvider);
     final hasError = ref.watch(hasGamesErrorProvider);
     final errorMessage = ref.watch(gamesErrorMessageProvider);
+    final gamesState = ref.watch(gamesNotifierProvider);
 
-    if (_steamId == null) {
+    // Listen for auth changes
+    ref.listen<AuthState>(authNotifierProvider, (previous, next) {
+      if (next is AuthAuthenticated && next != previous) {
+        final userId = next.user.id;
+        if (userId.startsWith('steam_')) {
+          final newSteamId = userId.substring(6);
+          if (_steamId != newSteamId) {
+            setState(() {
+              _steamId = newSteamId;
+            });
+            if (mounted) {
+              ref.read(gamesNotifierProvider.notifier).loadGames(newSteamId);
+            }
+          }
+        }
+      }
+    });
+
+    if (gamesState.isLoading && _steamId == null) {
       return Scaffold(
         backgroundColor: Theme.of(context).brightness == Brightness.dark
             ? const Color(0xFF211022)
@@ -69,7 +97,7 @@ class _GamesPageState extends ConsumerState<GamesPage> {
             // Search Bar
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 20),
-              child: GamesSearchBar(steamId: _steamId!),
+              child: const GamesSearchBar(),
             ),
             const SizedBox(height: 16),
 
@@ -77,7 +105,7 @@ class _GamesPageState extends ConsumerState<GamesPage> {
             Column(
               children: [
                 // Horizontal Filter Chips
-                GameFilters(steamId: _steamId!),
+                const GameFilters(),
                 const SizedBox(height: 16),
 
                 // View Toggle & Count
@@ -88,9 +116,9 @@ class _GamesPageState extends ConsumerState<GamesPage> {
 
             // Game Grid
             Expanded(
-              child: hasError
-                  ? _buildErrorState(errorMessage)
-                  : GamesGrid(steamId: _steamId!),
+              child: !hasError && _steamId != null
+                  ? GamesGrid(steamId: _steamId!)
+                  : _buildErrorState(errorMessage),
             ),
           ],
         ),
@@ -101,7 +129,7 @@ class _GamesPageState extends ConsumerState<GamesPage> {
     );
   }
 
-  Widget _buildHeader(BuildContext context, dynamic authState) {
+  Widget _buildHeader(BuildContext context, AuthState authState) {
     return Container(
       padding: const EdgeInsets.fromLTRB(20, 24, 20, 8),
       decoration: BoxDecoration(
@@ -143,54 +171,63 @@ class _GamesPageState extends ConsumerState<GamesPage> {
                       letterSpacing: 0.5,
                     ),
                   ),
-                  const Text(
-                    'Unified Library',
-                    style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+                  Text(
+                    authState is AuthAuthenticated
+                        ? authState.user.name ?? ''
+                        : 'Unified Library',
+                    style: const TextStyle(
+                      fontSize: 20,
+                      fontWeight: FontWeight.bold,
+                    ),
                   ),
                 ],
               ),
             ],
           ),
-
           // Profile Avatar
-          Container(
-            width: 40,
-            height: 40,
-            decoration: BoxDecoration(
-              borderRadius: BorderRadius.circular(20),
-              gradient: const LinearGradient(
-                colors: [Color(0xFFe225f4), Colors.purple],
-                begin: Alignment.topLeft,
-                end: Alignment.bottomRight,
-              ),
-            ),
+          GestureDetector(
+            onTap: () => context.push(AppConstants.profileRoute),
             child: Container(
-              margin: const EdgeInsets.all(2),
+              width: 40,
+              height: 40,
               decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(18),
-                color: Theme.of(context).brightness == Brightness.dark
-                    ? const Color(0xFF211022)
-                    : const Color(0xFFf8f5f8),
+                borderRadius: BorderRadius.circular(20),
+                gradient: const LinearGradient(
+                  colors: [Color(0xFFe225f4), Colors.purple],
+                  begin: Alignment.topLeft,
+                  end: Alignment.bottomRight,
+                ),
               ),
-              child: ClipRRect(
-                borderRadius: BorderRadius.circular(18),
-                child: authState.user?.avatarUrl != null
-                    ? Image.network(
-                        authState.user!.avatarUrl!,
-                        fit: BoxFit.cover,
-                        errorBuilder: (context, error, stackTrace) {
-                          return const Icon(
-                            Icons.person,
-                            color: Color(0xFFe225f4),
-                            size: 20,
-                          );
-                        },
-                      )
-                    : const Icon(
-                        Icons.person,
-                        color: Color(0xFFe225f4),
-                        size: 20,
-                      ),
+              child: Container(
+                margin: const EdgeInsets.all(2),
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(18),
+                  color: Theme.of(context).brightness == Brightness.dark
+                      ? const Color(0xFF211022)
+                      : const Color(0xFFf8f5f8),
+                ),
+                child: ClipRRect(
+                  borderRadius: BorderRadius.circular(18),
+                  child:
+                      authState is AuthAuthenticated &&
+                          authState.user.avatarUrl != null
+                      ? Image.network(
+                          authState.user.avatarUrl!,
+                          fit: BoxFit.cover,
+                          errorBuilder: (context, error, stackTrace) {
+                            return const Icon(
+                              Icons.person,
+                              color: Color(0xFFe225f4),
+                              size: 20,
+                            );
+                          },
+                        )
+                      : const Icon(
+                          Icons.person,
+                          color: Color(0xFFe225f4),
+                          size: 20,
+                        ),
+                ),
               ),
             ),
           ),

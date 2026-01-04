@@ -106,3 +106,13 @@ final searchQueryProvider = Provider<String>((ref) {
   final state = ref.watch(gamesNotifierProvider);
   return state.searchQuery;
 });
+
+// Provider para buscar um jogo específico por ID
+final gameByIdProvider = Provider.family<Game?, String>((ref, gameId) {
+  final games = ref.watch(gamesListProvider);
+  try {
+    return games.firstWhere((game) => game.id == gameId);
+  } catch (e) {
+    return null;
+  }
+});
