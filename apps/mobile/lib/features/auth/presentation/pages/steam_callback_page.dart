@@ -68,9 +68,9 @@ class _SteamCallbackPageState extends ConsumerState<SteamCallbackPage> {
       // Verificar novamente se está montado antes de continuar
       if (!mounted) return;
 
-      // Salvar resultado da autenticação
+      // Salvar resultado da autenticação (incluindo steamId para cache)
       final authNotifier = ref.read(authNotifierProvider.notifier);
-      await authNotifier.loginWithAuthResult(authResult);
+      await authNotifier.loginWithAuthResult(authResult, steamId: steamId);
 
       if (mounted) {
         // Navegar para home após autenticação bem-sucedida
