@@ -46,7 +46,7 @@ class ConnectedPlatformsSection extends ConsumerWidget {
           ),
           const SizedBox(height: 12),
           SizedBox(
-            height: 120,
+            height: 140,
             child: ListView.separated(
               scrollDirection: Axis.horizontal,
               itemCount: platforms.length,
@@ -75,6 +75,7 @@ class ConnectedPlatformsSection extends ConsumerWidget {
                 .connectPlatform(platform.id),
       child: Container(
         width: 140,
+        height: 140,
         padding: const EdgeInsets.all(16),
         decoration: BoxDecoration(
           color: isDarkMode ? AppTheme.surfaceDark : Colors.white,
@@ -99,17 +100,17 @@ class ConnectedPlatformsSection extends ConsumerWidget {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Expanded(
-                  child: Container(
-                    width: 40,
-                    height: 40,
-                    decoration: BoxDecoration(
-                      color: platform.backgroundColor,
-                      borderRadius: BorderRadius.circular(8),
-                    ),
-                    child: Icon(platform.icon, color: Colors.white, size: 20),
+                Container(
+                  width: 50,
+                  height: 50,
+                  decoration: BoxDecoration(
+                    color: platform.backgroundColor,
+                    borderRadius: BorderRadius.circular(8),
                   ),
+                  child: Icon(platform.icon, color: Colors.white, size: 24),
                 ),
                 if (platform.isConnected)
                   Container(
