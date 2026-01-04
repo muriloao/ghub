@@ -9,8 +9,7 @@ class PlatformCard extends ConsumerWidget {
   final GamingPlatform platform;
   final VoidCallback? onTap;
 
-  const PlatformCard({Key? key, required this.platform, this.onTap})
-    : super(key: key);
+  const PlatformCard({super.key, required this.platform, this.onTap});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -47,7 +46,10 @@ class PlatformCard extends ConsumerWidget {
             const SizedBox(width: 16),
             Expanded(child: _buildPlatformInfo(theme)),
             const SizedBox(width: 12),
-            _buildActionButton(theme, ref, isDarkMode),
+            SizedBox(
+              width: 80,
+              child: _buildActionButton(theme, ref, isDarkMode),
+            ),
           ],
         ),
       ),
@@ -156,36 +158,44 @@ class PlatformCard extends ConsumerWidget {
     }
 
     if (platform.isConnected) {
-      return TextButton(
-        onPressed: () => _showManageDialog(ref),
-        style: TextButton.styleFrom(
-          foregroundColor: isDarkMode
-              ? Colors.white.withOpacity(0.3)
-              : Colors.grey.shade400,
-          padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-        ),
-        child: const Text(
-          'Manage',
-          style: TextStyle(fontWeight: FontWeight.bold, fontSize: 14),
+      return SizedBox(
+        width: double.infinity,
+        child: TextButton(
+          onPressed: () => _showManageDialog(ref),
+          style: TextButton.styleFrom(
+            foregroundColor: isDarkMode
+                ? Colors.white.withOpacity(0.3)
+                : Colors.grey.shade400,
+            padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 8),
+          ),
+          child: const Text(
+            'Manage',
+            style: TextStyle(fontWeight: FontWeight.bold, fontSize: 12),
+          ),
         ),
       );
     }
 
-    return ElevatedButton(
-      onPressed: () => ref
-          .read(integrationsNotifierProvider.notifier)
-          .connectPlatform(platform.id),
-      style: ElevatedButton.styleFrom(
-        backgroundColor: AppTheme.primary,
-        foregroundColor: Colors.white,
-        padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 8),
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
-        elevation: 4,
-        shadowColor: AppTheme.primary.withOpacity(0.3),
-      ),
-      child: const Text(
-        'Connect',
-        style: TextStyle(fontWeight: FontWeight.bold, fontSize: 14),
+    return SizedBox(
+      width: double.infinity,
+      child: ElevatedButton(
+        onPressed: () => ref
+            .read(integrationsNotifierProvider.notifier)
+            .connectPlatform(platform.id),
+        style: ElevatedButton.styleFrom(
+          backgroundColor: AppTheme.primary,
+          foregroundColor: Colors.white,
+          padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 8),
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(12),
+          ),
+          elevation: 4,
+          shadowColor: AppTheme.primary.withOpacity(0.3),
+        ),
+        child: const Text(
+          'Connect',
+          style: TextStyle(fontWeight: FontWeight.bold, fontSize: 12),
+        ),
       ),
     );
   }
