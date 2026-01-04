@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import '../../../../core/constants/app_constants.dart';
 import '../../domain/entities/game.dart';
+import 'favorite_button.dart';
 
 class GameCard extends StatelessWidget {
   final Game game;
@@ -38,6 +39,9 @@ class GameCard extends StatelessWidget {
                 // Background Image
                 _buildBackgroundImage(),
 
+                // Favorite Button
+                _buildFavoriteButton(),
+
                 // Status Badge
                 _buildStatusBadge(),
 
@@ -51,6 +55,14 @@ class GameCard extends StatelessWidget {
           ),
         ),
       ),
+    );
+  }
+
+  Widget _buildFavoriteButton() {
+    return Positioned(
+      top: 8,
+      left: 8,
+      child: FavoriteButton(game: game, size: 20),
     );
   }
 

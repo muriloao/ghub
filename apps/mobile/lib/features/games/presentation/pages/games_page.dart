@@ -125,7 +125,7 @@ class _GamesPageState extends ConsumerState<GamesPage> {
       ),
 
       // Bottom Navigation
-      bottomNavigationBar: _buildBottomNavigation(context),
+      // bottomNavigationBar: _buildBottomNavigation(context),
     );
   }
 

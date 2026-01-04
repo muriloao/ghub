@@ -4,6 +4,7 @@ import '../../domain/usecases/get_user_games.dart';
 import '../../domain/usecases/search_games.dart';
 import '../../domain/usecases/filter_games.dart';
 import '../states/games_state.dart';
+import '../../../../core/services/games_favorites_service.dart';
 
 class GamesNotifier extends StateNotifier<GamesState> {
   final GetUserGames getUserGames;
@@ -27,11 +28,12 @@ class GamesNotifier extends StateNotifier<GamesState> {
       (failure) {
         state = state.copyWith(isLoading: false, errorMessage: failure.message);
       },
-      (games) {
+      (games) async {
+        final filteredGames = await _applyFiltersAndSearch(games);
         state = state.copyWith(
           isLoading: false,
           allGames: games,
-          displayGames: games,
+          displayGames: filteredGames,
           errorMessage: null,
         );
       },
@@ -50,11 +52,12 @@ class GamesNotifier extends StateNotifier<GamesState> {
           errorMessage: failure.message,
         );
       },
-      (games) {
+      (games) async {
+        final filteredGames = await _applyFiltersAndSearch(games);
         state = state.copyWith(
           isRefreshing: false,
           allGames: games,
-          displayGames: _applyFiltersAndSearch(games),
+          displayGames: filteredGames,
           errorMessage: null,
         );
       },
@@ -86,16 +89,28 @@ class GamesNotifier extends StateNotifier<GamesState> {
     _updateDisplayGames();
   }
 
+  /// Atualiza os filtros após mudança nos favoritos
+  Future<void> refreshFilters() async {
+    _updateDisplayGames();
+  }
+
   void _updateDisplayGames() {
-    final filteredGames = _applyFiltersAndSearch(state.allGames);
+    _applyFiltersAndSearchAsync();
+  }
+
+  Future<void> _applyFiltersAndSearchAsync() async {
+    final filteredGames = await _applyFiltersAndSearch(state.allGames);
     state = state.copyWith(displayGames: filteredGames);
   }
 
-  List<Game> _applyFiltersAndSearch(List<Game> games) {
+  Future<List<Game>> _applyFiltersAndSearch(List<Game> games) async {
     var filtered = games;
 
     // Apply filter
     switch (state.selectedFilter) {
+      case GameFilter.all:
+        // No additional filtering needed
+        break;
       case GameFilter.pc:
         filtered = filtered
             .where((game) => game.platforms.contains(GamePlatform.pc))
@@ -110,8 +125,10 @@ class GamesNotifier extends StateNotifier<GamesState> {
             .toList();
         break;
       case GameFilter.favorites:
+        // Busca favoritos do cache local
+        final favoriteIds = await GamesFavoritesService.getFavorites();
         filtered = filtered
-            .where((game) => game.status == GameStatus.favorite)
+            .where((game) => favoriteIds.contains(game.id))
             .toList();
         break;
       case GameFilter.backlog:
@@ -131,9 +148,6 @@ class GamesNotifier extends StateNotifier<GamesState> {
               (game) => game.playtime2Weeks != null && game.playtime2Weeks! > 0,
             )
             .toList();
-        break;
-      case GameFilter.all:
-      default:
         break;
     }
 
