@@ -1,4 +1,4 @@
-# Configuração do Projeto GameCentral
+# Configuração do Projeto GHub
 
 ## 📋 Pré-requisitos
 
@@ -28,7 +28,7 @@ dart run build_runner build --delete-conflicting-outputs
 #### Para Android:
 
 1. Acesse o [Firebase Console](https://console.firebase.google.com/)
-2. Crie um novo projeto chamado "GameCentral"
+2. Crie um novo projeto chamado "GHub"
 3. Adicione um aplicativo Android com o package name: `com.example.mobile`
 4. Baixe o arquivo `google-services.json`
 5. Coloque o arquivo em: `android/app/google-services.json`

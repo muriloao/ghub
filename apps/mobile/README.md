@@ -1,4 +1,4 @@
-# GameCentral Mobile App
+# GHub Mobile App
 
 Um aplicativo móvel para sincronização de estatísticas de jogos, desenvolvido com Flutter seguindo Clean Architecture e as melhores práticas.
 

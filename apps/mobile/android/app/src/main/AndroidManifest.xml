@@ -3,7 +3,7 @@
     <uses-permission android:name="android.permission.INTERNET" />
     
     <application
-        android:label="GameCentral"
+        android:label="GHub"
         android:name="${applicationName}"
         android:icon="@mipmap/ic_launcher">
         <activity

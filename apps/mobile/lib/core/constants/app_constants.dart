@@ -1,5 +1,5 @@
 class AppConstants {
-  static const String appName = 'GameCentral';
+  static const String appName = 'GHub';
   static const String appSlogan = 'Sync your stats. Dominate the game.';
 
   // API

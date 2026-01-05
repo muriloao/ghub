@@ -1,6 +1,6 @@
 # Xbox Live Integration Setup
 
-Esta integração permite conectar contas Xbox Live ao GameCentral para sincronizar jogos, conquistas e perfil de usuário.
+Esta integração permite conectar contas Xbox Live ao GHub para sincronizar jogos, conquistas e perfil de usuário.
 
 ## Pré-requisitos
 
@@ -16,7 +16,7 @@ Esta integração permite conectar contas Xbox Live ao GameCentral para sincroni
 2. Navegue para **Azure Active Directory** > **App registrations**
 3. Clique em **New registration**
 4. Preencha as informações:
-   - **Name**: GameCentral Xbox Integration
+   - **Name**: GHub Xbox Integration
    - **Supported account types**: Accounts in any organizational directory (Any Azure AD directory - Multitenant) and personal Microsoft accounts
    - **Redirect URI**: 
      - Type: **Public client/native (mobile & desktop)**

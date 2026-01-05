@@ -1,6 +1,6 @@
 # Deep Linking Implementation
 
-Este documento explica como o deep linking foi implementado no app GameCentral usando o custom scheme `ghub`.
+Este documento explica como o deep linking foi implementado no app GHub usando o custom scheme `ghub`.
 
 ## Configuração
 
