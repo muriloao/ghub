@@ -105,6 +105,7 @@ class _SplashPageState extends ConsumerState<SplashPage>
           ),
         ),
         child: Stack(
+          alignment: AlignmentGeometry.center,
           children: [
             // Background glow blob
             Positioned(
@@ -120,7 +121,7 @@ class _SplashPageState extends ConsumerState<SplashPage>
                     shape: BoxShape.circle,
                     gradient: RadialGradient(
                       colors: [
-                        const Color(0xFFe225f4).withOpacity(0.2),
+                        const Color(0xFFe225f4).withValues(alpha: 0.2),
                         Colors.transparent,
                       ],
                     ),
