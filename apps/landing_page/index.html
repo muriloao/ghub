@@ -1,0 +1,448 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="en">
+
+<head>
+    <meta charset="utf-8" />
+    <meta content="width=device-width, initial-scale=1.0" name="viewport" />
+    <title>GHub - Unify Your Gaming Universe</title>
+    <!-- App Scheme redirect -->
+    <script>
+        const isMobile = /Android|iPhone|iPad/i.test(navigator.userAgent);
+
+        if (isMobile) {
+            window.location.href = "ghub://";
+        }
+    </script>
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com" rel="preconnect" />
+    <link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect" />
+    <link
+        href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&amp;family=Noto+Sans:wght@400;500;700&amp;display=swap"
+        rel="stylesheet" />
+    <!-- Material Symbols -->
+    <link
+        href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap"
+        rel="stylesheet" />
+    <link
+        href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap"
+        rel="stylesheet" />
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+    <script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "primary": "#e225f4",
+                        "primary-dark": "#c01bd0",
+                        "background-light": "#f8f5f8",
+                        "background-dark": "#0f0f12", /* Darker charcoal as requested */
+                        "surface": "#1E1E24",
+                    },
+                    fontFamily: {
+                        "display": ["Space Grotesk", "sans-serif"],
+                        "body": ["Noto Sans", "sans-serif"],
+                    },
+                    borderRadius: { "DEFAULT": "0.25rem", "lg": "0.5rem", "xl": "0.75rem", "2xl": "1rem", "full": "9999px" },
+                    backgroundImage: {
+                        'hero-glow': 'radial-gradient(circle at center, rgba(226, 37, 244, 0.25) 0%, rgba(15, 15, 18, 0) 70%)',
+                    }
+                },
+            },
+        }
+    </script>
+    <style>
+        /* Custom scrollbar for webkit */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: #0f0f12;
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: #333;
+            border-radius: 4px;
+        }
+
+        ::-webkit-scrollbar-thumb:hover {
+            background: #555;
+        }
+
+        .glass-panel {
+            background: rgba(30, 30, 36, 0.6);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+        }
+
+        .text-glow {
+            text-shadow: 0 0 20px rgba(226, 37, 244, 0.5);
+        }
+    </style>
+    <style>
+        body {
+            min-height: max(884px, 100dvh);
+        }
+    </style>
+</head>
+
+<body
+    class="bg-background-light dark:bg-background-dark text-gray-900 dark:text-white font-display overflow-x-hidden selection:bg-primary selection:text-white">
+    <!-- Sticky Navigation -->
+    <nav class="sticky top-0 z-50 w-full glass-panel border-b border-white/5">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex items-center justify-between h-16">
+                <!-- Logo -->
+                <div class="flex-shrink-0 flex items-center gap-2 cursor-pointer">
+                    <span class="material-symbols-outlined text-primary text-3xl">hub</span>
+                    <span class="text-2xl font-bold tracking-tight text-white">GHub</span>
+                </div>
+                <!-- Actions -->
+                <div class="flex items-center gap-4">
+                    <button
+                        class="hidden sm:block text-gray-300 hover:text-white text-sm font-medium transition-colors">Log
+                        In</button>
+                    <button
+                        class="bg-primary hover:bg-primary-dark text-white text-sm font-bold py-2 px-4 rounded-full transition-all duration-300 shadow-[0_0_15px_rgba(226,37,244,0.3)] hover:shadow-[0_0_25px_rgba(226,37,244,0.5)] transform active:scale-95">
+                        Get App
+                    </button>
+                </div>
+            </div>
+        </div>
+    </nav>
+    <!-- Hero Section -->
+    <section class="relative pt-12 pb-20 lg:pt-20 overflow-hidden">
+        <!-- Glow Effect Background -->
+        <div
+            class="absolute top-0 left-1/2 -translate-x-1/2 w-full h-full max-w-4xl bg-hero-glow pointer-events-none z-0">
+        </div>
+        <div class="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col items-center text-center">
+            <div
+                class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-white/5 border border-white/10 mb-8 backdrop-blur-sm">
+                <span class="flex h-2 w-2 rounded-full bg-primary animate-pulse"></span>
+                <span class="text-xs font-medium tracking-wide text-gray-300 uppercase">v2.0 Now Available</span>
+            </div>
+            <h1 class="text-5xl md:text-7xl font-black tracking-tighter leading-tight mb-6 max-w-4xl">
+                UNIFY YOUR <br class="hidden md:block" />
+                <span
+                    class="text-transparent bg-clip-text bg-gradient-to-r from-white via-primary to-purple-400 text-glow">GAMING
+                    UNIVERSE</span>
+            </h1>
+            <p class="text-gray-400 text-lg md:text-xl max-w-2xl mb-10 font-body leading-relaxed">
+                Track stats, sync libraries, and find deals across Steam, Xbox, PlayStation, and more. One dashboard to
+                rule them all.
+            </p>
+            <div class="flex flex-col sm:flex-row gap-4 w-full sm:w-auto mb-16">
+                <button
+                    class="flex items-center justify-center gap-2 bg-primary hover:bg-primary-dark text-white text-base font-bold h-14 px-8 rounded-xl transition-all shadow-[0_4px_20px_rgba(226,37,244,0.4)] hover:shadow-[0_6px_30px_rgba(226,37,244,0.6)] transform hover:-translate-y-0.5 active:translate-y-0">
+                    <span class="material-symbols-outlined">ios</span>
+                    <span>Download for iOS</span>
+                </button>
+                <button
+                    class="flex items-center justify-center gap-2 bg-surface hover:bg-white/10 border border-white/10 text-white text-base font-bold h-14 px-8 rounded-xl transition-all">
+                    <span class="material-symbols-outlined">android</span>
+                    <span>Android Beta</span>
+                </button>
+            </div>
+            <!-- App Showcase Visual -->
+            <div class="relative w-full max-w-sm sm:max-w-md mx-auto perspective-1000">
+                <div
+                    class="relative z-10 rounded-[2.5rem] border-8 border-gray-900 bg-gray-900 shadow-2xl overflow-hidden aspect-[9/19] transform rotate-[-2deg] hover:rotate-0 transition-transform duration-700 ease-out">
+                    <!-- Screen Content -->
+                    <div class="h-full w-full bg-background-dark overflow-hidden flex flex-col">
+                        <!-- Simulated Status Bar -->
+                        <div class="h-6 w-full flex justify-between px-6 items-center text-[10px] text-white pt-2">
+                            <span>9:41</span>
+                            <div class="flex gap-1">
+                                <span class="material-symbols-outlined text-[10px]">signal_cellular_alt</span>
+                                <span class="material-symbols-outlined text-[10px]">wifi</span>
+                                <span class="material-symbols-outlined text-[10px]">battery_full</span>
+                            </div>
+                        </div>
+                        <!-- Simulated App Header -->
+                        <div class="px-5 pt-4 pb-2 flex justify-between items-center">
+                            <div>
+                                <h3 class="text-white font-bold text-xl">Hello, Alex</h3>
+                                <p class="text-gray-400 text-xs">Level 42 • 85% to next</p>
+                            </div>
+                            <div class="h-10 w-10 rounded-full bg-gradient-to-br from-primary to-purple-600 border-2 border-white/20"
+                                data-alt="User avatar placeholder with abstract gradient"></div>
+                        </div>
+                        <!-- Simulated Content -->
+                        <div class="flex-1 p-4 flex flex-col gap-4 overflow-hidden relative">
+                            <!-- Currently Playing Card -->
+                            <div class="bg-surface rounded-xl p-3 border border-white/5 relative overflow-hidden group">
+                                <div class="absolute inset-0 bg-cover bg-center opacity-40 group-hover:opacity-50 transition-opacity"
+                                    data-alt="Abstract gaming screenshot showing a futuristic HUD interface"
+                                    style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuBaMi1TW_rgMopebtNgiB_Kk9FoLaEsjGxyxx0RnWd9H5a7fRWVIlNzze3-8gSjPEKVlutld3jneKQ4K6YNwiMe6oqSeExavJjr_vvqbNrWA8Q9ctewIN_sWy2jD60u1nSgdMYWh0NgHMyvCoKg6Yqlbbc5iEoJQ2wajC-Kxo3DHstfmqqlPLzJsOXVBUEZxZt8Cp_tIN6SPAJ-n6yWIZdVe-RyXvgp14wC7cxIpgxUNpHjCc_fDjxrfaTWUO2gI-1JZ6DG-0yHccIT');">
+                                </div>
+                                <div class="relative z-10">
+                                    <div class="flex justify-between items-start mb-6">
+                                        <span
+                                            class="bg-black/60 backdrop-blur-sm text-[10px] px-2 py-0.5 rounded text-white border border-white/10">PLAYING
+                                            NOW</span>
+                                    </div>
+                                    <h4 class="text-white font-bold text-lg drop-shadow-md">Cyber Odyssey 2077</h4>
+                                    <p class="text-gray-200 text-xs drop-shadow-md">Steam • 124 hrs</p>
+                                </div>
+                            </div>
+                            <!-- Stats Row -->
+                            <div class="grid grid-cols-2 gap-3">
+                                <div class="bg-surface/50 rounded-xl p-3 border border-white/5">
+                                    <span class="material-symbols-outlined text-primary mb-2">trophy</span>
+                                    <div class="text-2xl font-bold text-white">1,240</div>
+                                    <div class="text-[10px] text-gray-400 uppercase tracking-wider">Trophies</div>
+                                </div>
+                                <div class="bg-surface/50 rounded-xl p-3 border border-white/5">
+                                    <span class="material-symbols-outlined text-green-400 mb-2">schedule</span>
+                                    <div class="text-2xl font-bold text-white">48h</div>
+                                    <div class="text-[10px] text-gray-400 uppercase tracking-wider">Past 2 Weeks</div>
+                                </div>
+                            </div>
+                            <!-- Deal Alert -->
+                            <div
+                                class="bg-gradient-to-r from-surface to-surface/50 rounded-xl p-3 border border-white/5 flex gap-3 items-center">
+                                <div
+                                    class="h-12 w-12 rounded-lg bg-indigo-900 flex items-center justify-center shrink-0">
+                                    <span class="material-symbols-outlined text-indigo-300">notifications_active</span>
+                                </div>
+                                <div>
+                                    <div class="text-white text-sm font-bold">Wishlist Alert</div>
+                                    <div class="text-gray-400 text-xs">Elden Ring is 40% off</div>
+                                </div>
+                            </div>
+                        </div>
+                        <!-- Simulated Bottom Nav -->
+                        <div
+                            class="h-16 border-t border-white/5 flex justify-around items-center px-2 bg-background-dark/95 backdrop-blur">
+                            <span class="material-symbols-outlined text-primary text-2xl">home</span>
+                            <span class="material-symbols-outlined text-gray-500 text-2xl">grid_view</span>
+                            <div
+                                class="h-10 w-10 bg-primary rounded-full flex items-center justify-center -mt-6 shadow-lg shadow-primary/40 border-4 border-background-dark">
+                                <span class="material-symbols-outlined text-white">add</span>
+                            </div>
+                            <span class="material-symbols-outlined text-gray-500 text-2xl">chat_bubble</span>
+                            <span class="material-symbols-outlined text-gray-500 text-2xl">person</span>
+                        </div>
+                    </div>
+                </div>
+                <!-- Abstract blobs behind phone -->
+                <div
+                    class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[120%] h-[80%] bg-primary blur-[80px] opacity-20 -z-10 rounded-full animate-pulse">
+                </div>
+            </div>
+        </div>
+    </section>
+    <!-- Platform Marquee -->
+    <section class="py-8 border-y border-white/5 bg-black/20 overflow-hidden relative">
+        <div class="max-w-7xl mx-auto px-4 mb-4 text-center">
+            <h3 class="text-sm font-medium text-gray-400 uppercase tracking-widest">Connects with your favorite
+                platforms</h3>
+        </div>
+        <!-- Marquee Content -->
+        <div
+            class="flex gap-12 justify-center items-center flex-wrap px-4 opacity-70 grayscale hover:grayscale-0 transition-all duration-500">
+            <!-- Using text/icons representation for platforms to avoid external SVG complexity issues -->
+            <div class="flex items-center gap-2 group cursor-default">
+                <span
+                    class="material-symbols-outlined text-3xl group-hover:text-[#171a21] transition-colors">desktop_windows</span>
+                <span class="text-xl font-bold group-hover:text-white transition-colors">Steam</span>
+            </div>
+            <div class="flex items-center gap-2 group cursor-default">
+                <span
+                    class="material-symbols-outlined text-3xl group-hover:text-[#107C10] transition-colors">stadia_controller</span>
+                <span class="text-xl font-bold group-hover:text-white transition-colors">Xbox</span>
+            </div>
+            <div class="flex items-center gap-2 group cursor-default">
+                <span
+                    class="material-symbols-outlined text-3xl group-hover:text-[#003791] transition-colors">videogame_asset</span>
+                <span class="text-xl font-bold group-hover:text-white transition-colors">PlayStation</span>
+            </div>
+            <div class="flex items-center gap-2 group cursor-default">
+                <span
+                    class="material-symbols-outlined text-3xl group-hover:text-[#E60012] transition-colors">sports_esports</span>
+                <span class="text-xl font-bold group-hover:text-white transition-colors">Nintendo</span>
+            </div>
+            <div class="flex items-center gap-2 group cursor-default">
+                <span
+                    class="material-symbols-outlined text-3xl group-hover:text-white transition-colors">rocket_launch</span>
+                <span class="text-xl font-bold group-hover:text-white transition-colors">Epic</span>
+            </div>
+        </div>
+    </section>
+    <!-- Stats Ticker -->
+    <div class="w-full bg-surface/30 py-4 border-b border-white/5">
+        <div class="max-w-7xl mx-auto px-4 flex flex-wrap justify-center gap-8 md:gap-16 text-center">
+            <div>
+                <span class="block text-2xl md:text-3xl font-bold text-white">2.5M+</span>
+                <span class="text-xs text-gray-400 uppercase tracking-wide">Games Tracked</span>
+            </div>
+            <div class="w-px h-10 bg-white/10 hidden sm:block"></div>
+            <div>
+                <span class="block text-2xl md:text-3xl font-bold text-white">500k+</span>
+                <span class="text-xs text-gray-400 uppercase tracking-wide">Active Gamers</span>
+            </div>
+            <div class="w-px h-10 bg-white/10 hidden sm:block"></div>
+            <div>
+                <span class="block text-2xl md:text-3xl font-bold text-white">$120k</span>
+                <span class="text-xs text-gray-400 uppercase tracking-wide">Saved on Deals</span>
+            </div>
+        </div>
+    </div>
+    <!-- Feature Section -->
+    <section class="py-20 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto">
+        <div class="flex flex-col md:flex-row gap-12 items-start">
+            <!-- Feature Copy -->
+            <div class="flex-1 sticky top-24">
+                <h2 class="text-4xl font-black leading-tight mb-6">
+                    POWER UP YOUR <br />
+                    <span class="text-primary">EXPERIENCE</span>
+                </h2>
+                <p class="text-gray-400 text-lg mb-8 leading-relaxed">
+                    Stop switching between apps. GHub brings your entire gaming life into one sleek, dark-mode interface
+                    designed for the modern gamer.
+                </p>
+                <ul class="space-y-4 mb-8">
+                    <li class="flex items-center gap-3 text-gray-300">
+                        <span class="flex items-center justify-center w-6 h-6 rounded-full bg-primary/20 text-primary">
+                            <span class="material-symbols-outlined text-sm font-bold">check</span>
+                        </span>
+                        Real-time status updates across platforms
+                    </li>
+                    <li class="flex items-center gap-3 text-gray-300">
+                        <span class="flex items-center justify-center w-6 h-6 rounded-full bg-primary/20 text-primary">
+                            <span class="material-symbols-outlined text-sm font-bold">check</span>
+                        </span>
+                        Compare trophies with friends instantly
+                    </li>
+                    <li class="flex items-center gap-3 text-gray-300">
+                        <span class="flex items-center justify-center w-6 h-6 rounded-full bg-primary/20 text-primary">
+                            <span class="material-symbols-outlined text-sm font-bold">check</span>
+                        </span>
+                        Import libraries in one click
+                    </li>
+                </ul>
+                <button
+                    class="text-white border-b border-primary pb-1 hover:text-primary transition-colors text-sm font-bold uppercase tracking-wide flex items-center gap-2 w-fit">
+                    Explore all features
+                    <span class="material-symbols-outlined text-sm">arrow_forward</span>
+                </button>
+            </div>
+            <!-- Feature Grid -->
+            <div class="flex-[1.5] w-full">
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                    <!-- Card 1 -->
+                    <div
+                        class="group glass-panel rounded-2xl p-6 hover:bg-white/5 transition-all duration-300 border border-white/5 hover:border-primary/50">
+                        <div
+                            class="h-12 w-12 rounded-lg bg-indigo-500/10 flex items-center justify-center mb-4 group-hover:scale-110 transition-transform duration-300">
+                            <span class="material-symbols-outlined text-indigo-400 text-3xl">library_books</span>
+                        </div>
+                        <h3 class="text-xl font-bold text-white mb-2">Unified Library</h3>
+                        <p class="text-gray-400 text-sm leading-relaxed">View your entire collection in one place.
+                            Filter by genre, playtime, or completion status across all launchers.</p>
+                    </div>
+                    <!-- Card 2 -->
+                    <div
+                        class="group glass-panel rounded-2xl p-6 hover:bg-white/5 transition-all duration-300 border border-white/5 hover:border-primary/50">
+                        <div
+                            class="h-12 w-12 rounded-lg bg-yellow-500/10 flex items-center justify-center mb-4 group-hover:scale-110 transition-transform duration-300">
+                            <span class="material-symbols-outlined text-yellow-400 text-3xl">emoji_events</span>
+                        </div>
+                        <h3 class="text-xl font-bold text-white mb-2">Global Achievements</h3>
+                        <p class="text-gray-400 text-sm leading-relaxed">Track trophies and achievements across Xbox,
+                            PSN, and Steam in a single unified progression bar.</p>
+                    </div>
+                    <!-- Card 3 -->
+                    <div
+                        class="group glass-panel rounded-2xl p-6 hover:bg-white/5 transition-all duration-300 border border-white/5 hover:border-primary/50">
+                        <div
+                            class="h-12 w-12 rounded-lg bg-green-500/10 flex items-center justify-center mb-4 group-hover:scale-110 transition-transform duration-300">
+                            <span class="material-symbols-outlined text-green-400 text-3xl">sell</span>
+                        </div>
+                        <h3 class="text-xl font-bold text-white mb-2">Deal Alerts</h3>
+                        <p class="text-gray-400 text-sm leading-relaxed">Never miss a sale. Get instant push
+                            notifications when items on your universal wishlist drop in price.</p>
+                    </div>
+                    <!-- Card 4 -->
+                    <div
+                        class="group glass-panel rounded-2xl p-6 hover:bg-white/5 transition-all duration-300 border border-white/5 hover:border-primary/50">
+                        <div
+                            class="h-12 w-12 rounded-lg bg-pink-500/10 flex items-center justify-center mb-4 group-hover:scale-110 transition-transform duration-300">
+                            <span class="material-symbols-outlined text-pink-400 text-3xl">group</span>
+                        </div>
+                        <h3 class="text-xl font-bold text-white mb-2">Friend Sync</h3>
+                        <p class="text-gray-400 text-sm leading-relaxed">See what your friends are playing everywhere.
+                            Cross-platform chat coming soon in v3.0.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+    <!-- Visual Break / CTA Strip -->
+    <section class="relative py-24 px-4 overflow-hidden">
+        <!-- Background Image -->
+        <div class="absolute inset-0 bg-cover bg-center opacity-20 grayscale"
+            data-alt="Dark abstract gaming setup with neon lights"
+            style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuAa-fFvSAGbHGxipDnWWqtBouQK0XDidQAl6JZcHXaj5iJmoH9cEfxcClvNIE7q176dfCRN-aiMVV8-RZQ4D2PdubOxUGijR4tHX4Y1X-6RCK5JMd1QgYH3ROSmp9LNwaPQtLDiEdDkU5ScQOIXKcmNVr6eUNC1OzTOqbxv1B_jGtjWxlO5wpTxC0CQGArMiLZ4SidWFHfwwffpTI6NGDW7UYVKVacsPKvv14OuGrwXyXEGn20IwAJ9skLUv7PVlXMNr0Agdsaero_A');">
+        </div>
+        <div class="absolute inset-0 bg-gradient-to-t from-background-dark via-background-dark/80 to-background-dark">
+        </div>
+        <div class="relative z-10 max-w-4xl mx-auto text-center">
+            <h2 class="text-3xl md:text-5xl font-black mb-6">Ready to level up?</h2>
+            <p class="text-gray-300 mb-10 max-w-xl mx-auto text-lg">Join the fastest growing community of cross-platform
+                gamers. It's free, it's fast, and it's dark mode.</p>
+            <button
+                class="w-full sm:w-auto bg-primary hover:bg-primary-dark text-white text-lg font-bold py-4 px-10 rounded-full transition-all shadow-[0_0_20px_rgba(226,37,244,0.4)] hover:shadow-[0_0_40px_rgba(226,37,244,0.6)] transform hover:scale-105">
+                Get GHub Now
+            </button>
+            <p class="mt-4 text-xs text-gray-500">Available on iOS 15+. Android Beta available via APK.</p>
+        </div>
+    </section>
+    <!-- Footer -->
+    <footer class="bg-black/40 border-t border-white/5 py-12">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex flex-col md:flex-row justify-between items-center gap-8">
+                <div class="flex items-center gap-2">
+                    <span class="material-symbols-outlined text-primary text-2xl">hub</span>
+                    <span class="text-xl font-bold text-white tracking-tight">GHub</span>
+                </div>
+                <div class="flex gap-8 text-sm text-gray-400 font-medium">
+                    <a class="hover:text-primary transition-colors" href="#">Privacy</a>
+                    <a class="hover:text-primary transition-colors" href="#">Terms</a>
+                    <a class="hover:text-primary transition-colors" href="#">Support</a>
+                    <a class="hover:text-primary transition-colors" href="#">Press</a>
+                </div>
+                <div class="flex gap-4">
+                    <a class="h-10 w-10 rounded-full bg-white/5 flex items-center justify-center text-gray-400 hover:bg-primary hover:text-white transition-all"
+                        href="#">
+                        <span class="sr-only">Twitter</span>
+                        <svg class="h-5 w-5" fill="currentColor" viewbox="0 0 24 24">
+                            <path
+                                d="M24 4.557c-.883.392-1.832.656-2.828.775 1.017-.609 1.798-1.574 2.165-2.724-.951.564-2.005.974-3.127 1.195-.897-.957-2.178-1.555-3.594-1.555-3.179 0-5.515 2.966-4.797 6.045-4.091-.205-7.719-2.165-10.148-5.144-1.29 2.213-.669 5.108 1.523 6.574-.806-.026-1.566-.247-2.229-.616-.054 2.281 1.581 4.415 3.949 4.89-.693.188-1.452.232-2.224.084.626 1.956 2.444 3.379 4.6 3.419-2.07 1.623-4.678 2.348-7.29 2.04 2.179 1.397 4.768 2.212 7.548 2.212 9.142 0 14.307-7.721 13.995-14.646.962-.695 1.797-1.562 2.457-2.549z">
+                            </path>
+                        </svg>
+                    </a>
+                    <a class="h-10 w-10 rounded-full bg-white/5 flex items-center justify-center text-gray-400 hover:bg-primary hover:text-white transition-all"
+                        href="#">
+                        <span class="sr-only">Discord</span>
+                        <svg class="h-5 w-5" fill="currentColor" viewbox="0 0 24 24">
+                            <path
+                                d="M20.317 4.37a19.791 19.791 0 0 0-4.885-1.515.074.074 0 0 0-.079.037c-.21.375-.444.864-.608 1.25a18.27 18.27 0 0 0-5.487 0 12.64 12.64 0 0 0-.617-1.25.077.077 0 0 0-.079-.037A19.736 19.736 0 0 0 3.677 4.37a.07.07 0 0 0-.032.027C.533 9.046-.32 13.58.099 18.057a.082.082 0 0 0 .031.057 19.9 19.9 0 0 0 5.993 3.03.077.077 0 0 0 .084-.028 14.09 14.09 0 0 0 1.226-1.994.076.076 0 0 0-.041-.106 13.107 13.107 0 0 1-1.872-.892.077.077 0 0 1-.008-.128 10.2 10.2 0 0 0 .372-.292.074.074 0 0 1 .077-.01c3.928 1.793 8.18 1.793 12.062 0a.074.074 0 0 1 .078.01c.12.098.246.198.373.292a.077.077 0 0 1-.006.127 12.299 12.299 0 0 1-1.873.892.077.077 0 0 0-.041.107c.36.698.772 1.362 1.225 1.993a.076.076 0 0 0 .084.028 19.839 19.839 0 0 0 6.002-3.03.077.077 0 0 0 .032-.054c.5-5.177-.838-9.674-3.549-13.66a.061.061 0 0 0-.031-.03zM8.02 15.33c-1.183 0-2.157-1.085-2.157-2.419 0-1.333.956-2.419 2.157-2.419 1.21 0 2.176 1.096 2.157 2.419 0 1.334-.956 2.419-2.157 2.419zm7.975 0c-1.183 0-2.157-1.085-2.157-2.419 0-1.333.955-2.419 2.157-2.419 1.21 0 2.176 1.096 2.157 2.419 0 1.334-.946 2.419-2.157 2.419z">
+                            </path>
+                        </svg>
+                    </a>
+                </div>
+            </div>
+            <div class="mt-8 pt-8 border-t border-white/5 text-center text-xs text-gray-500">
+                © 2023 GHub Inc. All rights reserved. Not affiliated with Steam, Sony, Microsoft, or Nintendo.
+            </div>
+        </div>
+    </footer>
+</body>
+
+</html>
