@@ -9,6 +9,7 @@ import '../../domain/repositories/games_repository.dart';
 import '../../domain/usecases/get_user_games.dart';
 import '../../domain/usecases/search_games.dart';
 import '../../domain/usecases/filter_games.dart';
+import '../../domain/usecases/sort_games.dart';
 import '../notifiers/games_notifier.dart';
 import '../states/games_state.dart';
 
@@ -51,6 +52,10 @@ final filterGamesProvider = Provider<FilterGames>((ref) {
   return FilterGames(repository);
 });
 
+final sortGamesProvider = Provider<SortGames>((ref) {
+  return SortGames();
+});
+
 // Main Notifier
 final gamesNotifierProvider = StateNotifierProvider<GamesNotifier, GamesState>((
   ref,
@@ -58,11 +63,13 @@ final gamesNotifierProvider = StateNotifierProvider<GamesNotifier, GamesState>((
   final getUserGames = ref.watch(getUserGamesProvider);
   final searchGames = ref.watch(searchGamesProvider);
   final filterGames = ref.watch(filterGamesProvider);
+  final sortGames = ref.watch(sortGamesProvider);
 
   return GamesNotifier(
     getUserGames: getUserGames,
     searchGames: searchGames,
     filterGames: filterGames,
+    sortGames: sortGames,
   );
 });
 
@@ -105,6 +112,16 @@ final currentViewModeProvider = Provider<GameViewMode>((ref) {
 final searchQueryProvider = Provider<String>((ref) {
   final state = ref.watch(gamesNotifierProvider);
   return state.searchQuery;
+});
+
+final currentSortCriteriaProvider = Provider<SortCriteria>((ref) {
+  final state = ref.watch(gamesNotifierProvider);
+  return state.sortCriteria;
+});
+
+final currentSortOrderProvider = Provider<SortOrder>((ref) {
+  final state = ref.watch(gamesNotifierProvider);
+  return state.sortOrder;
 });
 
 // Provider para buscar um jogo específico por ID

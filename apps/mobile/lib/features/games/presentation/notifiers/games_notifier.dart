@@ -3,6 +3,7 @@ import '../../domain/entities/game.dart';
 import '../../domain/usecases/get_user_games.dart';
 import '../../domain/usecases/search_games.dart';
 import '../../domain/usecases/filter_games.dart';
+import '../../domain/usecases/sort_games.dart';
 import '../states/games_state.dart';
 import '../../../../core/services/games_favorites_service.dart';
 
@@ -10,11 +11,13 @@ class GamesNotifier extends StateNotifier<GamesState> {
   final GetUserGames getUserGames;
   final SearchGames searchGames;
   final FilterGames filterGames;
+  final SortGames sortGames;
 
   GamesNotifier({
     required this.getUserGames,
     required this.searchGames,
     required this.filterGames,
+    required this.sortGames,
   }) : super(const GamesState());
 
   Future<void> loadGames(String steamId) async {
@@ -30,10 +33,11 @@ class GamesNotifier extends StateNotifier<GamesState> {
       },
       (games) async {
         final filteredGames = await _applyFiltersAndSearch(games);
+        final sortedGames = await _applySorting(filteredGames);
         state = state.copyWith(
           isLoading: false,
           allGames: games,
-          displayGames: filteredGames,
+          displayGames: sortedGames,
           errorMessage: null,
         );
       },
@@ -54,10 +58,11 @@ class GamesNotifier extends StateNotifier<GamesState> {
       },
       (games) async {
         final filteredGames = await _applyFiltersAndSearch(games);
+        final sortedGames = await _applySorting(filteredGames);
         state = state.copyWith(
           isRefreshing: false,
           allGames: games,
-          displayGames: filteredGames,
+          displayGames: sortedGames,
           errorMessage: null,
         );
       },
@@ -89,6 +94,23 @@ class GamesNotifier extends StateNotifier<GamesState> {
     _updateDisplayGames();
   }
 
+  void setSortCriteria(SortCriteria criteria) {
+    state = state.copyWith(sortCriteria: criteria);
+    _updateDisplayGames();
+  }
+
+  void setSortOrder(SortOrder order) {
+    state = state.copyWith(sortOrder: order);
+    _updateDisplayGames();
+  }
+
+  void toggleSortOrder() {
+    final newOrder = state.sortOrder == SortOrder.ascending
+        ? SortOrder.descending
+        : SortOrder.ascending;
+    setSortOrder(newOrder);
+  }
+
   /// Atualiza os filtros após mudança nos favoritos
   Future<void> refreshFilters() async {
     _updateDisplayGames();
@@ -100,7 +122,8 @@ class GamesNotifier extends StateNotifier<GamesState> {
 
   Future<void> _applyFiltersAndSearchAsync() async {
     final filteredGames = await _applyFiltersAndSearch(state.allGames);
-    state = state.copyWith(displayGames: filteredGames);
+    final sortedGames = await _applySorting(filteredGames);
+    state = state.copyWith(displayGames: sortedGames);
   }
 
   Future<List<Game>> _applyFiltersAndSearch(List<Game> games) async {
@@ -163,5 +186,20 @@ class GamesNotifier extends StateNotifier<GamesState> {
     }
 
     return filtered;
+  }
+
+  Future<List<Game>> _applySorting(List<Game> games) async {
+    final result = await sortGames(
+      SortGamesParams(
+        games: games,
+        criteria: state.sortCriteria,
+        order: state.sortOrder,
+      ),
+    );
+
+    return result.fold((failure) {
+      // Em caso de erro na ordenação, retorna os jogos sem ordenar
+      return games;
+    }, (sortedGames) => sortedGames);
   }
 }

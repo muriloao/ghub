@@ -8,10 +8,10 @@ class XboxConfig {
   // 4. Configure redirect URI: ghub://xbox-callback
 
   static const String clientId =
-      'SEU_XBOX_CLIENT_ID_AQUI'; // Application (client) ID
+      'f5bf5849-794a-4f01-a64a-ad90470397e6'; // Application (client) ID
   static const String clientSecret =
-      'SEU_XBOX_CLIENT_SECRET_AQUI'; // Client secret value
-  static const String redirectUri = 'ghub://xbox-callback';
+      'a24bde39-c44f-4e08-9140-f94430458412'; // Client secret value
+  static const String redirectUri = 'ghub://onboarding/callback/xbox';
 
   // Xbox Live API URLs
   static const String authUrl = 'https://login.live.com/oauth20_authorize.srf';
