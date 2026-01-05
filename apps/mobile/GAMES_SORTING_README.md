@@ -12,6 +12,7 @@ Esta implementação adiciona a capacidade de ordenar jogos por diferentes crit�
   - `lastPlayed`: Data da última partida
   - `releaseDate`: Data de lançamento
   - `rating`: Avaliação do jogo
+  - `playtime`: Tempo de jogo total do usuário
 
 ### 2. Enums de Configuração
 - **`SortCriteria`**: Define os critérios de ordenação disponíveis
@@ -57,6 +58,7 @@ ref.read(gamesNotifierProvider.notifier).toggleSortOrder();
 - Jogos sem `lastPlayed` são colocados no final da lista
 - Jogos sem `releaseDate` são colocados no final da lista  
 - Jogos sem `rating` são colocados no final da lista
+- Jogos sem `playtimeForever` são colocados no final da lista
 - Ordenação por nome é case-insensitive
 
 ## Integração

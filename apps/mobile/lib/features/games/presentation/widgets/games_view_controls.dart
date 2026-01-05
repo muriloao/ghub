@@ -147,6 +147,8 @@ class GamesViewControls extends ConsumerWidget {
         return 'Data de lançamento';
       case SortCriteria.rating:
         return 'Avaliação';
+      case SortCriteria.playtime:
+        return 'Tempo de jogo';
     }
   }
 
@@ -230,6 +232,14 @@ class SortBottomSheet extends ConsumerWidget {
             'Avaliação',
             Icons.star,
             currentCriteria == SortCriteria.rating,
+          ),
+          _buildSortOption(
+            context,
+            ref,
+            SortCriteria.playtime,
+            'Tempo de jogo',
+            Icons.schedule,
+            currentCriteria == SortCriteria.playtime,
           ),
 
           const SizedBox(height: 16),

@@ -3,7 +3,7 @@ import '../../../../core/error/failure.dart';
 import '../../../../core/usecases/usecase.dart';
 import '../entities/game.dart';
 
-enum SortCriteria { name, lastPlayed, releaseDate, rating }
+enum SortCriteria { name, lastPlayed, releaseDate, rating, playtime }
 
 enum SortOrder { ascending, descending }
 
@@ -65,6 +65,21 @@ class SortGames implements UseCase<List<Game>, SortGamesParams> {
               comparison = -1;
             } else {
               comparison = aRating.compareTo(bRating);
+            }
+            break;
+
+          case SortCriteria.playtime:
+            final aPlaytime = a.playtimeForever;
+            final bPlaytime = b.playtimeForever;
+
+            if (aPlaytime == null && bPlaytime == null) {
+              comparison = 0;
+            } else if (aPlaytime == null) {
+              comparison = 1; // Jogos sem tempo de jogo vão para o final
+            } else if (bPlaytime == null) {
+              comparison = -1;
+            } else {
+              comparison = aPlaytime.compareTo(bPlaytime);
             }
             break;
         }
