@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:dio/dio.dart';
 
 import '../../domain/entities/gaming_platform.dart';
 import '../providers/integrations_providers.dart';
+import '../../data/services/xbox_live_service.dart';
 import '../../../../core/theme/app_theme.dart';
 
 class PlatformCard extends ConsumerWidget {
@@ -48,7 +50,7 @@ class PlatformCard extends ConsumerWidget {
             const SizedBox(width: 12),
             SizedBox(
               width: 80,
-              child: _buildActionButton(theme, ref, isDarkMode),
+              child: _buildActionButton(theme, ref, isDarkMode, context),
             ),
           ],
         ),
@@ -142,7 +144,12 @@ class PlatformCard extends ConsumerWidget {
     );
   }
 
-  Widget _buildActionButton(ThemeData theme, WidgetRef ref, bool isDarkMode) {
+  Widget _buildActionButton(
+    ThemeData theme,
+    WidgetRef ref,
+    bool isDarkMode,
+    BuildContext context,
+  ) {
     if (platform.isConnecting) {
       return Container(
         padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
@@ -181,7 +188,7 @@ class PlatformCard extends ConsumerWidget {
       child: ElevatedButton(
         onPressed: () => ref
             .read(integrationsNotifierProvider.notifier)
-            .connectPlatform(platform.id),
+            .connectPlatform(platform.id, context),
         style: ElevatedButton.styleFrom(
           backgroundColor: AppTheme.primary,
           foregroundColor: Colors.white,

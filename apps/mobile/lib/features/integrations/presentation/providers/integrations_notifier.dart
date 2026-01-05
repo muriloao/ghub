@@ -1,7 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:dio/dio.dart';
 
 import '../../domain/entities/gaming_platform.dart';
+import '../../data/services/xbox_live_service.dart';
+import '../../../../core/services/integrations_cache_service.dart';
+import '../../../../core/error/exceptions.dart';
 
 class IntegrationsState {
   final List<GamingPlatform> platforms;
@@ -50,8 +54,8 @@ class IntegrationsNotifier extends StateNotifier<IntegrationsState> {
     return const IntegrationsState(platforms: [], isLoading: true);
   }
 
-  void _initializePlatforms() {
-    final platforms = _getPlatformsData();
+  void _initializePlatforms() async {
+    final platforms = await _getPlatformsData();
     final connectedCount = platforms.where((p) => p.isConnected).length;
 
     state = state.copyWith(
@@ -61,34 +65,44 @@ class IntegrationsNotifier extends StateNotifier<IntegrationsState> {
     );
   }
 
-  List<GamingPlatform> _getPlatformsData() {
+  Future<List<GamingPlatform>> _getPlatformsData() async {
+    // Verificar plataformas conectadas no cache
+    final connectedPlatforms =
+        await IntegrationsCacheService.getConnectedPlatforms();
+
     return [
       GamingPlatform(
         id: 'steam',
         name: 'Steam',
         description: 'Games • Achievements • Friends',
         type: PlatformType.steam,
-        status: ConnectionStatus.connected, // Already connected from auth
+        status: connectedPlatforms.containsKey('steam')
+            ? ConnectionStatus.connected
+            : ConnectionStatus.connected, // Sempre conectado por autenticação
         primaryColor: const Color(0xFF171a21),
         backgroundColor: const Color(0xFF171a21),
         icon: Icons.sports_esports,
         features: ['Games', 'Achievements', 'Friends'],
-        connectedAt: DateTime.now().subtract(const Duration(days: 7)),
-        connectedUsername: 'SteamUser',
+        connectedAt:
+            connectedPlatforms['steam']?.connectedAt ??
+            DateTime.now().subtract(const Duration(days: 7)),
+        connectedUsername: connectedPlatforms['steam']?.username ?? 'SteamUser',
       ),
       GamingPlatform(
         id: 'xbox',
         name: 'Xbox',
         description: 'Games • Friends',
         type: PlatformType.xbox,
-        status: ConnectionStatus.connected,
+        status: connectedPlatforms.containsKey('xbox')
+            ? ConnectionStatus.connected
+            : ConnectionStatus.disconnected,
         primaryColor: const Color(0xFF107C10),
         backgroundColor: const Color(0xFF107C10),
         icon: Icons.gamepad,
         logoText: 'X',
         features: ['Games', 'Friends'],
-        connectedAt: DateTime.now().subtract(const Duration(days: 3)),
-        connectedUsername: 'XboxGamer',
+        connectedAt: connectedPlatforms['xbox']?.connectedAt,
+        connectedUsername: connectedPlatforms['xbox']?.username,
       ),
       GamingPlatform(
         id: 'playstation',
@@ -162,7 +176,10 @@ class IntegrationsNotifier extends StateNotifier<IntegrationsState> {
     ];
   }
 
-  Future<void> connectPlatform(String platformId) async {
+  Future<void> connectPlatform(
+    String platformId, [
+    BuildContext? context,
+  ]) async {
     final platformIndex = state.platforms.indexWhere((p) => p.id == platformId);
     if (platformIndex == -1) return;
 
@@ -175,15 +192,74 @@ class IntegrationsNotifier extends StateNotifier<IntegrationsState> {
     state = state.copyWith(platforms: updatedPlatforms);
 
     try {
-      // Simulate API call
-      await Future.delayed(const Duration(seconds: 2));
+      if (platformId == 'xbox') {
+        // Conexão real com Xbox Live
+        await _connectXboxLive(context);
+      } else {
+        // Simulate API call for other platforms
+        await Future.delayed(const Duration(seconds: 2));
 
-      // Update to connected state
+        // Update to connected state
+        updatedPlatforms[platformIndex] = updatedPlatforms[platformIndex]
+            .copyWith(
+              status: ConnectionStatus.connected,
+              connectedAt: DateTime.now(),
+              connectedUsername: '${updatedPlatforms[platformIndex].name}User',
+            );
+      }
+
+      // Refresh platforms from cache
+      await refreshPlatforms();
+    } catch (e) {
+      // Para Xbox, é esperado que lance AuthenticationException
+      if (e is AuthenticationException && platformId == 'xbox') {
+        // Reset para disconnected apenas se houve erro real
+        updatedPlatforms[platformIndex] = updatedPlatforms[platformIndex]
+            .copyWith(status: ConnectionStatus.disconnected);
+
+        state = state.copyWith(platforms: updatedPlatforms);
+        return; // Xbox authentication flow iniciado com sucesso
+      }
+
+      // Reset to disconnected on error
+      updatedPlatforms[platformIndex] = updatedPlatforms[platformIndex]
+          .copyWith(status: ConnectionStatus.disconnected);
+
+      state = state.copyWith(
+        platforms: updatedPlatforms,
+        error:
+            'Failed to connect to ${updatedPlatforms[platformIndex].name}: $e',
+      );
+    }
+  }
+
+  Future<void> _connectXboxLive(BuildContext? context) async {
+    if (context == null) {
+      throw const AuthenticationException(
+        message: 'Context required for Xbox authentication',
+      );
+    }
+
+    // Iniciar fluxo de autenticação Xbox Live
+    final xboxService = XboxLiveService(Dio());
+    await xboxService.authenticateWithXbox(context);
+  }
+
+  Future<void> disconnectPlatform(String platformId) async {
+    final platformIndex = state.platforms.indexWhere((p) => p.id == platformId);
+    if (platformIndex == -1) return;
+
+    try {
+      // Remove from cache
+      await IntegrationsCacheService.removePlatformConnection(platformId);
+
+      // Update local state
+      final updatedPlatforms = List<GamingPlatform>.from(state.platforms);
       updatedPlatforms[platformIndex] = updatedPlatforms[platformIndex]
           .copyWith(
-            status: ConnectionStatus.connected,
-            connectedAt: DateTime.now(),
-            connectedUsername: '${updatedPlatforms[platformIndex].name}User',
+            status: ConnectionStatus.disconnected,
+            connectedAt: null,
+            connectedUsername: null,
           );
 
       final connectedCount = updatedPlatforms
@@ -195,33 +271,22 @@ class IntegrationsNotifier extends StateNotifier<IntegrationsState> {
         connectedCount: connectedCount,
       );
     } catch (e) {
-      // Reset to disconnected on error
-      updatedPlatforms[platformIndex] = updatedPlatforms[platformIndex]
-          .copyWith(status: ConnectionStatus.disconnected);
-
       state = state.copyWith(
-        platforms: updatedPlatforms,
-        error: 'Failed to connect to ${updatedPlatforms[platformIndex].name}',
+        error:
+            'Failed to disconnect from ${state.platforms[platformIndex].name}: $e',
       );
     }
   }
 
-  Future<void> disconnectPlatform(String platformId) async {
-    final platformIndex = state.platforms.indexWhere((p) => p.id == platformId);
-    if (platformIndex == -1) return;
-
-    final updatedPlatforms = List<GamingPlatform>.from(state.platforms);
-    updatedPlatforms[platformIndex] = updatedPlatforms[platformIndex].copyWith(
-      status: ConnectionStatus.disconnected,
-      connectedAt: null,
-      connectedUsername: null,
-    );
-
-    final connectedCount = updatedPlatforms.where((p) => p.isConnected).length;
+  /// Atualiza as plataformas a partir do cache
+  Future<void> refreshPlatforms() async {
+    final platforms = await _getPlatformsData();
+    final connectedCount = platforms.where((p) => p.isConnected).length;
 
     state = state.copyWith(
-      platforms: updatedPlatforms,
+      platforms: platforms,
       connectedCount: connectedCount,
+      isLoading: false,
     );
   }
 

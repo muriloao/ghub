@@ -13,6 +13,7 @@ import '../../features/integrations/presentation/pages/integrations_page.dart';
 import '../../features/profile/presentation/pages/profile_page.dart';
 import '../constants/app_constants.dart';
 import '../../features/auth/presentation/pages/steam_callback_page.dart';
+import '../../features/integrations/presentation/pages/xbox_callback_page.dart';
 
 class GoRouterObserver extends NavigatorObserver {
   @override
@@ -102,6 +103,18 @@ final routerProvider = Provider<GoRouter>((ref) {
         builder: (context, state) {
           final queryParams = state.uri.queryParameters;
           return SteamCallbackPage(queryParams: queryParams);
+        },
+      ),
+      GoRoute(
+        path: AppConstants.xboxCallbackRoute,
+        name: 'xbox-callback',
+        builder: (context, state) {
+          final queryParams = state.uri.queryParameters;
+          return XboxCallbackPage(
+            code: queryParams['code'],
+            state: queryParams['state'],
+            error: queryParams['error'],
+          );
         },
       ),
       GoRoute(
