@@ -19,7 +19,7 @@ SteamUserModel _$SteamUserModelFromJson(Map<String, dynamic> json) =>
       avatar: json['avatar'] as String,
       avatarmedium: json['avatarmedium'] as String,
       avatarfull: json['avatarfull'] as String,
-      avatarhash: (json['avatarhash'] as String),
+      avatarhash: json['avatarhash'] as String,
       personastate: (json['personastate'] as num).toInt(),
       realname: json['realname'] as String?,
       primaryclanid: json['primaryclanid'] as String?,

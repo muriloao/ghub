@@ -4,6 +4,8 @@ import 'package:go_router/go_router.dart';
 
 import '../../domain/entities/game.dart';
 import '../providers/games_providers.dart';
+import '../widgets/favorite_button.dart';
+import '../../../achievements/presentation/pages/game_achievements_section.dart';
 
 /// Tela de detalhes do jogo baseada no design fornecido
 class GameDetailPage extends ConsumerStatefulWidget {
@@ -168,7 +170,13 @@ class _GameDetailPageState extends ConsumerState<GameDetailPage>
                     children: [
                       _buildNavButton(Icons.ios_share),
                       const SizedBox(width: 12),
-                      _buildNavButton(Icons.favorite_border),
+                      FavoriteButton(
+                        game: game,
+                        size: 20,
+                        // backgroundColor: Colors.black.withOpacity(0.4),
+                        // borderColor: Colors.white.withOpacity(0.1),
+                        // size: 40,
+                      ),
                     ],
                   ),
                 ],
@@ -378,15 +386,7 @@ class _GameDetailPageState extends ConsumerState<GameDetailPage>
   }
 
   Widget _buildAchievementsTab(Game game) {
-    return const SingleChildScrollView(
-      padding: EdgeInsets.all(20),
-      child: Center(
-        child: Text(
-          'Achievements coming soon...',
-          style: TextStyle(color: Colors.white, fontSize: 16),
-        ),
-      ),
-    );
+    return GameAchievementsSection(appId: game.id, gameName: game.name);
   }
 
   Widget _buildBuyOptionsTab(Game game) {

@@ -5,6 +5,7 @@ import 'package:url_launcher/url_launcher.dart';
 import 'package:flutter/material.dart';
 import '../../../../core/error/exceptions.dart';
 import '../../../../core/config/xbox_config.dart';
+import '../../../../core/services/cache_service.dart';
 
 /// Modelo de dados do usuário Xbox
 class XboxUser {
@@ -75,6 +76,18 @@ class XboxGame {
           ? DateTime.tryParse(json['lastUnlock'])
           : null,
     );
+  }
+
+  Map<String, dynamic> toJson() {
+    return {
+      'titleId': titleId,
+      'name': name,
+      'displayImage': imageUrl,
+      'currentAchievements': achievementsUnlocked,
+      'totalAchievements': totalAchievements,
+      'currentGamerscore': gamerscore,
+      'lastUnlock': lastPlayedDate?.toIso8601String(),
+    };
   }
 }
 
@@ -337,5 +350,82 @@ class XboxLiveService {
         lastPlayedDate: DateTime.now().subtract(const Duration(days: 5)),
       ),
     ];
+  }
+
+  /// Busca o perfil do usuário Xbox Live
+  /// Usa cache se disponível e não expirado
+  Future<XboxUser> getUserProfile(
+    String accessToken, {
+    bool forceRefresh = false,
+  }) async {
+    try {
+      // Verificar cache se não for refresh forçado
+      if (!forceRefresh) {
+        final cache = await PlatformCacheExtension.getXboxCache();
+        if (cache != null && !cache.isExpired() && cache.userData != null) {
+          return XboxUser.fromJson(cache.userData!);
+        }
+      }
+
+      // Por enquanto, retornar dados mock
+      // TODO: Implementar busca real da API Xbox quando disponível
+      final mockUser = XboxUser(
+        xuid: '2533274847423806',
+        gamertag: 'UserXboxGamer',
+        avatarUrl:
+            'https://via.placeholder.com/150x150/107C10/FFFFFF?text=Xbox',
+        gamerscore: 25450,
+        displayName: 'Xbox Gamer',
+      );
+
+      // Salvar no cache
+      await PlatformCacheExtension.cacheXboxData(userData: mockUser);
+
+      return mockUser;
+    } catch (e) {
+      // Tentar usar cache mesmo se expirado
+      final cache = await PlatformCacheExtension.getXboxCache();
+      if (cache != null && cache.userData != null) {
+        return XboxUser.fromJson(cache.userData!);
+      }
+
+      throw ServerException(message: 'Erro ao buscar perfil Xbox: $e');
+    }
+  }
+
+  /// Busca jogos do usuário Xbox Live
+  /// Usa cache se disponível e não expirado
+  Future<List<XboxGame>> getUserGames(
+    String accessToken, {
+    bool forceRefresh = false,
+  }) async {
+    try {
+      // Verificar cache se não for refresh forçado
+      if (!forceRefresh) {
+        final cache = await PlatformCacheExtension.getXboxCache();
+        if (cache != null && !cache.isExpired() && cache.gamesData != null) {
+          return cache.gamesData!
+              .map((json) => XboxGame.fromJson(json))
+              .toList();
+        }
+      }
+
+      // Por enquanto, usar dados mock
+      // TODO: Implementar busca real da API Xbox quando disponível
+      final mockGames = _getMockXboxGames();
+
+      // Salvar no cache
+      await PlatformCacheExtension.cacheXboxData(games: mockGames);
+
+      return mockGames;
+    } catch (e) {
+      // Tentar usar cache mesmo se expirado
+      final cache = await PlatformCacheExtension.getXboxCache();
+      if (cache != null && cache.gamesData != null) {
+        return cache.gamesData!.map((json) => XboxGame.fromJson(json)).toList();
+      }
+
+      throw ServerException(message: 'Erro ao buscar jogos Xbox: $e');
+    }
   }
 }

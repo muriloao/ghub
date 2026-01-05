@@ -5,6 +5,7 @@ import 'package:go_router/go_router.dart';
 import '../providers/integrations_providers.dart';
 import '../widgets/platform_card.dart';
 import '../widgets/integrations_progress_bar.dart';
+import '../widgets/platform_sync_section.dart';
 import '../../../../core/theme/app_theme.dart';
 
 class IntegrationsPage extends ConsumerWidget {
@@ -55,6 +56,7 @@ class IntegrationsPage extends ConsumerWidget {
               else ...[
                 _buildHeader(context, isDarkMode),
                 _buildProgressSection(),
+                _buildSyncSection(),
                 _buildPlatformsList(platforms),
               ],
             ],
@@ -142,6 +144,15 @@ class IntegrationsPage extends ConsumerWidget {
 
   Widget _buildProgressSection() {
     return const SliverToBoxAdapter(child: IntegrationsProgressBar());
+  }
+
+  Widget _buildSyncSection() {
+    return const SliverToBoxAdapter(
+      child: Padding(
+        padding: EdgeInsets.symmetric(vertical: 16),
+        child: PlatformSyncSection(),
+      ),
+    );
   }
 
   Widget _buildPlatformsList(List platforms) {

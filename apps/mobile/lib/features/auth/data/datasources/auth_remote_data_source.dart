@@ -147,8 +147,8 @@ class AuthRemoteDataSourceImpl implements AuthRemoteDataSource {
   @override
   Future<void> logout() async {
     try {
-      await dio.post('/auth/logout');
-      await googleSignIn.signOut();
+      // await dio.post('/auth/logout');
+      // await googleSignIn.signOut();
     } on DioException catch (e) {
       throw ServerException(
         message: e.response?.data['message'] ?? 'Erro ao fazer logout',
