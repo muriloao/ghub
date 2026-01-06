@@ -7,28 +7,53 @@ class XboxConfig {
   // 3. Configure permissões para Xbox Live
   // 4. Configure redirect URI: ghub://xbox-callback
 
-  static const String clientId =
-      'f5bf5849-794a-4f01-a64a-ad90470397e6'; // Application (client) ID
-  static const String clientSecret =
-      'a24bde39-c44f-4e08-9140-f94430458412'; // Client secret value
-  static const String redirectUri = 'https://ghub.digital/onboarding/callback';
+  static const String clientId = String.fromEnvironment(
+    'XBOX_CLIENT_ID',
+    defaultValue: 'SEU_XBOX_CLIENT_ID_AQUI',
+  ); // Application (client) ID
+  static const String clientSecret = String.fromEnvironment(
+    'XBOX_CLIENT_SECRET',
+    defaultValue: 'SEU_XBOX_CLIENT_SECRET_AQUI',
+  ); // Client secret value
+  static const String redirectUri = String.fromEnvironment(
+    'XBOX_REDIRECT_URI',
+    defaultValue: 'ghub://xbox-callback',
+  );
 
   // Xbox Live API URLs
-  static const String authUrl = 'https://login.live.com/oauth20_authorize.srf';
-  static const String tokenUrl = 'https://login.live.com/oauth20_token.srf';
-  static const String xboxLiveUrl =
-      'https://user.auth.xboxlive.com/user/authenticate';
-  static const String xstsUrl = 'https://xsts.auth.xboxlive.com/xsts/authorize';
-  static const String profileUrl =
-      'https://profile.xboxlive.com/users/me/profile/settings';
+  static const String authUrl = String.fromEnvironment(
+    'XBOX_AUTH_URL',
+    defaultValue: 'https://login.live.com/oauth20_authorize.srf',
+  );
+  static const String tokenUrl = String.fromEnvironment(
+    'XBOX_TOKEN_URL',
+    defaultValue: 'https://login.live.com/oauth20_token.srf',
+  );
+  static const String xboxLiveUrl = String.fromEnvironment(
+    'XBOX_LIVE_URL',
+    defaultValue: 'https://user.auth.xboxlive.com/user/authenticate',
+  );
+  static const String xstsUrl = String.fromEnvironment(
+    'XBOX_XSTS_URL',
+    defaultValue: 'https://xsts.auth.xboxlive.com/xsts/authorize',
+  );
+  static const String profileUrl = String.fromEnvironment(
+    'XBOX_PROFILE_URL',
+    defaultValue: 'https://profile.xboxlive.com/users/me/profile/settings',
+  );
 
   // Scopes necessários para Xbox Live
-  static const String scopes = 'XboxLive.signin XboxLive.offline_access';
+  static const String scopes = String.fromEnvironment(
+    'XBOX_SCOPES',
+    defaultValue: 'XboxLive.signin XboxLive.offline_access',
+  );
 
   /// Verifica se as credenciais do Xbox estão configuradas
   static bool get isConfigured {
     return clientId != 'SEU_XBOX_CLIENT_ID_AQUI' &&
-        clientSecret != 'SEU_XBOX_CLIENT_SECRET_AQUI';
+        clientSecret != 'SEU_XBOX_CLIENT_SECRET_AQUI' &&
+        clientId.isNotEmpty &&
+        clientSecret.isNotEmpty;
   }
 
   /// Mensagem de erro quando as credenciais não estão configuradas
@@ -41,8 +66,8 @@ Para usar a integração Xbox Live:
 3. Configure as permissões necessárias para Xbox Live
 4. Adicione o redirect URI: ghub://xbox-callback
 5. Copie o Application ID e Client Secret
-6. Substitua as constantes em XboxConfig:
-   - clientId: Application (client) ID
-   - clientSecret: Client secret value
+6. Configure no arquivo .env:
+   - XBOX_CLIENT_ID=Application (client) ID
+   - XBOX_CLIENT_SECRET=Client secret value
 ''';
 }

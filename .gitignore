@@ -1,1 +1,2 @@
 apps/steam-auth/node_modules/**
+apps/mobile/.env

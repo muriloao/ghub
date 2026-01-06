@@ -1,21 +1,46 @@
 class SteamConfig {
   // Steam Web API key - obtenha em: https://steamcommunity.com/dev/apikey
-  // IMPORTANTE: Substitua 'SEU_STEAM_API_KEY_AQUI' pela sua chave real antes de usar
-  static const String apiKey = '2271A33223BD2AEE98383AB2E8C2941C';
+  // IMPORTANTE: Configure STEAM_API_KEY no arquivo .env
+  static const String apiKey = String.fromEnvironment(
+    'STEAM_API_KEY',
+    defaultValue: 'SEU_STEAM_API_KEY_AQUI',
+  );
 
   // URLs da Steam API
-  static const String steamApiUrl = 'https://api.steampowered.com';
-  static const String steamOpenIdUrl = 'https://steamcommunity.com/openid';
-  static const String steamStoreApiUrl = 'https://store.steampowered.com/api';
+  static const String steamApiUrl = String.fromEnvironment(
+    'STEAM_API_URL',
+    defaultValue: 'https://api.steampowered.com',
+  );
+  static const String steamOpenIdUrl = String.fromEnvironment(
+    'STEAM_OPENID_URL',
+    defaultValue: 'https://steamcommunity.com/openid',
+  );
+  static const String steamStoreApiUrl = String.fromEnvironment(
+    'STEAM_STORE_API_URL',
+    defaultValue: 'https://store.steampowered.com/api',
+  );
 
   // Parâmetros de configuração para OpenID
-  static const String realm = 'https://5d2a47d81b16.ngrok-free.app';
-  static const String mode = 'checkid_setup';
-  static const String ns = 'http://specs.openid.net/auth/2.0';
-  static const String identity =
-      'http://specs.openid.net/auth/2.0/identifier_select';
-  static const String claimedId =
-      'http://specs.openid.net/auth/2.0/identifier_select';
+  static const String realm = String.fromEnvironment(
+    'STEAM_REALM',
+    defaultValue: 'https://localhost:3000',
+  );
+  static const String mode = String.fromEnvironment(
+    'STEAM_MODE',
+    defaultValue: 'checkid_setup',
+  );
+  static const String ns = String.fromEnvironment(
+    'STEAM_NS',
+    defaultValue: 'http://specs.openid.net/auth/2.0',
+  );
+  static const String identity = String.fromEnvironment(
+    'STEAM_IDENTITY',
+    defaultValue: 'http://specs.openid.net/auth/2.0/identifier_select',
+  );
+  static const String claimedId = String.fromEnvironment(
+    'STEAM_CLAIMED_ID',
+    defaultValue: 'http://specs.openid.net/auth/2.0/identifier_select',
+  );
 
   // URL de retorno personalizada para o app móvel
   // Usa um scheme customizado que será capturado pelo app
@@ -49,7 +74,12 @@ class SteamConfig {
       'https://media.steampowered.com/steamcommunity/public/images/apps/$appId/$iconHash.jpg';
 
   // Configurações de rate limiting
-  static const int maxBatchSize =
-      100; // Máximo de jogos por requisição de detalhes
-  static const int rateLimitDelayMs = 100; // Delay entre requests em batch
+  static const int maxBatchSize = int.fromEnvironment(
+    'STEAM_MAX_BATCH_SIZE',
+    defaultValue: 100,
+  ); // Máximo de jogos por requisição de detalhes
+  static const int rateLimitDelayMs = int.fromEnvironment(
+    'STEAM_RATE_LIMIT_DELAY_MS',
+    defaultValue: 100,
+  ); // Delay entre requests em batch
 }
