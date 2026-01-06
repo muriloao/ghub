@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="en">
+
+<head>
+    <meta charset="utf-8" />
+    <meta content="width=device-width, initial-scale=1.0" name="viewport" />
+    <title>GHub - Unify Your Gaming Universe</title>
+    <!-- App Scheme redirect -->
+    <script>
+        try {
+            const isMobile = /Android|iPhone|iPad/i.test(navigator.userAgent);
+
+            if (isMobile) {
+                window.location.href = "ghub://";
+                return;
+            }
+        } catch (e) {
+            console.error(e);
+        }
+        window.location.replace('index.html');
+    </script>
+</head>
+
+<body>
+</body>
+
+</html>
