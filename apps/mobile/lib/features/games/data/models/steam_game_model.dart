@@ -1,5 +1,6 @@
 import 'package:json_annotation/json_annotation.dart';
 import '../../domain/entities/game.dart';
+import '../../../onboarding/domain/entities/gaming_platform.dart';
 
 part 'steam_game_model.g.dart';
 
@@ -80,6 +81,7 @@ class SteamGameModel {
       lastPlayed: rtimeLastPlayed != null
           ? DateTime.fromMillisecondsSinceEpoch(rtimeLastPlayed! * 1000)
           : null,
+      sourcePlatform: PlatformType.steam, // Sempre Steam para jogos da Steam
     );
   }
 }

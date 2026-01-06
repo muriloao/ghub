@@ -6,6 +6,8 @@ import '../../domain/usecases/filter_games.dart';
 import '../../domain/usecases/sort_games.dart';
 import '../states/games_state.dart';
 import '../../../../core/services/games_favorites_service.dart';
+import '../../../onboarding/domain/entities/gaming_platform.dart';
+import '../../services/games_preferences_service.dart';
 
 class GamesNotifier extends StateNotifier<GamesState> {
   final GetUserGames getUserGames;
@@ -20,8 +22,29 @@ class GamesNotifier extends StateNotifier<GamesState> {
     required this.sortGames,
   }) : super(const GamesState());
 
+  /// Carrega as preferências salvas do usuário
+  Future<void> loadSavedPreferences() async {
+    try {
+      final sortPrefs = await GamesPreferencesService.getSortPreferences();
+      final filterPrefs = await GamesPreferencesService.getFilterPreferences();
+
+      state = state.copyWith(
+        sortCriteria: sortPrefs['criteria'] as SortCriteria,
+        sortOrder: sortPrefs['order'] as SortOrder,
+        selectedFilter: filterPrefs['filter'] as GameFilter,
+        selectedPlatform: filterPrefs['platform'] as PlatformType?,
+      );
+    } catch (e) {
+      // Se houver erro ao carregar preferências, mantém valores padrão
+      // Não faz nada, o estado já tem valores padrão
+    }
+  }
+
   Future<void> loadGames(String steamId) async {
     if (state.isLoading) return;
+
+    // Carrega preferências salvas antes de carregar os jogos
+    await loadSavedPreferences();
 
     state = state.copyWith(isLoading: true, errorMessage: null);
 
@@ -34,10 +57,12 @@ class GamesNotifier extends StateNotifier<GamesState> {
       (games) async {
         final filteredGames = await _applyFiltersAndSearch(games);
         final sortedGames = await _applySorting(filteredGames);
+        final availablePlatforms = _extractAvailablePlatforms(games);
         state = state.copyWith(
           isLoading: false,
           allGames: games,
           displayGames: sortedGames,
+          availablePlatforms: availablePlatforms,
           errorMessage: null,
         );
       },
@@ -59,10 +84,12 @@ class GamesNotifier extends StateNotifier<GamesState> {
       (games) async {
         final filteredGames = await _applyFiltersAndSearch(games);
         final sortedGames = await _applySorting(filteredGames);
+        final availablePlatforms = _extractAvailablePlatforms(games);
         state = state.copyWith(
           isRefreshing: false,
           allGames: games,
           displayGames: sortedGames,
+          availablePlatforms: availablePlatforms,
           errorMessage: null,
         );
       },
@@ -74,8 +101,24 @@ class GamesNotifier extends StateNotifier<GamesState> {
   }
 
   void setFilter(GameFilter filter) {
-    state = state.copyWith(selectedFilter: filter);
+    state = state.copyWith(selectedFilter: filter, selectedPlatform: null);
     _updateDisplayGames();
+    _saveFilterPreferences();
+  }
+
+  void setPlatformFilter(PlatformType platformType) {
+    state = state.copyWith(
+      selectedFilter: GameFilter.all,
+      selectedPlatform: platformType,
+    );
+    _updateDisplayGames();
+    _saveFilterPreferences();
+  }
+
+  void clearPlatformFilter() {
+    state = state.copyWith(selectedPlatform: null);
+    _updateDisplayGames();
+    _saveFilterPreferences();
   }
 
   void setViewMode(GameViewMode viewMode) {
@@ -97,11 +140,13 @@ class GamesNotifier extends StateNotifier<GamesState> {
   void setSortCriteria(SortCriteria criteria) {
     state = state.copyWith(sortCriteria: criteria);
     _updateDisplayGames();
+    _saveSortPreferences();
   }
 
   void setSortOrder(SortOrder order) {
     state = state.copyWith(sortOrder: order);
     _updateDisplayGames();
+    _saveSortPreferences();
   }
 
   void toggleSortOrder() {
@@ -134,19 +179,6 @@ class GamesNotifier extends StateNotifier<GamesState> {
       case GameFilter.all:
         // No additional filtering needed
         break;
-      case GameFilter.pc:
-        filtered = filtered
-            .where((game) => game.platforms.contains(GamePlatform.pc))
-            .toList();
-        break;
-      case GameFilter.console:
-        filtered = filtered
-            .where(
-              (game) =>
-                  game.platforms.any((platform) => platform != GamePlatform.pc),
-            )
-            .toList();
-        break;
       case GameFilter.favorites:
         // Busca favoritos do cache local
         final favoriteIds = await GamesFavoritesService.getFavorites();
@@ -172,6 +204,13 @@ class GamesNotifier extends StateNotifier<GamesState> {
             )
             .toList();
         break;
+    }
+
+    // Apply platform filter
+    if (state.selectedPlatform != null) {
+      filtered = filtered
+          .where((game) => game.sourcePlatform == state.selectedPlatform)
+          .toList();
     }
 
     // Apply search
@@ -201,5 +240,37 @@ class GamesNotifier extends StateNotifier<GamesState> {
       // Em caso de erro na ordenação, retorna os jogos sem ordenar
       return games;
     }, (sortedGames) => sortedGames);
+  }
+
+  List<PlatformType> _extractAvailablePlatforms(List<Game> games) {
+    final platformsSet = <PlatformType>{};
+
+    for (final game in games) {
+      if (game.sourcePlatform != null) {
+        platformsSet.add(game.sourcePlatform!);
+      }
+    }
+
+    return platformsSet.toList()..sort((a, b) => a.name.compareTo(b.name));
+  }
+
+  /// Salva as preferências de ordenação
+  void _saveSortPreferences() {
+    GamesPreferencesService.saveSortPreferences(
+      criteria: state.sortCriteria,
+      order: state.sortOrder,
+    ).catchError((error) {
+      // Ignora erros ao salvar preferências para não quebrar a funcionalidade
+    });
+  }
+
+  /// Salva as preferências de filtros
+  void _saveFilterPreferences() {
+    GamesPreferencesService.saveFilterPreferences(
+      filter: state.selectedFilter,
+      platform: state.selectedPlatform,
+    ).catchError((error) {
+      // Ignora erros ao salvar preferências para não quebrar a funcionalidade
+    });
   }
 }

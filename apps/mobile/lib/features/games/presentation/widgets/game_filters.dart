@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../providers/games_providers.dart';
 import '../states/games_state.dart';
+import '../../../onboarding/domain/entities/gaming_platform.dart';
 
 class GameFilters extends ConsumerWidget {
   const GameFilters({super.key});
@@ -9,6 +10,9 @@ class GameFilters extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final currentFilter = ref.watch(currentGameFilterProvider);
+    final gamesState = ref.watch(gamesNotifierProvider);
+    final selectedPlatform = gamesState.selectedPlatform;
+    final availablePlatforms = gamesState.availablePlatforms;
 
     return SingleChildScrollView(
       scrollDirection: Axis.horizontal,
@@ -21,26 +25,26 @@ class GameFilters extends ConsumerWidget {
             GameFilter.all,
             'All',
             Icons.apps,
-            currentFilter == GameFilter.all,
+            currentFilter == GameFilter.all && selectedPlatform == null,
           ),
-          const SizedBox(width: 12),
-          _buildFilterChip(
-            context,
-            ref,
-            GameFilter.pc,
-            'PC',
-            Icons.desktop_windows,
-            currentFilter == GameFilter.pc,
-          ),
-          const SizedBox(width: 12),
-          _buildFilterChip(
-            context,
-            ref,
-            GameFilter.console,
-            'Console',
-            Icons.sports_esports,
-            currentFilter == GameFilter.console,
-          ),
+
+          // Plataformas dinâmicas
+          ...availablePlatforms
+              .map(
+                (platform) => [
+                  const SizedBox(width: 12),
+                  _buildPlatformChip(
+                    context,
+                    ref,
+                    platform,
+                    platform.name,
+                    _getPlatformIcon(platform),
+                    selectedPlatform == platform,
+                  ),
+                ],
+              )
+              .expand((element) => element),
+
           const SizedBox(width: 12),
           _buildFilterChip(
             context,
@@ -152,5 +156,83 @@ class GameFilters extends ConsumerWidget {
         ),
       ),
     );
+  }
+
+  Widget _buildPlatformChip(
+    BuildContext context,
+    WidgetRef ref,
+    PlatformType platformType,
+    String label,
+    IconData icon,
+    bool isSelected,
+  ) {
+    return GestureDetector(
+      onTap: () {
+        if (isSelected) {
+          ref.read(gamesNotifierProvider.notifier).clearPlatformFilter();
+        } else {
+          ref
+              .read(gamesNotifierProvider.notifier)
+              .setPlatformFilter(platformType);
+        }
+      },
+      child: Container(
+        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+        decoration: BoxDecoration(
+          color: isSelected
+              ? const Color(0xFFe225f4).withOpacity(0.2)
+              : const Color(0xFF2d1b2e),
+          borderRadius: BorderRadius.circular(20),
+          border: Border.all(
+            color: isSelected ? const Color(0xFFe225f4) : Colors.transparent,
+            width: 1,
+          ),
+        ),
+        child: Row(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Icon(
+              icon,
+              size: 16,
+              color: isSelected
+                  ? const Color(0xFFe225f4)
+                  : Colors.grey.shade400,
+            ),
+            const SizedBox(width: 6),
+            Text(
+              label,
+              style: TextStyle(
+                fontSize: 12,
+                fontWeight: FontWeight.w500,
+                color: isSelected
+                    ? const Color(0xFFe225f4)
+                    : Colors.grey.shade400,
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  IconData _getPlatformIcon(PlatformType platform) {
+    switch (platform) {
+      case PlatformType.steam:
+        return Icons.sports_esports;
+      case PlatformType.xbox:
+        return Icons.gamepad;
+      case PlatformType.playstation:
+        return Icons.videogame_asset;
+      case PlatformType.epicGames:
+        return Icons.rocket_launch;
+      case PlatformType.gog:
+        return Icons.store;
+      case PlatformType.nintendo:
+        return Icons.gamepad;
+      case PlatformType.origin:
+        return Icons.sports_esports;
+      case PlatformType.uplay:
+        return Icons.shield;
+    }
   }
 }

@@ -12,6 +12,7 @@ import '../../domain/usecases/filter_games.dart';
 import '../../domain/usecases/sort_games.dart';
 import '../notifiers/games_notifier.dart';
 import '../states/games_state.dart';
+import '../../../onboarding/domain/entities/gaming_platform.dart';
 
 // Data Sources
 final gamesRemoteDataSourceProvider = Provider<GamesRemoteDataSource>((ref) {
@@ -102,6 +103,16 @@ final gamesErrorMessageProvider = Provider<String?>((ref) {
 final currentGameFilterProvider = Provider<GameFilter>((ref) {
   final state = ref.watch(gamesNotifierProvider);
   return state.selectedFilter;
+});
+
+final selectedPlatformProvider = Provider<PlatformType?>((ref) {
+  final state = ref.watch(gamesNotifierProvider);
+  return state.selectedPlatform;
+});
+
+final availablePlatformsProvider = Provider<List<PlatformType>>((ref) {
+  final state = ref.watch(gamesNotifierProvider);
+  return state.availablePlatforms;
 });
 
 final currentViewModeProvider = Provider<GameViewMode>((ref) {

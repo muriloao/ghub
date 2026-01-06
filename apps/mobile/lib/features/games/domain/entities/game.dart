@@ -1,4 +1,5 @@
 import 'package:equatable/equatable.dart';
+import '../../../onboarding/domain/entities/gaming_platform.dart';
 
 enum GameStatus {
   owned,
@@ -32,6 +33,8 @@ class Game extends Equatable {
   final String? publisher;
   final double? rating;
   final String? description;
+  final PlatformType?
+  sourcePlatform; // Plataforma de origem (Steam, Epic, etc.)
 
   const Game({
     required this.id,
@@ -54,6 +57,7 @@ class Game extends Equatable {
     this.publisher,
     this.rating,
     this.description,
+    this.sourcePlatform,
   });
 
   bool get hasBeenPlayed => playtimeForever != null && playtimeForever! > 0;
@@ -122,5 +126,6 @@ class Game extends Equatable {
     publisher,
     rating,
     description,
+    sourcePlatform,
   ];
 }
