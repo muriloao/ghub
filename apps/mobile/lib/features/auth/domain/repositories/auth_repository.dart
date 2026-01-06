@@ -17,6 +17,8 @@ abstract class AuthRepository {
 
   Future<void> loginWithSteam(BuildContext context);
 
+  Future<void> loginWithEpic(BuildContext context);
+
   Future<Either<Failure, void>> logout();
 
   Future<Either<Failure, User?>> getCurrentUser();

@@ -26,15 +26,15 @@ class SocialLoginButtons extends ConsumerWidget {
 
         const SizedBox(width: 24),
 
-        // Apple Login Button (placeholder)
+        // Epic Games Login Button
         _SocialButton(
-          icon: Icons.apple_outlined,
-          label: 'Apple',
-          onTap: () {
-            ScaffoldMessenger.of(context).showSnackBar(
-              const SnackBar(content: Text('Login com Apple em breve!')),
-            );
-          },
+          icon: Icons.gamepad_outlined,
+          label: 'Epic',
+          onTap: isLoading
+              ? null
+              : () => ref
+                    .read(authNotifierProvider.notifier)
+                    .loginWithEpic(context),
         ),
 
         const SizedBox(width: 24),

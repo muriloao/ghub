@@ -7,6 +7,7 @@ import '../../domain/entities/user.dart';
 import '../../domain/usecases/login_with_credentials.dart';
 import '../../domain/usecases/login_with_google.dart';
 import '../../domain/usecases/login_with_steam.dart';
+import '../../domain/usecases/login_with_epic.dart';
 import '../../domain/usecases/logout.dart';
 import '../../domain/usecases/get_current_user.dart';
 import '../../domain/usecases/sign_up.dart';
@@ -55,6 +56,7 @@ class AuthNotifier extends StateNotifier<AuthState> {
   final LoginWithCredentials _loginWithCredentials;
   final LoginWithGoogle _loginWithGoogle;
   final LoginWithSteam _loginWithSteam;
+  final LoginWithEpic _loginWithEpic;
   final SignUp _signUp;
   final Logout _logout;
   final GetCurrentUser _getCurrentUser;
@@ -63,12 +65,14 @@ class AuthNotifier extends StateNotifier<AuthState> {
     required LoginWithCredentials loginWithCredentials,
     required LoginWithGoogle loginWithGoogle,
     required LoginWithSteam loginWithSteam,
+    required LoginWithEpic loginWithEpic,
     required SignUp signUp,
     required Logout logout,
     required GetCurrentUser getCurrentUser,
   }) : _loginWithCredentials = loginWithCredentials,
        _loginWithGoogle = loginWithGoogle,
        _loginWithSteam = loginWithSteam,
+       _loginWithEpic = loginWithEpic,
        _signUp = signUp,
        _logout = logout,
        _getCurrentUser = getCurrentUser,
@@ -151,6 +155,15 @@ class AuthNotifier extends StateNotifier<AuthState> {
     }
   }
 
+  Future<void> loginWithEpic(BuildContext context) async {
+    try {
+      state = const AuthLoading();
+      await _loginWithEpic(context);
+    } catch (e) {
+      state = AuthError(e.toString());
+    }
+  }
+
   /// Login direto usando um AuthResult já obtido (usado no callback Steam)
   Future<void> loginWithAuthResult(
     AuthResult authResult, {
@@ -222,6 +235,7 @@ final authNotifierProvider = StateNotifierProvider<AuthNotifier, AuthState>((
     loginWithCredentials: ref.watch(loginWithCredentialsProvider),
     loginWithGoogle: ref.watch(loginWithGoogleProvider),
     loginWithSteam: ref.watch(loginWithSteamProvider),
+    loginWithEpic: ref.watch(loginWithEpicProvider),
     signUp: ref.watch(signUpProvider),
     logout: ref.watch(logoutProvider),
     getCurrentUser: ref.watch(getCurrentUserProvider),

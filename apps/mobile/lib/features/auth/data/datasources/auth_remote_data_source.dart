@@ -5,6 +5,7 @@ import '../../../../core/error/exceptions.dart';
 import '../models/auth_result_model.dart';
 import '../models/signup_request_model.dart';
 import '../services/steam_auth_service.dart';
+import '../services/epic_auth_service.dart';
 
 abstract class AuthRemoteDataSource {
   Future<AuthResultModel> signUp(SignUpRequestModel request);
@@ -18,6 +19,8 @@ abstract class AuthRemoteDataSource {
 
   Future<void> loginWithSteam(BuildContext context);
 
+  Future<void> loginWithEpic(BuildContext context);
+
   Future<void> logout();
 }
 
@@ -25,9 +28,11 @@ class AuthRemoteDataSourceImpl implements AuthRemoteDataSource {
   final Dio dio;
   final GoogleSignIn googleSignIn;
   late final SteamAuthService steamAuthService;
+  late final EpicAuthService epicAuthService;
 
   AuthRemoteDataSourceImpl({required this.dio, required this.googleSignIn}) {
     steamAuthService = SteamAuthService(dio);
+    epicAuthService = EpicAuthService(dio);
   }
 
   @override
@@ -138,6 +143,16 @@ class AuthRemoteDataSourceImpl implements AuthRemoteDataSource {
   Future<void> loginWithSteam(BuildContext context) async {
     try {
       await steamAuthService.authenticateWithSteam(context);
+    } catch (e) {
+      if (e is AuthenticationException) rethrow;
+      throw ServerException(message: e.toString());
+    }
+  }
+
+  @override
+  Future<void> loginWithEpic(BuildContext context) async {
+    try {
+      await epicAuthService.authenticateWithEpic(context);
     } catch (e) {
       if (e is AuthenticationException) rethrow;
       throw ServerException(message: e.toString());

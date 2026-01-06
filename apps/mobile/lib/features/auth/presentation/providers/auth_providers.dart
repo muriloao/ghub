@@ -8,10 +8,12 @@ import '../../data/datasources/auth_local_data_source.dart';
 import '../../data/datasources/auth_remote_data_source.dart';
 import '../../data/repositories/auth_repository_impl.dart';
 import '../../data/services/steam_auth_service.dart';
+import '../../data/services/epic_auth_service.dart';
 import '../../domain/repositories/auth_repository.dart';
 import '../../domain/usecases/login_with_credentials.dart';
 import '../../domain/usecases/login_with_google.dart';
 import '../../domain/usecases/login_with_steam.dart';
+import '../../domain/usecases/login_with_epic.dart';
 import '../../domain/usecases/logout.dart';
 import '../../domain/usecases/get_current_user.dart';
 import '../../domain/usecases/sign_up.dart';
@@ -32,6 +34,11 @@ final googleSignInProvider = Provider<GoogleSignIn>((ref) {
 // Steam Auth Service
 final steamAuthServiceProvider = Provider<SteamAuthService>((ref) {
   return SteamAuthService(ref.watch(dioProvider));
+});
+
+// Epic Games Auth Service
+final epicAuthServiceProvider = Provider<EpicAuthService>((ref) {
+  return EpicAuthService(ref.watch(dioProvider));
 });
 
 // Data sources
@@ -68,6 +75,10 @@ final loginWithGoogleProvider = Provider<LoginWithGoogle>((ref) {
 
 final loginWithSteamProvider = Provider<LoginWithSteam>((ref) {
   return LoginWithSteam(ref.watch(authRepositoryProvider));
+});
+
+final loginWithEpicProvider = Provider<LoginWithEpic>((ref) {
+  return LoginWithEpic(ref.watch(authRepositoryProvider));
 });
 
 final logoutProvider = Provider<Logout>((ref) {

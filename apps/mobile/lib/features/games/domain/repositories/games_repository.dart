@@ -3,8 +3,17 @@ import '../../../../core/error/failure.dart';
 import '../entities/game.dart';
 
 abstract class GamesRepository {
-  /// Busca todos os jogos do usuário logado
+  /// Busca todos os jogos do usuário logado (Steam)
   Future<Either<Failure, List<Game>>> getUserGames(String steamId);
+
+  /// Busca jogos Epic Games do usuário
+  Future<Either<Failure, List<Game>>> getEpicGames(String accessToken);
+
+  /// Busca todos os jogos de todas as plataformas conectadas
+  Future<Either<Failure, List<Game>>> getAllUserGames({
+    String? steamId,
+    String? epicAccessToken,
+  });
 
   /// Busca jogos com filtro de pesquisa
   Future<Either<Failure, List<Game>>> searchGames(String steamId, String query);

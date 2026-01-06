@@ -13,6 +13,7 @@ import '../../features/integrations/presentation/pages/integrations_page.dart';
 import '../../features/profile/presentation/pages/profile_page.dart';
 import '../constants/app_constants.dart';
 import '../../features/auth/presentation/pages/steam_callback_page.dart';
+import '../../features/auth/presentation/pages/epic_callback_page.dart';
 import '../../features/integrations/presentation/pages/xbox_callback_page.dart';
 
 class GoRouterObserver extends NavigatorObserver {
@@ -103,6 +104,14 @@ final routerProvider = Provider<GoRouter>((ref) {
         builder: (context, state) {
           final queryParams = state.uri.queryParameters;
           return SteamCallbackPage(queryParams: queryParams);
+        },
+      ),
+      GoRoute(
+        path: AppConstants.epicCallbackRoute,
+        name: 'epic-callback',
+        builder: (context, state) {
+          final queryParams = state.uri.queryParameters;
+          return EpicCallbackPage(queryParams: queryParams);
         },
       ),
       GoRoute(
