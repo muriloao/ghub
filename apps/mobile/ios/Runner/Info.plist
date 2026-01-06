@@ -53,6 +53,7 @@
 				<key>CFBundleURLSchemes</key>
 				<array>
 					<string>ghub</string>
+					<string>com.googleusercontent.apps.1073059839672-e117bf3ulttdlu9q92a2bng0j1qvklt8</string>
 				</array>
 			</dict>
 		</array>

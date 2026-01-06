@@ -95,6 +95,13 @@ flutter analyze
 
 ## 🐛 Troubleshooting
 
+### Para compilar
+```bash
+--dart-define-from-file=.env
+```
+
+--dart-define-from-file=.env
+
 ### Erro: "Some Android licenses not accepted"
 ```bash
 flutter doctor --android-licenses
