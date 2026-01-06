@@ -29,7 +29,7 @@ dart run build_runner build --delete-conflicting-outputs
 
 1. Acesse o [Firebase Console](https://console.firebase.google.com/)
 2. Crie um novo projeto chamado "GHub"
-3. Adicione um aplicativo Android com o package name: `com.example.mobile`
+3. Adicione um aplicativo Android com o package name: `br.com.muriloao.ghub`
 4. Baixe o arquivo `google-services.json`
 5. Coloque o arquivo em: `android/app/google-services.json`
 
@@ -59,7 +59,7 @@ Copie o SHA1 e adicione no Firebase Console.
 #### Para iOS:
 
 1. No Firebase Console, adicione um aplicativo iOS
-2. Use o Bundle ID: `com.example.mobile`
+2. Use o Bundle ID: `br.com.muriloao.ghub`
 3. Baixe o `GoogleService-Info.plist`
 4. Abra `ios/Runner.xcworkspace` no Xcode
 5. Arraste o arquivo `GoogleService-Info.plist` para o projeto

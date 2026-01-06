@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'dart:io';
 
 import '../../../../core/theme/app_theme.dart';
 import '../providers/auth_notifier.dart';
@@ -12,60 +13,87 @@ class SocialLoginButtons extends ConsumerWidget {
     final authState = ref.watch(authNotifierProvider);
     final isLoading = authState is AuthLoading;
 
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.center,
-      children: [
-        // Google Login Button
-        _SocialButton(
-          icon: Icons.email_outlined,
-          label: 'Google',
-          onTap: isLoading
-              ? null
-              : () => ref.read(authNotifierProvider.notifier).loginWithGoogle(),
-        ),
+    // Determina qual botão mostrar baseado na plataforma
+    final isAndroid = Platform.isAndroid;
+    final isIOS = Platform.isIOS;
 
-        const SizedBox(width: 24),
+    Widget loginButton;
 
-        // Epic Games Login Button
-        _SocialButton(
-          icon: Icons.gamepad_outlined,
-          label: 'Epic',
-          onTap: isLoading
-              ? null
-              : () => ref
-                    .read(authNotifierProvider.notifier)
-                    .loginWithEpic(context),
-        ),
+    if (isAndroid) {
+      // Google Login para Android
+      loginButton = _PlatformButton(
+        icon: Icons.g_mobiledata,
+        label: 'Continuar com Google',
+        backgroundColor: Colors.white,
+        textColor: Colors.black87,
+        iconColor: Colors.red,
+        onTap: isLoading
+            ? null
+            : () => ref.read(authNotifierProvider.notifier).loginWithGoogle(),
+      );
+    } else if (isIOS) {
+      // Apple Login para iOS
+      loginButton = _PlatformButton(
+        icon: Icons.apple,
+        label: 'Continuar com Apple',
+        backgroundColor: Colors.black,
+        textColor: Colors.white,
+        iconColor: Colors.white,
+        onTap: isLoading
+            ? null
+            : () {
+                // TODO: Implementar login Apple
+                ScaffoldMessenger.of(context).showSnackBar(
+                  const SnackBar(
+                    content: Text(
+                      'Login com Apple será implementado em breve!',
+                    ),
+                  ),
+                );
+              },
+      );
+    } else {
+      // Fallback para outras plataformas (web, desktop)
+      loginButton = _PlatformButton(
+        icon: Icons.g_mobiledata,
+        label: 'Continuar com Google',
+        backgroundColor: Colors.white,
+        textColor: Colors.black87,
+        iconColor: Colors.red,
+        onTap: isLoading
+            ? null
+            : () => ref.read(authNotifierProvider.notifier).loginWithGoogle(),
+      );
+    }
 
-        const SizedBox(width: 24),
-
-        // Steam Login Button
-        _SocialButton(
-          icon: Icons.sports_esports_outlined,
-          label: 'Steam',
-          onTap: isLoading
-              ? null
-              : () => ref
-                    .read(authNotifierProvider.notifier)
-                    .loginWithSteam(context),
-        ),
-      ],
+    return Center(
+      child: SizedBox(width: double.infinity, child: loginButton),
     );
   }
 }
 
-class _SocialButton extends StatefulWidget {
+class _PlatformButton extends StatefulWidget {
   final IconData icon;
   final String label;
+  final Color backgroundColor;
+  final Color textColor;
+  final Color iconColor;
   final VoidCallback? onTap;
 
-  const _SocialButton({required this.icon, required this.label, this.onTap});
+  const _PlatformButton({
+    required this.icon,
+    required this.label,
+    required this.backgroundColor,
+    required this.textColor,
+    required this.iconColor,
+    this.onTap,
+  });
 
   @override
-  State<_SocialButton> createState() => _SocialButtonState();
+  State<_PlatformButton> createState() => _PlatformButtonState();
 }
 
-class _SocialButtonState extends State<_SocialButton>
+class _PlatformButtonState extends State<_PlatformButton>
     with SingleTickerProviderStateMixin {
   late AnimationController _animationController;
   late Animation<double> _scaleAnimation;
@@ -77,7 +105,7 @@ class _SocialButtonState extends State<_SocialButton>
       duration: const Duration(milliseconds: 100),
       vsync: this,
     );
-    _scaleAnimation = Tween<double>(begin: 1.0, end: 0.95).animate(
+    _scaleAnimation = Tween<double>(begin: 1.0, end: 0.98).animate(
       CurvedAnimation(parent: _animationController, curve: Curves.easeInOut),
     );
   }
@@ -107,50 +135,32 @@ class _SocialButtonState extends State<_SocialButton>
           return Transform.scale(
             scale: _scaleAnimation.value,
             child: Container(
-              width: 64,
-              height: 64,
+              height: 56,
               decoration: BoxDecoration(
-                color: Theme.of(context).brightness == Brightness.dark
-                    ? AppTheme.surfaceDark
-                    : Colors.white,
-                borderRadius: BorderRadius.circular(16),
-                border: Border.all(
-                  color: Theme.of(context).brightness == Brightness.dark
-                      ? Colors.transparent
-                      : Colors.grey.shade200,
-                  width: 1,
-                ),
+                color: widget.backgroundColor,
+                borderRadius: BorderRadius.circular(12),
+                border: widget.backgroundColor == Colors.white
+                    ? Border.all(color: Colors.grey.shade300, width: 1)
+                    : null,
                 boxShadow: [
                   BoxShadow(
-                    color: Colors.black.withOpacity(0.08),
-                    blurRadius: 10,
+                    color: Colors.black.withOpacity(0.1),
+                    blurRadius: 8,
                     offset: const Offset(0, 2),
                   ),
                 ],
               ),
-              child: Column(
+              child: Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  Icon(
-                    widget.icon,
-                    size: 24,
-                    color: widget.onTap != null
-                        ? (Theme.of(context).brightness == Brightness.dark
-                              ? Colors.white
-                              : Colors.grey.shade700)
-                        : Colors.grey.shade400,
-                  ),
-                  const SizedBox(height: 4),
+                  Icon(widget.icon, color: widget.iconColor, size: 24),
+                  const SizedBox(width: 12),
                   Text(
                     widget.label,
                     style: TextStyle(
-                      fontSize: 10,
+                      color: widget.textColor,
+                      fontSize: 16,
                       fontWeight: FontWeight.w500,
-                      color: widget.onTap != null
-                          ? (Theme.of(context).brightness == Brightness.dark
-                                ? Colors.white.withOpacity(0.7)
-                                : Colors.grey.shade600)
-                          : Colors.grey.shade400,
                     ),
                   ),
                 ],

@@ -5,7 +5,6 @@ import 'package:go_router/go_router.dart';
 import '../../../../core/constants/app_constants.dart';
 import '../../../../core/theme/app_theme.dart';
 import '../providers/auth_notifier.dart';
-import '../widgets/login_form.dart';
 import '../widgets/social_login_buttons.dart';
 
 class LoginPage extends ConsumerWidget {
@@ -65,25 +64,15 @@ class LoginPage extends ConsumerWidget {
                       // Title and subtitle
                       _buildTitleSection(context),
 
-                      const SizedBox(height: 40),
+                      const SizedBox(height: 80),
 
-                      // Login Form
-                      LoginForm(isLoading: authState is AuthLoading),
-
-                      const SizedBox(height: 32),
-
-                      // Divider
-                      _buildDivider(context),
-
-                      const SizedBox(height: 32),
-
-                      // Social Login Buttons
+                      // Platform Login Button
                       const SocialLoginButtons(),
 
-                      const SizedBox(height: 40),
+                      const SizedBox(height: 80),
 
-                      // Sign up link
-                      _buildSignUpLink(context),
+                      // Terms and Privacy
+                      _buildTermsAndPrivacy(context),
 
                       const SizedBox(height: 48),
                     ],
@@ -123,57 +112,17 @@ class LoginPage extends ConsumerWidget {
     );
   }
 
-  Widget _buildDivider(BuildContext context) {
-    return Row(
-      children: [
-        Expanded(
-          child: Container(
-            height: 1,
-            color: Theme.of(context).dividerColor.withOpacity(0.3),
-          ),
+  Widget _buildTermsAndPrivacy(BuildContext context) {
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 16),
+      child: Text(
+        'Ao continuar, você concorda com nossos Termos de Uso e Política de Privacidade',
+        style: Theme.of(context).textTheme.bodySmall?.copyWith(
+          color: Theme.of(context).brightness == Brightness.dark
+              ? AppTheme.textSecondaryDark
+              : AppTheme.textSecondaryLight,
         ),
-        Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 16.0),
-          child: Text(
-            'Ou continue com',
-            style: Theme.of(context).textTheme.bodySmall?.copyWith(
-              color: Theme.of(context).brightness == Brightness.dark
-                  ? Colors.white.withOpacity(0.4)
-                  : Colors.grey.shade500,
-            ),
-          ),
-        ),
-        Expanded(
-          child: Container(
-            height: 1,
-            color: Theme.of(context).dividerColor.withOpacity(0.3),
-          ),
-        ),
-      ],
-    );
-  }
-
-  Widget _buildSignUpLink(BuildContext context) {
-    return RichText(
-      textAlign: TextAlign.center,
-      text: TextSpan(
-        style: Theme.of(context).textTheme.bodyMedium,
-        children: [
-          const TextSpan(text: 'Não tem uma conta? '),
-          WidgetSpan(
-            child: GestureDetector(
-              onTap: () => context.go(AppConstants.signUpRoute),
-              child: Text(
-                'Cadastre-se',
-                style: TextStyle(
-                  color: AppTheme.primaryColor,
-                  fontWeight: FontWeight.bold,
-                  decoration: TextDecoration.underline,
-                ),
-              ),
-            ),
-          ),
-        ],
+        textAlign: TextAlign.center,
       ),
     );
   }
