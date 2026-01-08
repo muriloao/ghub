@@ -116,16 +116,8 @@ class AuthRemoteDataSourceImpl implements AuthRemoteDataSource {
       final GoogleSignInAuthentication googleAuth =
           await googleUser.authentication;
 
-      final response = await dio.post(
-        '/auth/google',
-        data: {
-          'accessToken': googleAuth.accessToken,
-          'idToken': googleAuth.idToken,
-        },
-      );
-
-      if (response.statusCode == 200) {
-        return AuthResultModel.fromJson(response.data);
+      if (googleAuth.idToken != null) {
+        return AuthResultModel.fromJson(googleAuth as dynamic);
       } else {
         throw ServerException(message: 'Login com Google failed');
       }

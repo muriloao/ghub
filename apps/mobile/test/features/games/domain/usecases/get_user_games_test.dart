@@ -6,7 +6,7 @@ import 'package:dartz/dartz.dart';
 import 'package:ghub_mobile/features/games/domain/usecases/get_user_games.dart';
 import 'package:ghub_mobile/features/games/domain/repositories/games_repository.dart';
 import 'package:ghub_mobile/features/games/domain/entities/game.dart';
-import 'package:ghub_mobile/core/error/failures.dart';
+import 'package:ghub_mobile/core/error/failure.dart';
 
 @GenerateMocks([GamesRepository])
 import 'get_user_games_test.mocks.dart';
@@ -40,8 +40,9 @@ void main() {
 
     test('should get user games from repository', () async {
       // arrange
-      when(mockGamesRepository.getUserGames(any))
-          .thenAnswer((_) async => Right(gamesList));
+      when(
+        mockGamesRepository.getUserGames(any),
+      ).thenAnswer((_) async => Right(gamesList));
 
       // act
       final result = await usecase(GetUserGamesParams(steamId: steamId));
@@ -54,8 +55,9 @@ void main() {
 
     test('should return ServerFailure when repository fails', () async {
       // arrange
-      when(mockGamesRepository.getUserGames(any))
-          .thenAnswer((_) async => const Left(ServerFailure(message: 'Server error')));
+      when(mockGamesRepository.getUserGames(any)).thenAnswer(
+        (_) async => const Left(ServerFailure(message: 'Server error')),
+      );
 
       // act
       final result = await usecase(GetUserGamesParams(steamId: steamId));
@@ -67,21 +69,27 @@ void main() {
 
     test('should return NetworkFailure when network error occurs', () async {
       // arrange
-      when(mockGamesRepository.getUserGames(any))
-          .thenAnswer((_) async => const Left(NetworkFailure(message: 'No internet connection')));
+      when(mockGamesRepository.getUserGames(any)).thenAnswer(
+        (_) async =>
+            const Left(NetworkFailure(message: 'No internet connection')),
+      );
 
       // act
       final result = await usecase(GetUserGamesParams(steamId: steamId));
 
       // assert
-      expect(result, const Left(NetworkFailure(message: 'No internet connection')));
+      expect(
+        result,
+        const Left(NetworkFailure(message: 'No internet connection')),
+      );
       verify(mockGamesRepository.getUserGames(steamId));
     });
 
     test('should return empty list when user has no games', () async {
       // arrange
-      when(mockGamesRepository.getUserGames(any))
-          .thenAnswer((_) async => const Right([]));
+      when(
+        mockGamesRepository.getUserGames(any),
+      ).thenAnswer((_) async => const Right([]));
 
       // act
       final result = await usecase(GetUserGamesParams(steamId: steamId));

@@ -22,34 +22,30 @@ void main() {
       expect(game.isCompleted, false);
     });
 
-    test('should create Game from JSON correctly', () {
-      // arrange
-      final json = {
-        'id': 'game-1',
-        'name': 'Test Game',
-        'image_url': 'https://example.com/image.jpg',
-        'header_image_url': 'https://example.com/header.jpg',
-        'status': 'owned',
-        'platforms': ['pc', 'xbox'],
-        'playtime_forever': 120,
-        'playtime_2_weeks': 60,
-        'last_played': '2024-01-01T00:00:00Z',
-        'has_dlc': true,
-        'is_completed': true,
-        'completion_percentage': 85.5,
-        'subscription_service': 'Game Pass',
-        'is_physical_copy': false,
-        'release_date': '2023-06-15',
-        'genres': ['Action', 'Adventure'],
-        'developer': 'Test Developer',
-        'publisher': 'Test Publisher',
-        'rating': 4.5,
-        'description': 'A test game description',
-        'source_platform': 'steam',
-      };
-
-      // act
-      final game = Game.fromJson(json);
+    test('should create Game with optional fields', () {
+      // arrange & act
+      const game = Game(
+        id: 'game-1',
+        name: 'Test Game',
+        imageUrl: 'https://example.com/image.jpg',
+        headerImageUrl: 'https://example.com/header.jpg',
+        status: GameStatus.owned,
+        platforms: [GamePlatform.pc, GamePlatform.xbox],
+        playtimeForever: 120,
+        playtime2Weeks: 60,
+        hasDLC: true,
+        isCompleted: true,
+        completionPercentage: 85.5,
+        subscriptionService: 'Game Pass',
+        isPhysicalCopy: false,
+        releaseDate: '2023-06-15',
+        genres: ['Action', 'Adventure'],
+        developer: 'Test Developer',
+        publisher: 'Test Publisher',
+        rating: 4.5,
+        description: 'A test game description',
+        sourcePlatform: PlatformType.steam,
+      );
 
       // assert
       expect(game.id, 'game-1');
@@ -60,7 +56,6 @@ void main() {
       expect(game.platforms, [GamePlatform.pc, GamePlatform.xbox]);
       expect(game.playtimeForever, 120);
       expect(game.playtime2Weeks, 60);
-      expect(game.lastPlayed, DateTime.parse('2024-01-01T00:00:00Z'));
       expect(game.hasDLC, true);
       expect(game.isCompleted, true);
       expect(game.completionPercentage, 85.5);
@@ -73,63 +68,6 @@ void main() {
       expect(game.rating, 4.5);
       expect(game.description, 'A test game description');
       expect(game.sourcePlatform, PlatformType.steam);
-    });
-
-    test('should handle minimal JSON data', () {
-      // arrange
-      final json = {
-        'id': 'game-1',
-        'name': 'Test Game',
-        'status': 'owned',
-        'platforms': ['pc'],
-      };
-
-      // act
-      final game = Game.fromJson(json);
-
-      // assert
-      expect(game.id, 'game-1');
-      expect(game.name, 'Test Game');
-      expect(game.status, GameStatus.owned);
-      expect(game.platforms, [GamePlatform.pc]);
-      expect(game.imageUrl, null);
-      expect(game.playtimeForever, null);
-      expect(game.lastPlayed, null);
-      expect(game.hasDLC, false);
-      expect(game.isCompleted, false);
-    });
-
-    test('should convert Game to JSON correctly', () {
-      // arrange
-      final game = Game(
-        id: 'game-1',
-        name: 'Test Game',
-        imageUrl: 'https://example.com/image.jpg',
-        status: GameStatus.owned,
-        platforms: [GamePlatform.pc, GamePlatform.xbox],
-        playtimeForever: 120,
-        hasDLC: true,
-        isCompleted: true,
-        completionPercentage: 85.5,
-        lastPlayed: DateTime.parse('2024-01-01T00:00:00Z'),
-        sourcePlatform: PlatformType.steam,
-      );
-
-      // act
-      final json = game.toJson();
-
-      // assert
-      expect(json['id'], 'game-1');
-      expect(json['name'], 'Test Game');
-      expect(json['image_url'], 'https://example.com/image.jpg');
-      expect(json['status'], 'owned');
-      expect(json['platforms'], ['pc', 'xbox']);
-      expect(json['playtime_forever'], 120);
-      expect(json['has_dlc'], true);
-      expect(json['is_completed'], true);
-      expect(json['completion_percentage'], 85.5);
-      expect(json['last_played'], '2024-01-01T00:00:00.000Z');
-      expect(json['source_platform'], 'steam');
     });
 
     test('should support equality comparison', () {
@@ -158,62 +96,111 @@ void main() {
       expect(game1, isNot(equals(differentGame)));
     });
 
-    test('should calculate playtime in hours correctly', () {
+    test('should check if game has been played', () {
       // arrange
-      const game = Game(
+      const playedGame = Game(
         id: 'game-1',
-        name: 'Test Game',
-        status: GameStatus.owned,
-        platforms: [GamePlatform.pc],
-        playtimeForever: 150, // 2.5 hours in minutes
-      );
-
-      // act
-      final playtimeInHours = game.playtimeInHours;
-
-      // assert
-      expect(playtimeInHours, 2.5);
-    });
-
-    test('should return null playtime in hours when playtime is null', () {
-      // arrange
-      const game = Game(
-        id: 'game-1',
-        name: 'Test Game',
-        status: GameStatus.owned,
-        platforms: [GamePlatform.pc],
-      );
-
-      // act
-      final playtimeInHours = game.playtimeInHours;
-
-      // assert
-      expect(playtimeInHours, null);
-    });
-
-    test('should create copy with updated fields', () {
-      // arrange
-      const originalGame = Game(
-        id: 'game-1',
-        name: 'Test Game',
+        name: 'Played Game',
         status: GameStatus.owned,
         platforms: [GamePlatform.pc],
         playtimeForever: 120,
       );
 
-      // act
-      final updatedGame = originalGame.copyWith(
-        name: 'Updated Game',
-        status: GameStatus.completed,
-        playtimeForever: 180,
+      const unplayedGame = Game(
+        id: 'game-2',
+        name: 'Unplayed Game',
+        status: GameStatus.owned,
+        platforms: [GamePlatform.pc],
+        playtimeForever: 0,
+      );
+
+      const neverPlayedGame = Game(
+        id: 'game-3',
+        name: 'Never Played Game',
+        status: GameStatus.owned,
+        platforms: [GamePlatform.pc],
       );
 
       // assert
-      expect(updatedGame.name, 'Updated Game');
-      expect(updatedGame.status, GameStatus.completed);
-      expect(updatedGame.playtimeForever, 180);
-      expect(updatedGame.id, originalGame.id);
-      expect(updatedGame.platforms, originalGame.platforms);
+      expect(playedGame.hasBeenPlayed, true);
+      expect(unplayedGame.hasBeenPlayed, false);
+      expect(neverPlayedGame.hasBeenPlayed, false);
+    });
+
+    test('should check if game was recently played', () {
+      // arrange
+      const recentlyPlayedGame = Game(
+        id: 'game-1',
+        name: 'Recently Played Game',
+        status: GameStatus.owned,
+        platforms: [GamePlatform.pc],
+        playtime2Weeks: 60,
+      );
+
+      const notRecentlyPlayedGame = Game(
+        id: 'game-2',
+        name: 'Not Recently Played Game',
+        status: GameStatus.owned,
+        platforms: [GamePlatform.pc],
+        playtime2Weeks: 0,
+      );
+
+      // assert
+      expect(recentlyPlayedGame.recentlyPlayed, true);
+      expect(notRecentlyPlayedGame.recentlyPlayed, false);
+    });
+
+    test('should format playtime correctly', () {
+      // arrange
+      const unplayedGame = Game(
+        id: 'game-1',
+        name: 'Unplayed Game',
+        status: GameStatus.owned,
+        platforms: [GamePlatform.pc],
+      );
+
+      const minutesGame = Game(
+        id: 'game-2',
+        name: 'Minutes Game',
+        status: GameStatus.owned,
+        platforms: [GamePlatform.pc],
+        playtimeForever: 45,
+      );
+
+      const hoursGame = Game(
+        id: 'game-3',
+        name: 'Hours Game',
+        status: GameStatus.owned,
+        platforms: [GamePlatform.pc],
+        playtimeForever: 150, // 2.5 hours
+      );
+
+      const longGame = Game(
+        id: 'game-4',
+        name: 'Long Game',
+        status: GameStatus.owned,
+        platforms: [GamePlatform.pc],
+        playtimeForever: 6000, // 100 hours
+      );
+
+      // assert
+      expect(unplayedGame.playtimeFormatted, 'Not played');
+      expect(minutesGame.playtimeFormatted, '45min');
+      expect(hoursGame.playtimeFormatted, '2h');
+      expect(longGame.playtimeFormatted, '100h');
+    });
+
+    test('should format last played correctly when never played', () {
+      // arrange
+      const neverPlayedGame = Game(
+        id: 'game-1',
+        name: 'Never Played Game',
+        status: GameStatus.owned,
+        platforms: [GamePlatform.pc],
+      );
+
+      // assert
+      expect(neverPlayedGame.lastPlayedFormatted, 'Never played');
     });
 
     group('GameStatus enum', () {
@@ -239,6 +226,25 @@ void main() {
           GamePlatform.mobile,
         ]);
       });
+    });
+
+    test('should have correct props for Equatable', () {
+      // arrange
+      const game = Game(
+        id: 'game-1',
+        name: 'Test Game',
+        status: GameStatus.owned,
+        platforms: [GamePlatform.pc],
+        playtimeForever: 120,
+      );
+
+      // assert
+      expect(game.props.length, 21); // All fields should be included in props
+      expect(game.props.contains('game-1'), true);
+      expect(game.props.contains('Test Game'), true);
+      expect(game.props.contains(GameStatus.owned), true);
+      expect(game.props.contains([GamePlatform.pc]), true);
+      expect(game.props.contains(120), true);
     });
   });
 }

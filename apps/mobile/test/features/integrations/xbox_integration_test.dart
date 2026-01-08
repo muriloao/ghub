@@ -1,3 +1,4 @@
+import 'package:flutter/services.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mockito/mockito.dart';
 import 'package:dio/dio.dart';
@@ -8,6 +9,8 @@ import '../../../lib/features/integrations/data/services/xbox_live_service.dart'
 class MockDio extends Mock implements Dio {}
 
 void main() {
+  TestWidgetsFlutterBinding.ensureInitialized();
+
   group('Xbox Live Integration Tests', () {
     late XboxLiveService xboxService;
     late MockDio mockDio;

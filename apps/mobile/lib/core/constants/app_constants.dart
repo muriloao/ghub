@@ -3,7 +3,7 @@ class AppConstants {
   static const String appSlogan = 'Sync your stats. Dominate the game.';
 
   // API
-  static const String baseUrl = 'https://api.gamecentral.com';
+  static const String baseUrl = String.fromEnvironment('API_BASE_URL');
   static const Duration connectionTimeout = Duration(seconds: 30);
   static const Duration receiveTimeout = Duration(seconds: 30);
 

@@ -1,13 +1,13 @@
+import 'package:ghub_mobile/features/auth/data/models/google_user_model.dart';
 import 'package:json_annotation/json_annotation.dart';
 import '../../domain/entities/auth_result.dart';
-import 'user_model.dart';
 
 part 'auth_result_model.g.dart';
 
 @JsonSerializable()
 class AuthResultModel extends AuthResult {
   @JsonKey(name: 'user')
-  final UserModel userModel;
+  final GoogleUserModel userModel;
 
   const AuthResultModel({
     required this.userModel,

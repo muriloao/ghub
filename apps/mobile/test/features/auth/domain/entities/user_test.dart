@@ -1,31 +1,39 @@
 import 'package:flutter_test/flutter_test.dart';
 import 'package:ghub_mobile/features/auth/domain/entities/user.dart';
 
-import '../../../helpers/test_helpers.dart';
-
 void main() {
   group('User', () {
     test('should create User from JSON correctly', () {
       // arrange
-      final json = TestFixtures.userJson;
+      final json = {
+        'id': 'test-user-id',
+        'email': 'test@example.com',
+        'name': 'Test User',
+        'avatar_url': 'https://example.com/avatar.jpg',
+        'created_at': '2024-01-01T00:00:00Z',
+        'updated_at': '2024-01-01T00:00:00Z',
+      };
 
       // act
       final user = User.fromJson(json);
 
       // assert
-      expect(user.id, TestFixtures.userId);
-      expect(user.email, TestFixtures.validEmail);
-      expect(user.name, TestFixtures.userName);
-      expect(user.avatarUrl, TestFixtures.userAvatarUrl);
+      expect(user.id, 'test-user-id');
+      expect(user.email, 'test@example.com');
+      expect(user.name, 'Test User');
+      expect(user.avatarUrl, 'https://example.com/avatar.jpg');
       expect(user.createdAt, DateTime.parse('2024-01-01T00:00:00Z'));
       expect(user.updatedAt, DateTime.parse('2024-01-01T00:00:00Z'));
     });
 
     test('should handle null name and avatarUrl', () {
       // arrange
-      final json = Map<String, dynamic>.from(TestFixtures.userJson);
-      json.remove('name');
-      json.remove('avatar_url');
+      final json = {
+        'id': 'test-user-id',
+        'email': 'test@example.com',
+        'created_at': '2024-01-01T00:00:00Z',
+        'updated_at': '2024-01-01T00:00:00Z',
+      };
 
       // act
       final user = User.fromJson(json);
@@ -33,34 +41,47 @@ void main() {
       // assert
       expect(user.name, null);
       expect(user.avatarUrl, null);
-      expect(user.id, TestFixtures.userId);
-      expect(user.email, TestFixtures.validEmail);
+      expect(user.id, 'test-user-id');
+      expect(user.email, 'test@example.com');
     });
 
     test('should convert User to JSON correctly', () {
       // arrange
-      final user = User.fromJson(TestFixtures.userJson);
+      final inputJson = {
+        'id': 'test-user-id',
+        'email': 'test@example.com',
+        'name': 'Test User',
+        'avatar_url': 'https://example.com/avatar.jpg',
+        'created_at': '2024-01-01T00:00:00Z',
+        'updated_at': '2024-01-01T00:00:00Z',
+      };
+      final user = User.fromJson(inputJson);
 
       // act
-      final json = user.toJson();
+      final outputJson = user.toJson();
 
       // assert
-      expect(json['id'], TestFixtures.userId);
-      expect(json['email'], TestFixtures.validEmail);
-      expect(json['name'], TestFixtures.userName);
-      expect(json['avatar_url'], TestFixtures.userAvatarUrl);
-      expect(json['created_at'], '2024-01-01T00:00:00.000Z');
-      expect(json['updated_at'], '2024-01-01T00:00:00.000Z');
+      expect(outputJson['id'], 'test-user-id');
+      expect(outputJson['email'], 'test@example.com');
+      expect(outputJson['name'], 'Test User');
+      expect(outputJson['avatar_url'], 'https://example.com/avatar.jpg');
+      expect(outputJson['created_at'], '2024-01-01T00:00:00.000Z');
+      expect(outputJson['updated_at'], '2024-01-01T00:00:00.000Z');
     });
 
     test('should support equality comparison', () {
       // arrange
-      final user1 = User.fromJson(TestFixtures.userJson);
-      final user2 = User.fromJson(TestFixtures.userJson);
-      final differentUser = User.fromJson({
-        ...TestFixtures.userJson,
-        'id': 'different-id',
-      });
+      final json = {
+        'id': 'test-user-id',
+        'email': 'test@example.com',
+        'name': 'Test User',
+        'avatar_url': 'https://example.com/avatar.jpg',
+        'created_at': '2024-01-01T00:00:00Z',
+        'updated_at': '2024-01-01T00:00:00Z',
+      };
+      final user1 = User.fromJson(json);
+      final user2 = User.fromJson(json);
+      final differentUser = User.fromJson({...json, 'id': 'different-id'});
 
       // assert
       expect(user1, equals(user2));
@@ -69,14 +90,22 @@ void main() {
 
     test('should have proper props for Equatable', () {
       // arrange
-      final user = User.fromJson(TestFixtures.userJson);
+      final json = {
+        'id': 'test-user-id',
+        'email': 'test@example.com',
+        'name': 'Test User',
+        'avatar_url': 'https://example.com/avatar.jpg',
+        'created_at': '2024-01-01T00:00:00Z',
+        'updated_at': '2024-01-01T00:00:00Z',
+      };
+      final user = User.fromJson(json);
 
       // assert
       expect(user.props, [
-        TestFixtures.userId,
-        TestFixtures.validEmail,
-        TestFixtures.userName,
-        TestFixtures.userAvatarUrl,
+        'test-user-id',
+        'test@example.com',
+        'Test User',
+        'https://example.com/avatar.jpg',
         DateTime.parse('2024-01-01T00:00:00Z'),
         DateTime.parse('2024-01-01T00:00:00Z'),
       ]);
@@ -84,7 +113,15 @@ void main() {
 
     test('should create copy with updated fields', () {
       // arrange
-      final user = User.fromJson(TestFixtures.userJson);
+      final json = {
+        'id': 'test-user-id',
+        'email': 'test@example.com',
+        'name': 'Test User',
+        'avatar_url': 'https://example.com/avatar.jpg',
+        'created_at': '2024-01-01T00:00:00Z',
+        'updated_at': '2024-01-01T00:00:00Z',
+      };
+      final user = User.fromJson(json);
 
       // act
       final updatedUser = user.copyWith(

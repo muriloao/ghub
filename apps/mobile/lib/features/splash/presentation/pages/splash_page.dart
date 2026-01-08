@@ -91,12 +91,12 @@ class _SplashPageState extends ConsumerState<SplashPage>
         height: double.infinity,
         decoration: const BoxDecoration(
           // Grid background pattern
-          image: DecorationImage(
-            image: NetworkImage(
-              'data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="40" height="40" viewBox="0 0 40 40"><defs><pattern id="grid" width="40" height="40" patternUnits="userSpaceOnUse"><path d="M 40 0 L 0 0 0 40" fill="none" stroke="%23ffffff" stroke-width="0.5" opacity="0.03"/></pattern></defs><rect width="100%" height="100%" fill="url(%23grid)"/></svg>',
-            ),
-            repeat: ImageRepeat.repeat,
-          ),
+          // image: DecorationImage(
+          //   image: NetworkImage(
+          //     'data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="40" height="40" viewBox="0 0 40 40"><defs><pattern id="grid" width="40" height="40" patternUnits="userSpaceOnUse"><path d="M 40 0 L 0 0 0 40" fill="none" stroke="%23ffffff" stroke-width="0.5" opacity="0.03"/></pattern></defs><rect width="100%" height="100%" fill="url(%23grid)"/></svg>',
+          //   ),
+          //   repeat: ImageRepeat.repeat,
+          // ),
           // Gradient overlay
           gradient: LinearGradient(
             begin: Alignment.topCenter,
