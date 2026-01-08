@@ -109,48 +109,6 @@ class AuthRepositoryImpl implements AuthRepository {
   }
 
   @override
-  Future<void> loginWithSteam(BuildContext context) async {
-    try {
-      await remoteDataSource.loginWithSteam(context);
-
-      // await localDataSource.cacheAuthData(
-      //   accessToken: result.accessToken,
-      //   refreshToken: result.refreshToken,
-      //   user: result.user as dynamic,
-      // );
-
-      // return Right(result);
-    } on AuthenticationException catch (e) {
-      throw AuthenticationFailure(message: e.message);
-    } on NetworkException catch (e) {
-      throw NetworkFailure(message: e.message);
-    } on ServerException catch (e) {
-      throw ServerFailure(message: e.message);
-    } on CacheException catch (e) {
-      throw CacheFailure(message: e.message);
-    } catch (e) {
-      throw ServerFailure(message: 'Erro inesperado: ${e.toString()}');
-    }
-  }
-
-  @override
-  Future<void> loginWithEpic(BuildContext context) async {
-    try {
-      await remoteDataSource.loginWithEpic(context);
-    } on AuthenticationException catch (e) {
-      throw AuthenticationFailure(message: e.message);
-    } on NetworkException catch (e) {
-      throw NetworkFailure(message: e.message);
-    } on ServerException catch (e) {
-      throw ServerFailure(message: e.message);
-    } on CacheException catch (e) {
-      throw CacheFailure(message: e.message);
-    } catch (e) {
-      throw ServerFailure(message: 'Erro inesperado: ${e.toString()}');
-    }
-  }
-
-  @override
   Future<Either<Failure, void>> logout() async {
     try {
       await remoteDataSource.logout();

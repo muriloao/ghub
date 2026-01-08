@@ -6,17 +6,17 @@ import 'package:url_launcher/url_launcher.dart';
 import 'package:flutter/material.dart';
 import '../../../../core/config/steam_config.dart';
 import '../../../../core/error/exceptions.dart';
-import '../models/steam_user_model.dart';
-import '../models/auth_result_model.dart';
-import '../models/user_model.dart';
+import '../../../auth/data/models/steam_user_model.dart';
+import '../../../auth/data/models/auth_result_model.dart';
+import '../../../auth/data/models/google_user_model.dart';
 
-class SteamAuthService {
+class SteamIntegrationService {
   final Dio _dio;
 
-  SteamAuthService(this._dio);
+  SteamIntegrationService(this._dio);
 
-  /// Abre browser in-app para autenticação Steam e retorna os dados do usuário
-  Future<void> authenticateWithSteam(BuildContext context) async {
+  /// Conecta conta Steam para sincronização de jogos
+  Future<void> connectSteamForSync(BuildContext context) async {
     // Validar se a API key está configurada
     if (SteamConfig.apiKey == 'SEU_STEAM_API_KEY_AQUI') {
       throw const AuthenticationException(
@@ -34,7 +34,7 @@ class SteamAuthService {
 
     try {
       // Abrir browser in-app e aguardar callback via deep link
-      await _launchSteamAuth(context, authUrl, nonce);
+      await _launchSteamConnection(context, authUrl, nonce);
 
       // // tela da steam que deve fazer
       // if (steamId == null) {
@@ -74,7 +74,7 @@ class SteamAuthService {
     return '${SteamConfig.steamOpenIdUrl}/login?$queryString';
   }
 
-  Future<void> _launchSteamAuth(
+  Future<void> _launchSteamConnection(
     BuildContext context,
     String authUrl,
     String nonce,
@@ -99,13 +99,13 @@ class SteamAuthService {
       // return '76561198094544213'; // Simular Steam ID para teste
     } catch (e) {
       throw AuthenticationException(
-        message: 'Erro ao iniciar autenticação Steam: $e',
+        message: 'Erro ao iniciar conexão Steam: $e',
       );
     }
   }
 
-  /// Completa a autenticação Steam usando um Steam ID obtido via deep link
-  Future<AuthResultModel> completeAuthenticationWithSteamId(
+  /// Completa a conexão Steam usando um Steam ID obtido via deep link
+  Future<AuthResultModel> completeSteamConnectionWithSteamId(
     String steamId,
   ) async {
     try {
@@ -125,7 +125,7 @@ class SteamAuthService {
     } catch (e) {
       if (e is AuthenticationException || e is ServerException) rethrow;
       throw AuthenticationException(
-        message: 'Erro ao completar autenticação Steam: $e',
+        message: 'Erro ao completar conexão Steam: $e',
       );
     }
   }
@@ -165,13 +165,11 @@ class SteamAuthService {
     final now = DateTime.now();
 
     // Criar usuário interno baseado nos dados Steam
-    final user = UserModel(
+    final user = GoogleUserModel(
       id: 'steam_${steamUser.steamid}',
       email: '${steamUser.steamid}@steam.local', // Steam não fornece email
       name: steamUser.personaname,
       avatarUrl: steamUser.avatarfull,
-      createdAt: now,
-      updatedAt: now,
     );
 
     // TODO: Implementar geração de tokens JWT reais

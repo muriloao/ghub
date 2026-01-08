@@ -4,8 +4,6 @@ import 'package:google_sign_in/google_sign_in.dart';
 import '../../../../core/error/exceptions.dart';
 import '../models/auth_result_model.dart';
 import '../models/signup_request_model.dart';
-import '../services/steam_auth_service.dart';
-import '../services/epic_auth_service.dart';
 
 abstract class AuthRemoteDataSource {
   Future<AuthResultModel> signUp(SignUpRequestModel request);
@@ -17,23 +15,14 @@ abstract class AuthRemoteDataSource {
 
   Future<AuthResultModel> loginWithGoogle();
 
-  Future<void> loginWithSteam(BuildContext context);
-
-  Future<void> loginWithEpic(BuildContext context);
-
   Future<void> logout();
 }
 
 class AuthRemoteDataSourceImpl implements AuthRemoteDataSource {
   final Dio dio;
   final GoogleSignIn googleSignIn;
-  late final SteamAuthService steamAuthService;
-  late final EpicAuthService epicAuthService;
 
-  AuthRemoteDataSourceImpl({required this.dio, required this.googleSignIn}) {
-    steamAuthService = SteamAuthService(dio);
-    epicAuthService = EpicAuthService(dio);
-  }
+  AuthRemoteDataSourceImpl({required this.dio, required this.googleSignIn});
 
   @override
   Future<AuthResultModel> signUp(SignUpRequestModel request) async {
@@ -125,26 +114,6 @@ class AuthRemoteDataSourceImpl implements AuthRemoteDataSource {
       throw ServerException(
         message: e.response?.data['message'] ?? 'Erro no servidor',
       );
-    } catch (e) {
-      if (e is AuthenticationException) rethrow;
-      throw ServerException(message: e.toString());
-    }
-  }
-
-  @override
-  Future<void> loginWithSteam(BuildContext context) async {
-    try {
-      await steamAuthService.authenticateWithSteam(context);
-    } catch (e) {
-      if (e is AuthenticationException) rethrow;
-      throw ServerException(message: e.toString());
-    }
-  }
-
-  @override
-  Future<void> loginWithEpic(BuildContext context) async {
-    try {
-      await epicAuthService.authenticateWithEpic(context);
     } catch (e) {
       if (e is AuthenticationException) rethrow;
       throw ServerException(message: e.toString());

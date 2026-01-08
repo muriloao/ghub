@@ -6,17 +6,17 @@ import 'package:url_launcher/url_launcher.dart';
 import 'package:flutter/material.dart';
 import '../../../../core/config/epic_games_config.dart';
 import '../../../../core/error/exceptions.dart';
-import '../models/epic_game_model.dart';
-import '../models/auth_result_model.dart';
-import '../models/user_model.dart';
+import '../../../auth/data/models/epic_game_model.dart';
+import '../../../auth/data/models/auth_result_model.dart';
+import '../../../auth/data/models/google_user_model.dart';
 
-class EpicAuthService {
+class EpicIntegrationService {
   final Dio _dio;
 
-  EpicAuthService(this._dio);
+  EpicIntegrationService(this._dio);
 
-  /// Inicia o processo de autenticação Epic Games OAuth2
-  Future<void> authenticateWithEpic(BuildContext context) async {
+  /// Conecta conta Epic Games para sincronização de jogos
+  Future<void> connectEpicForSync(BuildContext context) async {
     // Validar se as credenciais estão configuradas
     if (EpicGamesConfig.clientId == 'SEU_EPIC_CLIENT_ID_AQUI') {
       throw const AuthenticationException(
@@ -33,20 +33,18 @@ class EpicAuthService {
 
     try {
       // Abrir browser in-app para autenticação
-      await _launchEpicAuth(context, authUrl);
+      await _launchEpicConnection(context, authUrl);
 
       // O callback será processado via deep link
       // Similar ao fluxo do Steam
     } catch (e) {
       if (e is AuthenticationException) rethrow;
-      throw AuthenticationException(
-        message: 'Erro na autenticação Epic Games: $e',
-      );
+      throw AuthenticationException(message: 'Erro na conexão Epic Games: $e');
     }
   }
 
-  /// Completa a autenticação Epic Games usando código de autorização
-  Future<AuthResultModel> completeAuthenticationWithCode(
+  /// Completa a conexão Epic Games usando código de autorização
+  Future<AuthResultModel> completeEpicConnectionWithCode(
     String code,
     String state,
   ) async {
@@ -108,7 +106,10 @@ class EpicAuthService {
     }
   }
 
-  Future<void> _launchEpicAuth(BuildContext context, String authUrl) async {
+  Future<void> _launchEpicConnection(
+    BuildContext context,
+    String authUrl,
+  ) async {
     try {
       final uri = Uri.parse(authUrl);
       final launched = await launchUrl(
@@ -218,13 +219,11 @@ class EpicAuthService {
     final now = DateTime.now();
 
     // Criar usuário interno baseado nos dados Epic Games
-    final user = UserModel(
+    final user = GoogleUserModel(
       id: 'epic_${epicUser.id}',
       email: epicUser.email ?? '${epicUser.id}@epic.local',
       name: epicUser.displayName,
       avatarUrl: epicUser.avatar,
-      createdAt: now,
-      updatedAt: now,
     );
 
     // Usar o access token real para Epic Games
