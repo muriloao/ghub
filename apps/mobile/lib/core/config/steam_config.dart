@@ -1,64 +1,48 @@
+import 'package:flutter_dotenv/flutter_dotenv.dart';
+
 class SteamConfig {
   // Steam Web API key - obtenha em: https://steamcommunity.com/dev/apikey
   // IMPORTANTE: Configure STEAM_API_KEY no arquivo .env
-  static const String apiKey = String.fromEnvironment(
-    'STEAM_API_KEY',
-    defaultValue: 'SEU_STEAM_API_KEY_AQUI',
-  );
+  static String get apiKey =>
+      dotenv.env['STEAM_API_KEY'] ?? 'SEU_STEAM_API_KEY_AQUI';
 
   // URLs da Steam API
-  static const String steamApiUrl = String.fromEnvironment(
-    'STEAM_API_URL',
-    defaultValue: 'https://api.steampowered.com',
-  );
-  static const String steamOpenIdUrl = String.fromEnvironment(
-    'STEAM_OPENID_URL',
-    defaultValue: 'https://steamcommunity.com/openid',
-  );
-  static const String steamStoreApiUrl = String.fromEnvironment(
-    'STEAM_STORE_API_URL',
-    defaultValue: 'https://store.steampowered.com/api',
-  );
+  static String get steamApiUrl =>
+      dotenv.env['STEAM_API_URL'] ?? 'https://api.steampowered.com';
+  static String get steamOpenIdUrl =>
+      dotenv.env['STEAM_OPENID_URL'] ?? 'https://steamcommunity.com/openid';
+  static String get steamStoreApiUrl =>
+      dotenv.env['STEAM_STORE_API_URL'] ?? 'https://store.steampowered.com/api';
 
   // Parâmetros de configuração para OpenID
-  static const String realm = String.fromEnvironment(
-    'STEAM_REALM',
-    defaultValue: 'https://localhost:3000',
-  );
-  static const String mode = String.fromEnvironment(
-    'STEAM_MODE',
-    defaultValue: 'checkid_setup',
-  );
-  static const String ns = String.fromEnvironment(
-    'STEAM_NS',
-    defaultValue: 'http://specs.openid.net/auth/2.0',
-  );
-  static const String identity = String.fromEnvironment(
-    'STEAM_IDENTITY',
-    defaultValue: 'http://specs.openid.net/auth/2.0/identifier_select',
-  );
-  static const String claimedId = String.fromEnvironment(
-    'STEAM_CLAIMED_ID',
-    defaultValue: 'http://specs.openid.net/auth/2.0/identifier_select',
-  );
+  static String get realm =>
+      dotenv.env['STEAM_REALM'] ?? 'https://localhost:3000';
+  static String get mode => dotenv.env['STEAM_MODE'] ?? 'checkid_setup';
+  static String get ns =>
+      dotenv.env['STEAM_NS'] ?? 'http://specs.openid.net/auth/2.0';
+  static String get identity =>
+      dotenv.env['STEAM_IDENTITY'] ??
+      'http://specs.openid.net/auth/2.0/identifier_select';
+  static String get claimedId =>
+      dotenv.env['STEAM_CLAIMED_ID'] ??
+      'http://specs.openid.net/auth/2.0/identifier_select';
 
   // URL de retorno personalizada para o app móvel
   // Usa um scheme customizado que será capturado pelo app
-  static const String returnUrl =
-      '${SteamConfig.realm}/auth/steam/callback'; // 'ghub://auth/steam/callback';
+  static String get returnUrl => '$realm/auth/steam/callback';
 
   // URLs específicas da Steam Web API para jogos
-  static const String getOwnedGamesUrl =
+  static String get getOwnedGamesUrl =>
       '$steamApiUrl/IPlayerService/GetOwnedGames/v0001/';
-  static const String getRecentlyPlayedGamesUrl =
+  static String get getRecentlyPlayedGamesUrl =>
       '$steamApiUrl/IPlayerService/GetRecentlyPlayedGames/v0001/';
-  static const String getPlayerSummariesUrl =
+  static String get getPlayerSummariesUrl =>
       '$steamApiUrl/ISteamUser/GetPlayerSummaries/v0002/';
-  static const String getPlayerAchievementsUrl =
+  static String get getPlayerAchievementsUrl =>
       '$steamApiUrl/ISteamUserStats/GetPlayerAchievements/v0001/';
-  static const String getSchemaForGameUrl =
+  static String get getSchemaForGameUrl =>
       '$steamApiUrl/ISteamUserStats/GetSchemaForGame/v2/';
-  static const String getGameDetailsUrl = '$steamStoreApiUrl/appdetails';
+  static String get getGameDetailsUrl => '$steamStoreApiUrl/appdetails';
 
   // URLs para imagens de jogos Steam
   static String getGameHeaderImageUrl(String appId) =>
@@ -74,12 +58,10 @@ class SteamConfig {
       'https://media.steampowered.com/steamcommunity/public/images/apps/$appId/$iconHash.jpg';
 
   // Configurações de rate limiting
-  static const int maxBatchSize = int.fromEnvironment(
-    'STEAM_MAX_BATCH_SIZE',
-    defaultValue: 100,
-  ); // Máximo de jogos por requisição de detalhes
-  static const int rateLimitDelayMs = int.fromEnvironment(
-    'STEAM_RATE_LIMIT_DELAY_MS',
-    defaultValue: 100,
-  ); // Delay entre requests em batch
+  static int get maxBatchSize =>
+      int.tryParse(dotenv.env['STEAM_MAX_BATCH_SIZE'] ?? '100') ??
+      100; // Máximo de jogos por requisição de detalhes
+  static int get rateLimitDelayMs =>
+      int.tryParse(dotenv.env['STEAM_RATE_LIMIT_DELAY_MS'] ?? '100') ??
+      100; // Delay entre requests em batch
 }

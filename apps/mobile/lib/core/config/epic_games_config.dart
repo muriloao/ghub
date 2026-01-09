@@ -1,55 +1,39 @@
+import 'package:flutter_dotenv/flutter_dotenv.dart';
+
 class EpicGamesConfig {
   // Epic Games OAuth2 credentials - obtenha em: https://dev.epicgames.com/portal/
   // IMPORTANTE: Configure no arquivo .env
-  static const String clientId = String.fromEnvironment(
-    'EPIC_CLIENT_ID',
-    defaultValue: 'SEU_EPIC_CLIENT_ID_AQUI',
-  );
-  static const String clientSecret = String.fromEnvironment(
-    'EPIC_CLIENT_SECRET',
-    defaultValue: 'SEU_EPIC_CLIENT_SECRET_AQUI',
-  );
-  static const String redirectUri = String.fromEnvironment(
-    'EPIC_REDIRECT_URI',
-    defaultValue: 'ghubmobile://auth/epic-callback',
-  );
+  static String get clientId =>
+      dotenv.env['EPIC_CLIENT_ID'] ?? 'SEU_EPIC_CLIENT_ID_AQUI';
+  static String get clientSecret =>
+      dotenv.env['EPIC_CLIENT_SECRET'] ?? 'SEU_EPIC_CLIENT_SECRET_AQUI';
+  static String get redirectUri =>
+      dotenv.env['EPIC_REDIRECT_URI'] ?? 'ghubmobile://auth/epic-callback';
 
   // Epic Games API URLs
-  static const String epicApiUrl = String.fromEnvironment(
-    'EPIC_API_URL',
-    defaultValue: 'https://api.epicgames.dev',
-  );
-  static const String authUrl = String.fromEnvironment(
-    'EPIC_AUTH_URL',
-    defaultValue: 'https://www.epicgames.com/id/authorize',
-  );
-  static const String tokenUrl = String.fromEnvironment(
-    'EPIC_TOKEN_URL',
-    defaultValue: 'https://api.epicgames.dev/epic/oauth/v1/token',
-  );
-  static const String userInfoUrl = String.fromEnvironment(
-    'EPIC_USER_INFO_URL',
-    defaultValue: 'https://api.epicgames.dev/epic/id/v1/accounts',
-  );
+  static String get epicApiUrl =>
+      dotenv.env['EPIC_API_URL'] ?? 'https://api.epicgames.dev';
+  static String get authUrl =>
+      dotenv.env['EPIC_AUTH_URL'] ?? 'https://www.epicgames.com/id/authorize';
+  static String get tokenUrl =>
+      dotenv.env['EPIC_TOKEN_URL'] ??
+      'https://api.epicgames.dev/epic/oauth/v1/token';
+  static String get userInfoUrl =>
+      dotenv.env['EPIC_USER_INFO_URL'] ??
+      'https://api.epicgames.dev/epic/id/v1/accounts';
 
   // Epic Games Store API
-  static const String catalogUrl = String.fromEnvironment(
-    'EPIC_CATALOG_URL',
-    defaultValue:
-        'https://api.epicgames.dev/epic/ecom/v1/platforms/epic/catalogItems',
-  );
-  static const String entitlementsUrl = String.fromEnvironment(
-    'EPIC_ENTITLEMENTS_URL',
-    defaultValue:
-        'https://api.epicgames.dev/epic/ecom/v1/platforms/epic/identities',
-  );
+  static String get catalogUrl =>
+      dotenv.env['EPIC_CATALOG_URL'] ??
+      'https://api.epicgames.dev/epic/ecom/v1/platforms/epic/catalogItems';
+  static String get entitlementsUrl =>
+      dotenv.env['EPIC_ENTITLEMENTS_URL'] ??
+      'https://api.epicgames.dev/epic/ecom/v1/platforms/epic/identities';
 
   // OAuth2 scopes
   static List<String> get scopes {
-    const scopesString = String.fromEnvironment(
-      'EPIC_SCOPES',
-      defaultValue: 'basic_profile ecom:read friends:read',
-    );
+    final scopesString =
+        dotenv.env['EPIC_SCOPES'] ?? 'basic_profile ecom:read friends:read';
     return scopesString.split(' ');
   }
 

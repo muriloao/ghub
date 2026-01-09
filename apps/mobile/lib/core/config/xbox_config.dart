@@ -1,3 +1,5 @@
+import 'package:flutter_dotenv/flutter_dotenv.dart';
+
 /// Configuração Xbox Live / Microsoft Gaming Services
 class XboxConfig {
   // IMPORTANTE: Substitua por suas credenciais reais do Azure AD
@@ -7,46 +9,35 @@ class XboxConfig {
   // 3. Configure permissões para Xbox Live
   // 4. Configure redirect URI: ghub://xbox-callback
 
-  static const String clientId = String.fromEnvironment(
-    'XBOX_CLIENT_ID',
-    defaultValue: 'SEU_XBOX_CLIENT_ID_AQUI',
-  ); // Application (client) ID
-  static const String clientSecret = String.fromEnvironment(
-    'XBOX_CLIENT_SECRET',
-    defaultValue: 'SEU_XBOX_CLIENT_SECRET_AQUI',
-  ); // Client secret value
-  static const String redirectUri = String.fromEnvironment(
-    'XBOX_REDIRECT_URI',
-    defaultValue: 'ghub://xbox-callback',
-  );
+  static String get clientId =>
+      dotenv.env['XBOX_CLIENT_ID'] ??
+      'SEU_XBOX_CLIENT_ID_AQUI'; // Application (client) ID
+  static String get clientSecret =>
+      dotenv.env['XBOX_CLIENT_SECRET'] ??
+      'SEU_XBOX_CLIENT_SECRET_AQUI'; // Client secret value
+  static String get redirectUri =>
+      dotenv.env['XBOX_REDIRECT_URI'] ?? 'ghub://xbox-callback';
 
   // Xbox Live API URLs
-  static const String authUrl = String.fromEnvironment(
-    'XBOX_AUTH_URL',
-    defaultValue: 'https://login.live.com/oauth20_authorize.srf',
-  );
-  static const String tokenUrl = String.fromEnvironment(
-    'XBOX_TOKEN_URL',
-    defaultValue: 'https://login.live.com/oauth20_token.srf',
-  );
-  static const String xboxLiveUrl = String.fromEnvironment(
-    'XBOX_LIVE_URL',
-    defaultValue: 'https://user.auth.xboxlive.com/user/authenticate',
-  );
-  static const String xstsUrl = String.fromEnvironment(
-    'XBOX_XSTS_URL',
-    defaultValue: 'https://xsts.auth.xboxlive.com/xsts/authorize',
-  );
-  static const String profileUrl = String.fromEnvironment(
-    'XBOX_PROFILE_URL',
-    defaultValue: 'https://profile.xboxlive.com/users/me/profile/settings',
-  );
+  static String get authUrl =>
+      dotenv.env['XBOX_AUTH_URL'] ??
+      'https://login.live.com/oauth20_authorize.srf';
+  static String get tokenUrl =>
+      dotenv.env['XBOX_TOKEN_URL'] ??
+      'https://login.live.com/oauth20_token.srf';
+  static String get xboxLiveUrl =>
+      dotenv.env['XBOX_LIVE_URL'] ??
+      'https://user.auth.xboxlive.com/user/authenticate';
+  static String get xstsUrl =>
+      dotenv.env['XBOX_XSTS_URL'] ??
+      'https://xsts.auth.xboxlive.com/xsts/authorize';
+  static String get profileUrl =>
+      dotenv.env['XBOX_PROFILE_URL'] ??
+      'https://profile.xboxlive.com/users/me/profile/settings';
 
   // Scopes necessários para Xbox Live
-  static const String scopes = String.fromEnvironment(
-    'XBOX_SCOPES',
-    defaultValue: 'XboxLive.signin XboxLive.offline_access',
-  );
+  static String get scopes =>
+      dotenv.env['XBOX_SCOPES'] ?? 'XboxLive.signin XboxLive.offline_access';
 
   /// Verifica se as credenciais do Xbox estão configuradas
   static bool get isConfigured {
