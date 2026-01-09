@@ -1,5 +1,4 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:flutter_test/flutter_test.dart';
 import 'package:mockito/mockito.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
@@ -17,7 +16,8 @@ class MockGoogleSignIn extends Mock implements GoogleSignIn {}
 
 class MockGoogleSignInAccount extends Mock implements GoogleSignInAccount {}
 
-class MockGoogleSignInAuthentication extends Mock implements GoogleSignInAuthentication {}
+class MockGoogleSignInAuthentication extends Mock
+    implements GoogleSignInAuthentication {}
 
 // Helper function to create ProviderContainer with mocked dependencies
 ProviderContainer createMockContainer({
@@ -32,8 +32,7 @@ ProviderContainer createMockContainer({
         Provider<SharedPreferences>((ref) => mockSharedPreferences),
       if (mockSecureStorage != null)
         Provider<FlutterSecureStorage>((ref) => mockSecureStorage),
-      if (mockDio != null)
-        Provider<Dio>((ref) => mockDio),
+      if (mockDio != null) Provider<Dio>((ref) => mockDio),
       if (mockGoogleSignIn != null)
         Provider<GoogleSignIn>((ref) => mockGoogleSignIn),
     ],
@@ -46,18 +45,18 @@ class TestFixtures {
   static const String validPassword = 'password123';
   static const String invalidEmail = 'invalid-email';
   static const String shortPassword = '123';
-  
+
   static const String userId = 'test-user-id';
   static const String userName = 'Test User';
   static const String userAvatarUrl = 'https://example.com/avatar.jpg';
-  
+
   static const String accessToken = 'test-access-token';
   static const String refreshToken = 'test-refresh-token';
-  
+
   static const String steamId = '76561198000000000';
   static const String epicAccountId = 'epic-account-id';
   static const String xboxGamertag = 'TestGamertag';
-  
+
   static Map<String, dynamic> userJson = {
     'id': userId,
     'email': validEmail,
@@ -66,13 +65,13 @@ class TestFixtures {
     'created_at': '2024-01-01T00:00:00Z',
     'updated_at': '2024-01-01T00:00:00Z',
   };
-  
+
   static Map<String, dynamic> authResultJson = {
     'user': userJson,
     'access_token': accessToken,
     'refresh_token': refreshToken,
   };
-  
+
   static Map<String, dynamic> gameJson = {
     'id': 'game-id',
     'name': 'Test Game',
@@ -86,22 +85,26 @@ class TestFixtures {
 
 // Response helpers for HTTP mocks
 class MockResponses {
-  static Response<Map<String, dynamic>> successResponse(Map<String, dynamic> data) {
+  static Response<Map<String, dynamic>> successResponse(
+    Map<String, dynamic> data,
+  ) {
     return Response<Map<String, dynamic>>(
       data: data,
       statusCode: 200,
       requestOptions: RequestOptions(path: ''),
     );
   }
-  
-  static Response<List<Map<String, dynamic>>> successListResponse(List<Map<String, dynamic>> data) {
+
+  static Response<List<Map<String, dynamic>>> successListResponse(
+    List<Map<String, dynamic>> data,
+  ) {
     return Response<List<Map<String, dynamic>>>(
       data: data,
       statusCode: 200,
       requestOptions: RequestOptions(path: ''),
     );
   }
-  
+
   static DioException unauthorizedError() {
     return DioException(
       requestOptions: RequestOptions(path: ''),
@@ -112,7 +115,7 @@ class MockResponses {
       ),
     );
   }
-  
+
   static DioException serverError() {
     return DioException(
       requestOptions: RequestOptions(path: ''),
@@ -123,7 +126,7 @@ class MockResponses {
       ),
     );
   }
-  
+
   static DioException networkError() {
     return DioException(
       requestOptions: RequestOptions(path: ''),

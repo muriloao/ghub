@@ -4,7 +4,6 @@ import 'package:go_router/go_router.dart';
 
 import '../../../../core/constants/app_constants.dart';
 import '../../../auth/presentation/providers/auth_notifier.dart';
-import 'package:go_router/go_router.dart';
 
 import '../providers/profile_providers.dart';
 import '../widgets/profile_header.dart';

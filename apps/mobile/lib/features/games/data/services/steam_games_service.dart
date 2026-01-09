@@ -128,10 +128,8 @@ class SteamGamesService {
       }
 
       return null;
-    } on DioException catch (e) {
+    } on DioException {
       // Muitos jogos não têm achievements públicos, então não é um erro crítico
-      return null;
-    } catch (e) {
       return null;
     }
   }
@@ -201,10 +199,8 @@ class SteamGamesService {
       }
 
       return [];
-    } on DioException catch (e) {
+    } on DioException {
       // Nem todos os jogos têm achievements ou estão públicos
-      return [];
-    } catch (e) {
       return [];
     }
   }
@@ -233,9 +229,7 @@ class SteamGamesService {
       }
 
       return [];
-    } on DioException catch (e) {
-      return [];
-    } catch (e) {
+    } on DioException {
       return [];
     }
   }
@@ -260,9 +254,7 @@ class SteamGamesService {
       }
 
       return {};
-    } on DioException catch (e) {
-      return {};
-    } catch (e) {
+    } on DioException {
       return {};
     }
   }

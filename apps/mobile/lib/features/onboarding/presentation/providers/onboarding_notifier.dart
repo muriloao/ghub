@@ -6,7 +6,6 @@ import '../../domain/entities/onboarding_progress.dart';
 import '../../domain/entities/platform_connection_request.dart';
 import '../../domain/usecases/get_onboarding_progress.dart';
 import '../../domain/usecases/connect_platform.dart';
-import '../../domain/usecases/get_available_platforms.dart';
 import '../../domain/usecases/complete_onboarding.dart';
 import '../../../../core/usecases/usecase.dart';
 import 'onboarding_providers.dart';
@@ -76,19 +75,16 @@ extension OnboardingStateX on OnboardingState {
 class OnboardingNotifier extends StateNotifier<OnboardingState> {
   final GetOnboardingProgress _getOnboardingProgress;
   final ConnectPlatform _connectPlatform;
-  final GetAvailablePlatforms _getAvailablePlatforms;
   final CompleteOnboarding _completeOnboarding;
   final SkipOnboarding _skipOnboarding;
 
   OnboardingNotifier({
     required GetOnboardingProgress getOnboardingProgress,
     required ConnectPlatform connectPlatform,
-    required GetAvailablePlatforms getAvailablePlatforms,
     required CompleteOnboarding completeOnboarding,
     required SkipOnboarding skipOnboarding,
   }) : _getOnboardingProgress = getOnboardingProgress,
        _connectPlatform = connectPlatform,
-       _getAvailablePlatforms = getAvailablePlatforms,
        _completeOnboarding = completeOnboarding,
        _skipOnboarding = skipOnboarding,
        super(const OnboardingLoading()) {
@@ -232,7 +228,6 @@ final onboardingNotifierProvider =
       return OnboardingNotifier(
         getOnboardingProgress: ref.watch(getOnboardingProgressProvider),
         connectPlatform: ref.watch(connectPlatformProvider),
-        getAvailablePlatforms: ref.watch(getAvailablePlatformsProvider),
         completeOnboarding: ref.watch(completeOnboardingProvider),
         skipOnboarding: ref.watch(skipOnboardingProvider),
       );

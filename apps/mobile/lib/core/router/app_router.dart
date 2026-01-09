@@ -13,9 +13,6 @@ import '../../features/integrations/presentation/pages/integrations_page.dart';
 import '../../features/profile/presentation/pages/profile_page.dart';
 import '../constants/app_constants.dart';
 
-import '../../features/integrations/presentation/pages/xbox_callback_page.dart';
-import '../../features/integrations/presentation/pages/steam_callback_page.dart';
-
 class GoRouterObserver extends NavigatorObserver {
   @override
   void didPush(Route<dynamic> route, Route<dynamic>? previousRoute) {
@@ -99,33 +96,6 @@ final routerProvider = Provider<GoRouter>((ref) {
         },
       ),
 
-      GoRoute(
-        path: AppConstants.xboxCallbackRoute,
-        name: 'xbox-callback',
-        builder: (context, state) {
-          final queryParams = state.uri.queryParameters;
-          return XboxCallbackPage(
-            code: queryParams['code'],
-            state: queryParams['state'],
-            error: queryParams['error'],
-          );
-        },
-      ),
-      GoRoute(
-        path: AppConstants.steamCallbackRoute,
-        name: 'steam-callback',
-        builder: (context, state) {
-          // Tentar obter query params da URI ou do extra
-          Map<String, String> queryParams = state.uri.queryParameters;
-
-          // Se veio via extra (navegação alternativa), usar esses parâmetros
-          if (state.extra != null && state.extra is Map<String, String>) {
-            queryParams = state.extra as Map<String, String>;
-          }
-
-          return SteamCallbackPage(queryParameters: queryParams);
-        },
-      ),
       GoRoute(
         path: AppConstants.integrationsRoute,
         name: 'integrations',

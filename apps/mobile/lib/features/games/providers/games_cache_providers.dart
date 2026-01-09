@@ -1,9 +1,7 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:dio/dio.dart';
 
 import '../../../core/services/cache_service.dart';
 import '../../../core/services/platform_sync_service.dart';
-import '../data/services/steam_games_service.dart';
 import '../data/models/steam_game_model.dart';
 import '../../integrations/data/services/xbox_live_service.dart';
 
@@ -41,10 +39,9 @@ class PlatformGamesState {
 
 /// Notifier para jogos Steam
 class SteamGamesNotifier extends StateNotifier<PlatformGamesState> {
-  final SteamGamesService _steamService;
   final PlatformSyncService _syncService;
 
-  SteamGamesNotifier(this._steamService, this._syncService)
+  SteamGamesNotifier(this._syncService)
     : super(const PlatformGamesState(platform: Platform.steam)) {
     loadGames();
   }
@@ -106,10 +103,9 @@ class SteamGamesNotifier extends StateNotifier<PlatformGamesState> {
 
 /// Notifier para jogos Xbox
 class XboxGamesNotifier extends StateNotifier<PlatformGamesState> {
-  final XboxLiveService _xboxService;
   final PlatformSyncService _syncService;
 
-  XboxGamesNotifier(this._xboxService, this._syncService)
+  XboxGamesNotifier(this._syncService)
     : super(const PlatformGamesState(platform: Platform.xbox)) {
     loadGames();
   }
@@ -169,32 +165,18 @@ class XboxGamesNotifier extends StateNotifier<PlatformGamesState> {
   }
 }
 
-/// Provider do serviço Steam
-final steamGamesServiceProvider = Provider<SteamGamesService>((ref) {
-  final dio = Dio();
-  return SteamGamesService(dio);
-});
-
-/// Provider do serviço Xbox
-final xboxGamesServiceProvider = Provider<XboxLiveService>((ref) {
-  final dio = Dio();
-  return XboxLiveService(dio);
-});
-
 /// Provider dos jogos Steam
 final steamGamesNotifierProvider =
     StateNotifierProvider<SteamGamesNotifier, PlatformGamesState>((ref) {
-      final steamService = ref.watch(steamGamesServiceProvider);
       final syncService = ref.watch(platformSyncServiceProvider);
-      return SteamGamesNotifier(steamService, syncService);
+      return SteamGamesNotifier(syncService);
     });
 
 /// Provider dos jogos Xbox
 final xboxGamesNotifierProvider =
     StateNotifierProvider<XboxGamesNotifier, PlatformGamesState>((ref) {
-      final xboxService = ref.watch(xboxGamesServiceProvider);
       final syncService = ref.watch(platformSyncServiceProvider);
-      return XboxGamesNotifier(xboxService, syncService);
+      return XboxGamesNotifier(syncService);
     });
 
 /// Providers convenientes para UI

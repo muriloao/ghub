@@ -55,33 +55,29 @@ void main() {
 
     test('should return ServerFailure when repository fails', () async {
       // arrange
-      when(mockGamesRepository.getUserGames(any)).thenAnswer(
-        (_) async => const Left(ServerFailure(message: 'Server error')),
-      );
+      when(
+        mockGamesRepository.getUserGames(any),
+      ).thenAnswer((_) async => const Left(ServerFailure('Server error')));
 
       // act
       final result = await usecase(GetUserGamesParams(steamId: steamId));
 
       // assert
-      expect(result, const Left(ServerFailure(message: 'Server error')));
+      expect(result, const Left(ServerFailure('Server error')));
       verify(mockGamesRepository.getUserGames(steamId));
     });
 
     test('should return NetworkFailure when network error occurs', () async {
       // arrange
       when(mockGamesRepository.getUserGames(any)).thenAnswer(
-        (_) async =>
-            const Left(NetworkFailure(message: 'No internet connection')),
+        (_) async => const Left(NetworkFailure('No internet connection')),
       );
 
       // act
       final result = await usecase(GetUserGamesParams(steamId: steamId));
 
       // assert
-      expect(
-        result,
-        const Left(NetworkFailure(message: 'No internet connection')),
-      );
+      expect(result, const Left(NetworkFailure('No internet connection')));
       verify(mockGamesRepository.getUserGames(steamId));
     });
 

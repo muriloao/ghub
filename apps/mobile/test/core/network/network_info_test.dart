@@ -1,10 +1,8 @@
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mockito/mockito.dart';
 import 'package:mockito/annotations.dart';
-import 'package:dio/dio.dart';
 
 import 'package:ghub_mobile/core/network/network_info.dart';
-import 'package:ghub_mobile/core/error/exceptions.dart';
 import 'package:connectivity_plus/connectivity_plus.dart';
 
 @GenerateMocks([Connectivity])
@@ -22,8 +20,9 @@ void main() {
   group('NetworkInfo', () {
     test('should return true when device is connected to wifi', () async {
       // arrange
-      when(mockConnectivity.checkConnectivity())
-          .thenAnswer((_) async => [ConnectivityResult.wifi]);
+      when(
+        mockConnectivity.checkConnectivity(),
+      ).thenAnswer((_) async => [ConnectivityResult.wifi]);
 
       // act
       final result = await networkInfo.isConnected;
@@ -35,8 +34,9 @@ void main() {
 
     test('should return true when device is connected to mobile', () async {
       // arrange
-      when(mockConnectivity.checkConnectivity())
-          .thenAnswer((_) async => [ConnectivityResult.mobile]);
+      when(
+        mockConnectivity.checkConnectivity(),
+      ).thenAnswer((_) async => [ConnectivityResult.mobile]);
 
       // act
       final result = await networkInfo.isConnected;
@@ -48,8 +48,9 @@ void main() {
 
     test('should return true when device is connected to ethernet', () async {
       // arrange
-      when(mockConnectivity.checkConnectivity())
-          .thenAnswer((_) async => [ConnectivityResult.ethernet]);
+      when(
+        mockConnectivity.checkConnectivity(),
+      ).thenAnswer((_) async => [ConnectivityResult.ethernet]);
 
       // act
       final result = await networkInfo.isConnected;
@@ -61,8 +62,9 @@ void main() {
 
     test('should return false when device has no connection', () async {
       // arrange
-      when(mockConnectivity.checkConnectivity())
-          .thenAnswer((_) async => [ConnectivityResult.none]);
+      when(
+        mockConnectivity.checkConnectivity(),
+      ).thenAnswer((_) async => [ConnectivityResult.none]);
 
       // act
       final result = await networkInfo.isConnected;
@@ -74,8 +76,9 @@ void main() {
 
     test('should return true when device has multiple connections', () async {
       // arrange
-      when(mockConnectivity.checkConnectivity())
-          .thenAnswer((_) async => [ConnectivityResult.wifi, ConnectivityResult.mobile]);
+      when(mockConnectivity.checkConnectivity()).thenAnswer(
+        (_) async => [ConnectivityResult.wifi, ConnectivityResult.mobile],
+      );
 
       // act
       final result = await networkInfo.isConnected;
@@ -85,17 +88,21 @@ void main() {
       verify(mockConnectivity.checkConnectivity());
     });
 
-    test('should return false when connectivity result contains only none', () async {
-      // arrange
-      when(mockConnectivity.checkConnectivity())
-          .thenAnswer((_) async => [ConnectivityResult.none, ConnectivityResult.none]);
+    test(
+      'should return false when connectivity result contains only none',
+      () async {
+        // arrange
+        when(mockConnectivity.checkConnectivity()).thenAnswer(
+          (_) async => [ConnectivityResult.none, ConnectivityResult.none],
+        );
 
-      // act
-      final result = await networkInfo.isConnected;
+        // act
+        final result = await networkInfo.isConnected;
 
-      // assert
-      expect(result, false);
-      verify(mockConnectivity.checkConnectivity());
-    });
+        // assert
+        expect(result, false);
+        verify(mockConnectivity.checkConnectivity());
+      },
+    );
   });
 }

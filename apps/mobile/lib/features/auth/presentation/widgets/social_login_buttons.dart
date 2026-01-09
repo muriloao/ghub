@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'dart:io';
 
-import '../../../../core/theme/app_theme.dart';
 import '../providers/auth_notifier.dart';
 
 class SocialLoginButtons extends ConsumerWidget {

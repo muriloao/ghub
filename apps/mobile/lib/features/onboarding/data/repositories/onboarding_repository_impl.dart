@@ -8,8 +8,6 @@ import '../../domain/entities/platform_connection_request.dart';
 import '../../domain/repositories/onboarding_repository.dart';
 import '../datasources/onboarding_local_data_source.dart';
 import '../datasources/onboarding_remote_data_source.dart';
-import '../models/gaming_platform_model.dart';
-import '../models/onboarding_progress_model.dart';
 import '../models/platform_connection_request_model.dart';
 
 class OnboardingRepositoryImpl implements OnboardingRepository {

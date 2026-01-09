@@ -80,7 +80,6 @@ class _FavoriteButtonState extends ConsumerState<FavoriteButton>
   @override
   Widget build(BuildContext context) {
     final isFavorite = ref.watch(isGameFavoriteProvider(widget.game.id));
-    final isDarkMode = Theme.of(context).brightness == Brightness.dark;
 
     return GestureDetector(
       onTap: _toggleFavorite,
