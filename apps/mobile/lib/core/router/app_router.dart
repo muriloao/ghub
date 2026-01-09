@@ -41,7 +41,7 @@ class GoRouterObserver extends NavigatorObserver {
 final routerProvider = Provider<GoRouter>((ref) {
   return GoRouter(
     initialLocation: AppConstants.splashRoute,
-    routerNeglect: false,
+    routerNeglect: true,
     observers: [GoRouterObserver()],
     routes: [
       GoRoute(
@@ -115,7 +115,14 @@ final routerProvider = Provider<GoRouter>((ref) {
         path: AppConstants.steamCallbackRoute,
         name: 'steam-callback',
         builder: (context, state) {
-          final queryParams = state.uri.queryParameters;
+          // Tentar obter query params da URI ou do extra
+          Map<String, String> queryParams = state.uri.queryParameters;
+
+          // Se veio via extra (navegação alternativa), usar esses parâmetros
+          if (state.extra != null && state.extra is Map<String, String>) {
+            queryParams = state.extra as Map<String, String>;
+          }
+
           return SteamCallbackPage(queryParameters: queryParams);
         },
       ),

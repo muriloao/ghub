@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'package:app_links/app_links.dart';
 import 'package:flutter/foundation.dart';
+import 'package:ghub_mobile/core/constants/app_constants.dart';
 import 'package:go_router/go_router.dart';
 
 /// Serviço responsável por gerenciar deep links do app
@@ -51,48 +52,58 @@ class DeepLinkService {
   /// Processa deep link recebido e redireciona para rota interna
   Future<void> _handleIncomingLink(Uri uri) async {
     if (kDebugMode) {
-      print('Deep Link recebido: $uri');
+      print('===============================');
+      print('DEEP LINK RECEBIDO');
+      print('URI completa: $uri');
+      print('Scheme: ${uri.scheme}');
+      print('Host: ${uri.host}');
+      print('Path: ${uri.path}');
+      print('Query params: ${uri.queryParameters}');
+      print('===============================');
     }
 
     // Validar scheme
-    if (uri.scheme != 'ghub') {
+    if (uri.scheme != AppConstants.appSchemaName) {
       if (kDebugMode) {
-        print('Scheme inválido: ${uri.scheme}');
+        print('❌ Scheme inválido: ${uri.scheme}');
       }
       return;
     }
 
-    // Construir rota interna removendo o scheme
-    // Ex: ghub://onboarding/callback -> /onboarding/callback
-    final fullRoute = _buildInternalRoute(_router, uri);
-
-    if (kDebugMode) {
-      print('Redirecionando para: $fullRoute');
-    }
-    if (fullRoute == null) {
-      if (kDebugMode) {
-        print('Rota interna inválida para URI: $uri');
+    // Processar outras rotas normalmente
+    final internalRoute = _buildInternalRoute(uri);
+    if (internalRoute != null) {
+      try {
+        _router!.go(internalRoute);
+        if (kDebugMode) {
+          print('✅ Navegação bem-sucedida para: $internalRoute');
+        }
+      } catch (e) {
+        if (kDebugMode) {
+          print('❌ Erro ao navegar: $e');
+        }
+        _router!.go('/');
       }
-      return;
     }
-    // Navegar para a rota interna usando go() que substitui a rota atual
-    // _router!.go(fullRoute, extra: getQueryParameters(uri));
-    _router!.go(fullRoute);
   }
 
   /// Constrói rota interna baseada na URI do deep link
-  String? _buildInternalRoute(GoRouter? router, Uri uri) {
+  String? _buildInternalRoute(Uri uri) {
     final internalRoute =
         '/${uri.host}${uri.pathSegments.isNotEmpty ? '/${uri.pathSegments.join('/')}' : ''}';
 
-    if (internalRoute.isNotEmpty && router != null) {
+    if (internalRoute.isNotEmpty) {
       // Construir URL completa com query parameters
       final queryString = uri.queryParameters.isNotEmpty
           ? '?${uri.queryParameters.entries.map((e) => '${e.key}=${e.value}').join('&')}'
           : '';
 
-      // return internalRoute;
-      return '$internalRoute$queryString';
+      final fullRoute = '$internalRoute$queryString';
+      if (kDebugMode) {
+        print('🔗 Rota construída: $fullRoute');
+      }
+
+      return fullRoute;
     }
     return null;
   }

@@ -6,13 +6,12 @@
 import 'dart:async' as _i4;
 
 import 'package:dartz/dartz.dart' as _i2;
-import 'package:flutter/material.dart' as _i8;
 import 'package:ghub_mobile/core/error/failures.dart' as _i5;
 import 'package:ghub_mobile/features/auth/domain/entities/auth_result.dart'
     as _i6;
 import 'package:ghub_mobile/features/auth/domain/entities/signup_request.dart'
     as _i7;
-import 'package:ghub_mobile/features/auth/domain/entities/user.dart' as _i9;
+import 'package:ghub_mobile/features/auth/domain/entities/user.dart' as _i8;
 import 'package:ghub_mobile/features/auth/domain/repositories/auth_repository.dart'
     as _i3;
 import 'package:mockito/mockito.dart' as _i1;
@@ -98,24 +97,6 @@ class MockAuthRepository extends _i1.Mock implements _i3.AuthRepository {
           as _i4.Future<_i2.Either<_i5.Failure, _i6.AuthResult>>);
 
   @override
-  _i4.Future<void> loginWithSteam(_i8.BuildContext? context) =>
-      (super.noSuchMethod(
-            Invocation.method(#loginWithSteam, [context]),
-            returnValue: _i4.Future<void>.value(),
-            returnValueForMissingStub: _i4.Future<void>.value(),
-          )
-          as _i4.Future<void>);
-
-  @override
-  _i4.Future<void> loginWithEpic(_i8.BuildContext? context) =>
-      (super.noSuchMethod(
-            Invocation.method(#loginWithEpic, [context]),
-            returnValue: _i4.Future<void>.value(),
-            returnValueForMissingStub: _i4.Future<void>.value(),
-          )
-          as _i4.Future<void>);
-
-  @override
   _i4.Future<_i2.Either<_i5.Failure, void>> logout() =>
       (super.noSuchMethod(
             Invocation.method(#logout, []),
@@ -129,17 +110,17 @@ class MockAuthRepository extends _i1.Mock implements _i3.AuthRepository {
           as _i4.Future<_i2.Either<_i5.Failure, void>>);
 
   @override
-  _i4.Future<_i2.Either<_i5.Failure, _i9.User?>> getCurrentUser() =>
+  _i4.Future<_i2.Either<_i5.Failure, _i8.User?>> getCurrentUser() =>
       (super.noSuchMethod(
             Invocation.method(#getCurrentUser, []),
-            returnValue: _i4.Future<_i2.Either<_i5.Failure, _i9.User?>>.value(
-              _FakeEither_0<_i5.Failure, _i9.User?>(
+            returnValue: _i4.Future<_i2.Either<_i5.Failure, _i8.User?>>.value(
+              _FakeEither_0<_i5.Failure, _i8.User?>(
                 this,
                 Invocation.method(#getCurrentUser, []),
               ),
             ),
           )
-          as _i4.Future<_i2.Either<_i5.Failure, _i9.User?>>);
+          as _i4.Future<_i2.Either<_i5.Failure, _i8.User?>>);
 
   @override
   _i4.Future<_i2.Either<_i5.Failure, bool>> isLoggedIn() =>
