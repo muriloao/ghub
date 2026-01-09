@@ -27,8 +27,8 @@ class ProgressSection extends StatelessWidget {
                 '$connectedCount of $totalCount connected'.toUpperCase(),
                 style: Theme.of(context).textTheme.bodySmall?.copyWith(
                   color: Theme.of(context).brightness == Brightness.dark
-                      ? Colors.white.withOpacity(0.8)
-                      : Colors.black.withOpacity(0.8),
+                      ? Colors.white.withValues(alpha: 0.8)
+                      : Colors.black.withValues(alpha: 0.8),
                   fontWeight: FontWeight.w500,
                   letterSpacing: 1.2,
                 ),
@@ -62,7 +62,7 @@ class ProgressSection extends StatelessWidget {
                   borderRadius: BorderRadius.circular(4),
                   boxShadow: [
                     BoxShadow(
-                      color: AppTheme.primary.withOpacity(0.3),
+                      color: AppTheme.primary.withValues(alpha: 0.3),
                       blurRadius: 8,
                       offset: const Offset(0, 2),
                     ),

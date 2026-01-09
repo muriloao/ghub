@@ -143,8 +143,8 @@ class _GamesPageState extends ConsumerState<GamesPage> {
       padding: const EdgeInsets.fromLTRB(20, 24, 20, 8),
       decoration: BoxDecoration(
         color: Theme.of(context).brightness == Brightness.dark
-            ? const Color(0xFF211022).withOpacity(0.95)
-            : const Color(0xFFf8f5f8).withOpacity(0.95),
+            ? const Color(0xFF211022).withValues(alpha: 0.95)
+            : const Color(0xFFf8f5f8).withValues(alpha: 0.95),
       ),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -156,7 +156,7 @@ class _GamesPageState extends ConsumerState<GamesPage> {
                 width: 40,
                 height: 40,
                 decoration: BoxDecoration(
-                  color: const Color(0xFFe225f4).withOpacity(0.2),
+                  color: const Color(0xFFe225f4).withValues(alpha: 0.2),
                   borderRadius: BorderRadius.circular(12),
                 ),
                 child: const Icon(

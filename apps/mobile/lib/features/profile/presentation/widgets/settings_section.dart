@@ -34,8 +34,8 @@ class SettingsSection extends ConsumerWidget {
               borderRadius: BorderRadius.circular(12),
               border: Border.all(
                 color: isDarkMode
-                    ? Colors.white.withOpacity(0.05)
-                    : Colors.grey.withOpacity(0.1),
+                    ? Colors.white.withValues(alpha: 0.05)
+                    : Colors.grey.withValues(alpha: 0.1),
               ),
             ),
             child: Column(
@@ -74,8 +74,8 @@ class SettingsSection extends ConsumerWidget {
               ? Border(
                   bottom: BorderSide(
                     color: isDarkMode
-                        ? Colors.white.withOpacity(0.05)
-                        : Colors.grey.withOpacity(0.1),
+                        ? Colors.white.withValues(alpha: 0.05)
+                        : Colors.grey.withValues(alpha: 0.1),
                   ),
                 )
               : null,

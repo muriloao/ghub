@@ -20,8 +20,8 @@ class OnboardingFooter extends StatelessWidget {
           end: Alignment.bottomCenter,
           colors: [
             Theme.of(context).brightness == Brightness.dark
-                ? AppTheme.backgroundDark.withOpacity(0)
-                : AppTheme.backgroundLight.withOpacity(0),
+                ? AppTheme.backgroundDark.withValues(alpha: 0)
+                : AppTheme.backgroundLight.withValues(alpha: 0),
             Theme.of(context).brightness == Brightness.dark
                 ? AppTheme.backgroundDark
                 : AppTheme.backgroundLight,
@@ -42,14 +42,14 @@ class OnboardingFooter extends StatelessWidget {
                 style: ElevatedButton.styleFrom(
                   backgroundColor: canContinue
                       ? AppTheme.primary
-                      : Colors.grey.withOpacity(0.3),
+                      : Colors.grey.withValues(alpha: 0.3),
                   foregroundColor: Colors.white,
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(16),
                   ),
                   elevation: canContinue ? 8 : 0,
                   shadowColor: canContinue
-                      ? AppTheme.primary.withOpacity(0.3)
+                      ? AppTheme.primary.withValues(alpha: 0.3)
                       : Colors.transparent,
                 ),
                 child: Row(

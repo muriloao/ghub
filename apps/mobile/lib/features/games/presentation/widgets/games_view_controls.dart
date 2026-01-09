@@ -86,7 +86,7 @@ class GamesViewControls extends ConsumerWidget {
         margin: const EdgeInsets.all(4),
         decoration: BoxDecoration(
           color: isSelected
-              ? const Color(0xFFe225f4).withOpacity(0.2)
+              ? const Color(0xFFe225f4).withValues(alpha: 0.2)
               : Colors.transparent,
           borderRadius: BorderRadius.circular(4),
         ),

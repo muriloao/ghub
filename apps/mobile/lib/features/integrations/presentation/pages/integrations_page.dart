@@ -135,7 +135,7 @@ class IntegrationsPage extends ConsumerWidget {
               'Connect your accounts to sync games, achievements, and friends across all your platforms.',
               style: TextStyle(
                 color: isDarkMode
-                    ? Colors.white.withOpacity(0.7)
+                    ? Colors.white.withValues(alpha: 0.7)
                     : Colors.grey.shade600,
                 fontSize: 16,
                 height: 1.4,
@@ -194,9 +194,9 @@ class IntegrationsPage extends ConsumerWidget {
             end: Alignment.bottomCenter,
             colors: [
               (isDarkMode ? AppTheme.backgroundDark : AppTheme.backgroundLight)
-                  .withOpacity(0.0),
+                  .withValues(alpha: 0.0),
               (isDarkMode ? AppTheme.backgroundDark : AppTheme.backgroundLight)
-                  .withOpacity(0.8),
+                  .withValues(alpha: 0.8),
               isDarkMode ? AppTheme.backgroundDark : AppTheme.backgroundLight,
             ],
           ),
@@ -228,7 +228,7 @@ class IntegrationsPage extends ConsumerWidget {
                     borderRadius: BorderRadius.circular(16),
                   ),
                   elevation: 8,
-                  shadowColor: AppTheme.primary.withOpacity(0.3),
+                  shadowColor: AppTheme.primary.withValues(alpha: 0.3),
                 ),
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.center,

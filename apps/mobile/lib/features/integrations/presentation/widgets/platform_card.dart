@@ -26,15 +26,15 @@ class PlatformCard extends ConsumerWidget {
           borderRadius: BorderRadius.circular(16),
           border: Border.all(
             color: platform.isConnected
-                ? AppTheme.primary.withOpacity(0.3)
+                ? AppTheme.primary.withValues(alpha: 0.3)
                 : (isDarkMode
-                      ? Colors.white.withOpacity(0.05)
-                      : Colors.grey.withOpacity(0.1)),
+                      ? Colors.white.withValues(alpha: 0.05)
+                      : Colors.grey.withValues(alpha: 0.1)),
             width: platform.isConnected ? 2 : 1,
           ),
           boxShadow: [
             BoxShadow(
-              color: Colors.black.withOpacity(0.05),
+              color: Colors.black.withValues(alpha: 0.05),
               blurRadius: 8,
               offset: const Offset(0, 2),
             ),
@@ -68,7 +68,7 @@ class PlatformCard extends ConsumerWidget {
             borderRadius: BorderRadius.circular(12),
             boxShadow: [
               BoxShadow(
-                color: platform.backgroundColor.withOpacity(0.3),
+                color: platform.backgroundColor.withValues(alpha: 0.3),
                 blurRadius: 8,
                 offset: const Offset(0, 2),
               ),
@@ -124,7 +124,7 @@ class PlatformCard extends ConsumerWidget {
           platform.description,
           style: theme.textTheme.bodySmall?.copyWith(
             color: theme.brightness == Brightness.dark
-                ? Colors.white.withOpacity(0.4)
+                ? Colors.white.withValues(alpha: 0.4)
                 : Colors.grey.shade500,
           ),
         ),
@@ -193,7 +193,7 @@ class PlatformCard extends ConsumerWidget {
             borderRadius: BorderRadius.circular(12),
           ),
           elevation: 4,
-          shadowColor: AppTheme.primary.withOpacity(0.3),
+          shadowColor: AppTheme.primary.withValues(alpha: 0.3),
         ),
         child: const Text(
           'Connect',

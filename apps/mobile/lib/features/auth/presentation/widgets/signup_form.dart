@@ -180,7 +180,7 @@ class _SignUpFormState extends ConsumerState<SignUpForm> {
               backgroundColor: AppTheme.primaryColor,
               foregroundColor: Colors.white,
               elevation: 0,
-              shadowColor: AppTheme.primaryColor.withOpacity(0.4),
+              shadowColor: AppTheme.primaryColor.withValues(alpha: 0.4),
               shape: RoundedRectangleBorder(
                 borderRadius: BorderRadius.circular(12),
               ),
@@ -234,7 +234,7 @@ class _SignUpFormState extends ConsumerState<SignUpForm> {
             borderRadius: BorderRadius.circular(12),
             boxShadow: [
               BoxShadow(
-                color: Colors.black.withOpacity(0.05),
+                color: Colors.black.withValues(alpha: 0.05),
                 blurRadius: 10,
                 offset: const Offset(0, 2),
               ),
@@ -293,7 +293,7 @@ class _SignUpFormState extends ConsumerState<SignUpForm> {
               focusedBorder: OutlineInputBorder(
                 borderRadius: BorderRadius.circular(12),
                 borderSide: BorderSide(
-                  color: AppTheme.primaryColor.withOpacity(0.5),
+                  color: AppTheme.primaryColor.withValues(alpha: 0.5),
                   width: 2,
                 ),
               ),

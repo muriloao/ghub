@@ -128,13 +128,13 @@ class PlatformSyncButton extends ConsumerWidget {
       padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
       decoration: BoxDecoration(
         color: result.success
-            ? Colors.green.withOpacity(0.1)
-            : Colors.red.withOpacity(0.1),
+            ? Colors.green.withValues(alpha: 0.1)
+            : Colors.red.withValues(alpha: 0.1),
         borderRadius: BorderRadius.circular(8),
         border: Border.all(
           color: result.success
-              ? Colors.green.withOpacity(0.3)
-              : Colors.red.withOpacity(0.3),
+              ? Colors.green.withValues(alpha: 0.3)
+              : Colors.red.withValues(alpha: 0.3),
         ),
       ),
       child: Row(

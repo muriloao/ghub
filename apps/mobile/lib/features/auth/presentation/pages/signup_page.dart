@@ -54,7 +54,7 @@ class SignUpPage extends ConsumerWidget {
                 width: 256,
                 height: 256,
                 decoration: BoxDecoration(
-                  color: AppTheme.primaryColor.withOpacity(0.2),
+                  color: AppTheme.primaryColor.withValues(alpha: 0.2),
                   shape: BoxShape.circle,
                 ),
               ),
@@ -66,7 +66,7 @@ class SignUpPage extends ConsumerWidget {
                 width: 320,
                 height: 320,
                 decoration: BoxDecoration(
-                  color: Colors.blue.shade600.withOpacity(0.1),
+                  color: Colors.blue.shade600.withValues(alpha: 0.1),
                   shape: BoxShape.circle,
                 ),
               ),
@@ -157,7 +157,7 @@ class SignUpPage extends ConsumerWidget {
           decoration: BoxDecoration(
             boxShadow: [
               BoxShadow(
-                color: AppTheme.primaryColor.withOpacity(0.3),
+                color: AppTheme.primaryColor.withValues(alpha: 0.3),
                 blurRadius: 10,
                 spreadRadius: 2,
               ),
@@ -171,7 +171,7 @@ class SignUpPage extends ConsumerWidget {
               letterSpacing: 1.5,
               shadows: [
                 Shadow(
-                  color: AppTheme.primaryColor.withOpacity(0.3),
+                  color: AppTheme.primaryColor.withValues(alpha: 0.3),
                   blurRadius: 10,
                 ),
               ],

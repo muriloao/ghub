@@ -34,7 +34,7 @@ class IntegrationsProgressBar extends ConsumerWidget {
                   fontWeight: FontWeight.w600,
                   letterSpacing: 0.5,
                   color: isDarkMode
-                      ? Colors.white.withOpacity(0.8)
+                      ? Colors.white.withValues(alpha: 0.8)
                       : Colors.grey.shade600,
                 ),
               ),
@@ -52,7 +52,7 @@ class IntegrationsProgressBar extends ConsumerWidget {
             height: 8,
             decoration: BoxDecoration(
               color: isDarkMode
-                  ? AppTheme.primary.withOpacity(0.1)
+                  ? AppTheme.primary.withValues(alpha: 0.1)
                   : Colors.grey.shade200,
               borderRadius: BorderRadius.circular(4),
             ),
@@ -66,12 +66,12 @@ class IntegrationsProgressBar extends ConsumerWidget {
                   gradient: LinearGradient(
                     colors: [
                       AppTheme.primary,
-                      AppTheme.primary.withOpacity(0.8),
+                      AppTheme.primary.withValues(alpha: 0.8),
                     ],
                   ),
                   boxShadow: [
                     BoxShadow(
-                      color: AppTheme.primary.withOpacity(0.5),
+                      color: AppTheme.primary.withValues(alpha: 0.5),
                       blurRadius: 8,
                       offset: const Offset(0, 2),
                     ),

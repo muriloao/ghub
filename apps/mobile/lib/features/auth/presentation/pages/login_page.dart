@@ -145,9 +145,9 @@ class _HeaderSection extends StatelessWidget {
           begin: Alignment.topLeft,
           end: Alignment.bottomRight,
           colors: [
-            AppTheme.primaryColor.withOpacity(0.8),
-            AppTheme.primaryColor.withOpacity(0.6),
-            AppTheme.primaryColor.withOpacity(0.4),
+            AppTheme.primaryColor.withValues(alpha: 0.8),
+            AppTheme.primaryColor.withValues(alpha: 0.6),
+            AppTheme.primaryColor.withValues(alpha: 0.4),
           ],
         ),
       ),
@@ -156,7 +156,7 @@ class _HeaderSection extends StatelessWidget {
           // Animated background pattern
           Positioned.fill(
             child: CustomPaint(
-              painter: _GridPainter(color: Colors.white.withOpacity(0.1)),
+              painter: _GridPainter(color: Colors.white.withValues(alpha: 0.1)),
             ),
           ),
 
@@ -166,15 +166,15 @@ class _HeaderSection extends StatelessWidget {
               width: 80,
               height: 80,
               decoration: BoxDecoration(
-                color: Colors.white.withOpacity(0.2),
+                color: Colors.white.withValues(alpha: 0.2),
                 borderRadius: BorderRadius.circular(20),
                 border: Border.all(
-                  color: Colors.white.withOpacity(0.3),
+                  color: Colors.white.withValues(alpha: 0.3),
                   width: 2,
                 ),
                 boxShadow: [
                   BoxShadow(
-                    color: AppTheme.primaryColor.withOpacity(0.3),
+                    color: AppTheme.primaryColor.withValues(alpha: 0.3),
                     blurRadius: 20,
                     spreadRadius: 5,
                   ),

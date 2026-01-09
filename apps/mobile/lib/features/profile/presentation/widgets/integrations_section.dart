@@ -52,10 +52,10 @@ class IntegrationsSection extends ConsumerWidget {
       decoration: BoxDecoration(
         color: isDarkMode ? AppTheme.surfaceDark : Colors.white,
         borderRadius: BorderRadius.circular(12),
-        border: Border.all(color: AppTheme.primary.withOpacity(0.2)),
+        border: Border.all(color: AppTheme.primary.withValues(alpha: 0.2)),
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withOpacity(0.05),
+            color: Colors.black.withValues(alpha: 0.05),
             blurRadius: 8,
             offset: const Offset(0, 2),
           ),
@@ -119,8 +119,8 @@ class IntegrationsSection extends ConsumerWidget {
                   height: 24,
                   decoration: BoxDecoration(
                     color: integration.isActive
-                        ? AppTheme.primary.withOpacity(0.2)
-                        : Colors.grey.withOpacity(0.2),
+                        ? AppTheme.primary.withValues(alpha: 0.2)
+                        : Colors.grey.withValues(alpha: 0.2),
                     borderRadius: BorderRadius.circular(12),
                   ),
                   child: AnimatedAlign(

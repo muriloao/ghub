@@ -31,7 +31,7 @@ class LoadingSpinner extends StatelessWidget {
                   decoration: BoxDecoration(
                     shape: BoxShape.circle,
                     border: Border.all(
-                      color: AppTheme.primary.withOpacity(0.2),
+                      color: AppTheme.primary.withValues(alpha: 0.2),
                       width: 2,
                     ),
                   ),
@@ -59,7 +59,7 @@ class LoadingSpinner extends StatelessWidget {
                     ),
                     boxShadow: [
                       BoxShadow(
-                        color: AppTheme.primary.withOpacity(0.5),
+                        color: AppTheme.primary.withValues(alpha: 0.5),
                         blurRadius: 15,
                         spreadRadius: 0,
                       ),

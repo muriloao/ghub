@@ -31,10 +31,10 @@ class AchievementCard extends ConsumerWidget {
               borderRadius: BorderRadius.circular(12),
               border: Border.all(
                 color: achievement.isUnlocked
-                    ? AppTheme.primary.withOpacity(0.3)
+                    ? AppTheme.primary.withValues(alpha: 0.3)
                     : (isDarkMode
-                          ? Colors.white.withOpacity(0.05)
-                          : Colors.grey.withOpacity(0.2)),
+                          ? Colors.white.withValues(alpha: 0.05)
+                          : Colors.grey.withValues(alpha: 0.2)),
                 width: 1,
               ),
             ),
@@ -64,8 +64,8 @@ class AchievementCard extends ConsumerWidget {
         borderRadius: BorderRadius.circular(8),
         border: Border.all(
           color: isDarkMode
-              ? Colors.white.withOpacity(0.1)
-              : Colors.grey.withOpacity(0.3),
+              ? Colors.white.withValues(alpha: 0.1)
+              : Colors.grey.withValues(alpha: 0.3),
         ),
       ),
       child: ClipRRect(
@@ -116,7 +116,7 @@ class AchievementCard extends ConsumerWidget {
             if (!achievement.isUnlocked)
               Container(
                 decoration: BoxDecoration(
-                  color: Colors.black.withOpacity(0.3),
+                  color: Colors.black.withValues(alpha: 0.3),
                   borderRadius: BorderRadius.circular(8),
                 ),
               ),
@@ -188,17 +188,17 @@ class AchievementCard extends ConsumerWidget {
 
     switch (achievement.rarity) {
       case AchievementRarity.rare:
-        badgeColor = AppTheme.primary.withOpacity(0.1);
+        badgeColor = AppTheme.primary.withValues(alpha: 0.1);
         textColor = AppTheme.primary;
         break;
       case AchievementRarity.uncommon:
-        badgeColor = Colors.orange.withOpacity(0.1);
+        badgeColor = Colors.orange.withValues(alpha: 0.1);
         textColor = Colors.orange;
         break;
       case AchievementRarity.common:
         badgeColor = isDarkMode
-            ? Colors.white.withOpacity(0.05)
-            : Colors.grey.withOpacity(0.1);
+            ? Colors.white.withValues(alpha: 0.05)
+            : Colors.grey.withValues(alpha: 0.1);
         textColor = isDarkMode ? Colors.grey.shade500 : Colors.grey.shade600;
         break;
     }
@@ -208,7 +208,7 @@ class AchievementCard extends ConsumerWidget {
       decoration: BoxDecoration(
         color: badgeColor,
         borderRadius: BorderRadius.circular(4),
-        border: Border.all(color: textColor.withOpacity(0.3), width: 1),
+        border: Border.all(color: textColor.withValues(alpha: 0.3), width: 1),
       ),
       child: Text(
         achievement.rarity.displayName,
@@ -245,7 +245,7 @@ class AchievementCard extends ConsumerWidget {
                 boxShadow: achievement.isUnlocked
                     ? [
                         BoxShadow(
-                          color: AppTheme.primary.withOpacity(0.6),
+                          color: AppTheme.primary.withValues(alpha: 0.6),
                           blurRadius: 4,
                           offset: const Offset(0, 0),
                         ),

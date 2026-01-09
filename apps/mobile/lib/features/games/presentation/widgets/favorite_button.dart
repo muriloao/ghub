@@ -93,20 +93,20 @@ class _FavoriteButtonState extends ConsumerState<FavoriteButton>
               height: widget.size + 8,
               decoration: BoxDecoration(
                 color: isFavorite
-                    ? Colors.red.withOpacity(0.9)
-                    : Colors.black.withOpacity(0.5),
+                    ? Colors.red.withValues(alpha: 0.9)
+                    : Colors.black.withValues(alpha: 0.5),
                 borderRadius: BorderRadius.circular((widget.size + 8) / 2),
                 border: Border.all(
                   color: isFavorite
                       ? Colors.red
-                      : Colors.white.withOpacity(0.3),
+                      : Colors.white.withValues(alpha: 0.3),
                   width: 1,
                 ),
                 boxShadow: [
                   BoxShadow(
                     color: isFavorite
-                        ? Colors.red.withOpacity(0.3)
-                        : Colors.black.withOpacity(0.2),
+                        ? Colors.red.withValues(alpha: 0.3)
+                        : Colors.black.withValues(alpha: 0.2),
                     blurRadius: 8,
                     offset: const Offset(0, 2),
                   ),
@@ -131,7 +131,7 @@ class _FavoriteButtonState extends ConsumerState<FavoriteButton>
                       color: isFavorite
                           ? (widget.activeColor ?? Colors.white)
                           : (widget.inactiveColor ??
-                                Colors.white.withOpacity(0.8)),
+                                Colors.white.withValues(alpha: 0.8)),
                     ),
             ),
           );

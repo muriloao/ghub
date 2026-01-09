@@ -99,8 +99,8 @@ class ProfilePage extends ConsumerWidget {
   Widget _buildAppBar(BuildContext context, bool isDarkMode) {
     return SliverAppBar(
       backgroundColor: isDarkMode
-          ? AppTheme.backgroundDark.withOpacity(0.95)
-          : AppTheme.backgroundLight.withOpacity(0.95),
+          ? AppTheme.backgroundDark.withValues(alpha: 0.95)
+          : AppTheme.backgroundLight.withValues(alpha: 0.95),
       surfaceTintColor: Colors.transparent,
       elevation: 0,
       floating: true,
@@ -142,11 +142,11 @@ class ProfilePage extends ConsumerWidget {
                 _showLogoutDialog(context);
               },
               style: ElevatedButton.styleFrom(
-                backgroundColor: Colors.red.withOpacity(0.1),
+                backgroundColor: Colors.red.withValues(alpha: 0.1),
                 foregroundColor: Colors.red,
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(12),
-                  side: BorderSide(color: Colors.red.withOpacity(0.2)),
+                  side: BorderSide(color: Colors.red.withValues(alpha: 0.2)),
                 ),
                 elevation: 0,
               ),
@@ -192,13 +192,13 @@ class ProfilePage extends ConsumerWidget {
       child: Container(
         decoration: BoxDecoration(
           color: isDarkMode
-              ? AppTheme.backgroundDark.withOpacity(0.95)
-              : AppTheme.backgroundLight.withOpacity(0.95),
+              ? AppTheme.backgroundDark.withValues(alpha: 0.95)
+              : AppTheme.backgroundLight.withValues(alpha: 0.95),
           border: Border(
             top: BorderSide(
               color: isDarkMode
-                  ? Colors.white.withOpacity(0.05)
-                  : Colors.grey.withOpacity(0.1),
+                  ? Colors.white.withValues(alpha: 0.05)
+                  : Colors.grey.withValues(alpha: 0.1),
             ),
           ),
         ),

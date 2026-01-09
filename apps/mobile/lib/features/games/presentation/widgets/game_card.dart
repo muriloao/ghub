@@ -23,7 +23,7 @@ class GameCard extends StatelessWidget {
           borderRadius: BorderRadius.circular(16),
           boxShadow: [
             BoxShadow(
-              color: Colors.black.withOpacity(0.1),
+              color: Colors.black.withValues(alpha: 0.1),
               blurRadius: 8,
               offset: const Offset(0, 4),
             ),
@@ -85,7 +85,7 @@ class GameCard extends StatelessWidget {
               child: Icon(
                 Icons.sports_esports,
                 size: 48,
-                color: Colors.white.withOpacity(0.3),
+                color: Colors.white.withValues(alpha: 0.3),
               ),
             )
           : null,
@@ -99,10 +99,10 @@ class GameCard extends StatelessWidget {
       child: Container(
         padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
         decoration: BoxDecoration(
-          color: _getStatusColor().withOpacity(0.2),
+          color: _getStatusColor().withValues(alpha: 0.2),
           borderRadius: BorderRadius.circular(12),
           border: Border.all(
-            color: _getStatusColor().withOpacity(0.3),
+            color: _getStatusColor().withValues(alpha: 0.3),
             width: 1,
           ),
         ),
@@ -155,7 +155,7 @@ class GameCard extends StatelessWidget {
             end: Alignment.bottomCenter,
             colors: [
               Colors.transparent,
-              Colors.black.withOpacity(0.8),
+              Colors.black.withValues(alpha: 0.8),
               Colors.black,
             ],
           ),
@@ -185,7 +185,9 @@ class GameCard extends StatelessWidget {
                         fontWeight: FontWeight.w500,
                         shadows: [
                           Shadow(
-                            color: const Color(0xFFe225f4).withOpacity(0.6),
+                            color: const Color(
+                              0xFFe225f4,
+                            ).withValues(alpha: 0.6),
                             blurRadius: 8,
                           ),
                         ],

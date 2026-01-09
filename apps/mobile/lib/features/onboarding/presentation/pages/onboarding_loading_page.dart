@@ -91,14 +91,14 @@ class _OnboardingLoadingPageState extends ConsumerState<OnboardingLoadingPage>
                 height: MediaQuery.of(context).size.width * 0.5,
                 decoration: BoxDecoration(
                   shape: BoxShape.circle,
-                  color: AppTheme.primary.withOpacity(0.1),
+                  color: AppTheme.primary.withValues(alpha: 0.1),
                 ),
                 child: Container(
                   decoration: const BoxDecoration(shape: BoxShape.circle),
                   child: Container(
                     decoration: BoxDecoration(
                       shape: BoxShape.circle,
-                      color: AppTheme.primary.withOpacity(0.1),
+                      color: AppTheme.primary.withValues(alpha: 0.1),
                     ).copyWith(backgroundBlendMode: BlendMode.multiply),
                   ),
                 ),
@@ -113,7 +113,7 @@ class _OnboardingLoadingPageState extends ConsumerState<OnboardingLoadingPage>
                 height: MediaQuery.of(context).size.width * 0.5,
                 decoration: BoxDecoration(
                   shape: BoxShape.circle,
-                  color: AppTheme.primary.withOpacity(0.05),
+                  color: AppTheme.primary.withValues(alpha: 0.05),
                 ),
               ),
             ),
@@ -155,9 +155,9 @@ class _OnboardingLoadingPageState extends ConsumerState<OnboardingLoadingPage>
                       child: OutlinedButton(
                         onPressed: () => context.pop(),
                         style: OutlinedButton.styleFrom(
-                          backgroundColor: Colors.white.withOpacity(0.05),
+                          backgroundColor: Colors.white.withValues(alpha: 0.05),
                           side: BorderSide(
-                            color: Colors.white.withOpacity(0.1),
+                            color: Colors.white.withValues(alpha: 0.1),
                           ),
                           shape: RoundedRectangleBorder(
                             borderRadius: BorderRadius.circular(20),
@@ -166,7 +166,7 @@ class _OnboardingLoadingPageState extends ConsumerState<OnboardingLoadingPage>
                         child: Text(
                           'Cancel',
                           style: TextStyle(
-                            color: Colors.white.withOpacity(0.7),
+                            color: Colors.white.withValues(alpha: 0.7),
                             fontSize: 14,
                             fontWeight: FontWeight.w500,
                           ),
@@ -180,7 +180,7 @@ class _OnboardingLoadingPageState extends ConsumerState<OnboardingLoadingPage>
                     Text(
                       'v2.0.4',
                       style: TextStyle(
-                        color: Colors.white.withOpacity(0.2),
+                        color: Colors.white.withValues(alpha: 0.2),
                         fontSize: 12,
                         fontFamily: 'monospace',
                       ),

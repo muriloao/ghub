@@ -78,15 +78,15 @@ class AchievementFilters extends ConsumerWidget {
         padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
         decoration: BoxDecoration(
           color: isSelected
-              ? AppTheme.primary.withOpacity(0.1)
+              ? AppTheme.primary.withValues(alpha: 0.1)
               : (isDarkMode ? const Color(0xFF2d1b2e) : Colors.white),
           borderRadius: BorderRadius.circular(20),
           border: Border.all(
             color: isSelected
                 ? AppTheme.primary
                 : (isDarkMode
-                      ? Colors.white.withOpacity(0.1)
-                      : Colors.grey.withOpacity(0.3)),
+                      ? Colors.white.withValues(alpha: 0.1)
+                      : Colors.grey.withValues(alpha: 0.3)),
           ),
         ),
         child: Row(

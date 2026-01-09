@@ -29,8 +29,8 @@ class AchievementStats extends ConsumerWidget {
         borderRadius: BorderRadius.circular(12),
         border: Border.all(
           color: isDarkMode
-              ? Colors.white.withOpacity(0.05)
-              : Colors.grey.withOpacity(0.2),
+              ? Colors.white.withValues(alpha: 0.05)
+              : Colors.grey.withValues(alpha: 0.2),
         ),
       ),
       child: Column(
@@ -52,8 +52,8 @@ class AchievementStats extends ConsumerWidget {
                         shape: BoxShape.circle,
                         border: Border.all(
                           color: isDarkMode
-                              ? Colors.white.withOpacity(0.1)
-                              : Colors.grey.withOpacity(0.3),
+                              ? Colors.white.withValues(alpha: 0.1)
+                              : Colors.grey.withValues(alpha: 0.3),
                           width: 4,
                         ),
                       ),
@@ -150,7 +150,7 @@ class AchievementStats extends ConsumerWidget {
               Container(
                 padding: const EdgeInsets.all(8),
                 decoration: BoxDecoration(
-                  color: AppTheme.primary.withOpacity(0.1),
+                  color: AppTheme.primary.withValues(alpha: 0.1),
                   borderRadius: BorderRadius.circular(8),
                 ),
                 child: Icon(
@@ -182,7 +182,7 @@ class AchievementStats extends ConsumerWidget {
                   borderRadius: BorderRadius.circular(2),
                   boxShadow: [
                     BoxShadow(
-                      color: AppTheme.primary.withOpacity(0.4),
+                      color: AppTheme.primary.withValues(alpha: 0.4),
                       blurRadius: 4,
                       offset: const Offset(0, 0),
                     ),

@@ -61,12 +61,12 @@ class StatsSection extends ConsumerWidget {
         borderRadius: BorderRadius.circular(16),
         border: Border.all(
           color: isDarkMode
-              ? Colors.white.withOpacity(0.05)
-              : Colors.grey.withOpacity(0.1),
+              ? Colors.white.withValues(alpha: 0.05)
+              : Colors.grey.withValues(alpha: 0.1),
         ),
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withOpacity(0.05),
+            color: Colors.black.withValues(alpha: 0.05),
             blurRadius: 8,
             offset: const Offset(0, 2),
           ),

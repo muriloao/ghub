@@ -10,7 +10,7 @@ class LoadingStatus extends StatelessWidget {
     return Text(
       status.toUpperCase(),
       style: TextStyle(
-        color: Colors.white.withOpacity(0.4),
+        color: Colors.white.withValues(alpha: 0.4),
         fontSize: 12,
         fontWeight: FontWeight.normal,
         letterSpacing: 1.5,

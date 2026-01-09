@@ -97,8 +97,8 @@ class GameAchievementsSection extends ConsumerWidget {
         decoration: BoxDecoration(
           border: Border.all(
             color: isDarkMode
-                ? Colors.white.withOpacity(0.2)
-                : Colors.grey.withOpacity(0.3),
+                ? Colors.white.withValues(alpha: 0.2)
+                : Colors.grey.withValues(alpha: 0.3),
             style: BorderStyle.solid,
           ),
           borderRadius: BorderRadius.circular(8),
@@ -133,7 +133,7 @@ class GameAchievementsSection extends ConsumerWidget {
       decoration: BoxDecoration(
         color: isDarkMode ? const Color(0xFF2d1b2e) : Colors.white,
         borderRadius: BorderRadius.circular(12),
-        border: Border.all(color: Colors.red.withOpacity(0.3)),
+        border: Border.all(color: Colors.red.withValues(alpha: 0.3)),
       ),
       child: Column(
         children: [
@@ -201,8 +201,8 @@ class GameAchievementsSection extends ConsumerWidget {
         borderRadius: BorderRadius.circular(12),
         border: Border.all(
           color: isDarkMode
-              ? Colors.white.withOpacity(0.05)
-              : Colors.grey.withOpacity(0.2),
+              ? Colors.white.withValues(alpha: 0.05)
+              : Colors.grey.withValues(alpha: 0.2),
         ),
       ),
       child: Column(
@@ -244,8 +244,8 @@ class GameAchievementsSection extends ConsumerWidget {
         borderRadius: BorderRadius.circular(12),
         border: Border.all(
           color: isDarkMode
-              ? Colors.white.withOpacity(0.05)
-              : Colors.grey.withOpacity(0.2),
+              ? Colors.white.withValues(alpha: 0.05)
+              : Colors.grey.withValues(alpha: 0.2),
         ),
       ),
       child: Column(

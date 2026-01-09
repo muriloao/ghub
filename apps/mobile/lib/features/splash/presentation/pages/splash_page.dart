@@ -145,7 +145,9 @@ class _SplashPageState extends ConsumerState<SplashPage>
                         decoration: BoxDecoration(
                           boxShadow: [
                             BoxShadow(
-                              color: const Color(0xFFe225f4).withOpacity(0.3),
+                              color: const Color(
+                                0xFFe225f4,
+                              ).withValues(alpha: 0.3),
                               blurRadius:
                                   15 + (15 * (_glowAnimation.value - 1) * 50),
                               spreadRadius: 0,
@@ -216,7 +218,7 @@ class _SplashPageState extends ConsumerState<SplashPage>
                                           border: Border.all(
                                             color: const Color(
                                               0xFFe225f4,
-                                            ).withOpacity(0.3),
+                                            ).withValues(alpha: 0.3),
                                             width: 1,
                                           ),
                                         ),
@@ -270,7 +272,9 @@ class _SplashPageState extends ConsumerState<SplashPage>
                                     height: 4,
                                     width: double.infinity,
                                     decoration: BoxDecoration(
-                                      color: Colors.white.withOpacity(0.1),
+                                      color: Colors.white.withValues(
+                                        alpha: 0.1,
+                                      ),
                                       borderRadius: BorderRadius.circular(2),
                                     ),
                                     child: AnimatedBuilder(
@@ -288,7 +292,7 @@ class _SplashPageState extends ConsumerState<SplashPage>
                                                 BoxShadow(
                                                   color: const Color(
                                                     0xFFe225f4,
-                                                  ).withOpacity(0.8),
+                                                  ).withValues(alpha: 0.8),
                                                   blurRadius: 10,
                                                   spreadRadius: 0,
                                                 ),
@@ -319,7 +323,7 @@ class _SplashPageState extends ConsumerState<SplashPage>
                       Text(
                         'v1.0.0',
                         style: TextStyle(
-                          color: Colors.white.withOpacity(0.3),
+                          color: Colors.white.withValues(alpha: 0.3),
                           fontSize: 12,
                         ),
                       ),

@@ -48,7 +48,7 @@ class LoadingProgress extends StatelessWidget {
             height: 6,
             width: double.infinity,
             decoration: BoxDecoration(
-              color: Colors.white.withOpacity(0.1),
+              color: Colors.white.withValues(alpha: 0.1),
               borderRadius: BorderRadius.circular(3),
             ),
             child: FractionallySizedBox(

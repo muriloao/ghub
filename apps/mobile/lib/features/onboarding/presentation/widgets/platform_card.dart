@@ -26,12 +26,12 @@ class PlatformCard extends StatelessWidget {
         borderRadius: BorderRadius.circular(16),
         border: Border.all(
           color: isDark
-              ? Colors.white.withOpacity(0.05)
-              : Colors.grey.withOpacity(0.1),
+              ? Colors.white.withValues(alpha: 0.05)
+              : Colors.grey.withValues(alpha: 0.1),
         ),
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withOpacity(0.05),
+            color: Colors.black.withValues(alpha: 0.05),
             blurRadius: 8,
             offset: const Offset(0, 2),
           ),
@@ -101,7 +101,7 @@ class PlatformCard extends StatelessWidget {
                   platform.type.description,
                   style: Theme.of(context).textTheme.bodySmall?.copyWith(
                     color: isDark
-                        ? Colors.white.withOpacity(0.4)
+                        ? Colors.white.withValues(alpha: 0.4)
                         : Colors.grey[500],
                   ),
                 ),
@@ -123,7 +123,7 @@ class PlatformCard extends StatelessWidget {
                 'Manage',
                 style: TextStyle(
                   color: isDark
-                      ? Colors.white.withOpacity(0.3)
+                      ? Colors.white.withValues(alpha: 0.3)
                       : Colors.grey[400],
                   fontSize: 14,
                   fontWeight: FontWeight.bold,

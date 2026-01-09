@@ -113,14 +113,14 @@ class GameFilters extends ConsumerWidget {
               ? null
               : Border.all(
                   color: Theme.of(context).brightness == Brightness.dark
-                      ? Colors.white.withOpacity(0.05)
+                      ? Colors.white.withValues(alpha: 0.05)
                       : Colors.grey.shade100,
                   width: 1,
                 ),
           boxShadow: isSelected
               ? [
                   BoxShadow(
-                    color: const Color(0xFFe225f4).withOpacity(0.2),
+                    color: const Color(0xFFe225f4).withValues(alpha: 0.2),
                     blurRadius: 12,
                     offset: const Offset(0, 4),
                   ),
@@ -180,7 +180,7 @@ class GameFilters extends ConsumerWidget {
         padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
         decoration: BoxDecoration(
           color: isSelected
-              ? const Color(0xFFe225f4).withOpacity(0.2)
+              ? const Color(0xFFe225f4).withValues(alpha: 0.2)
               : const Color(0xFF2d1b2e),
           borderRadius: BorderRadius.circular(20),
           border: Border.all(
