@@ -16,13 +16,16 @@
             if (isMobile) {
                 console.log("Redirecting to mobile app...");
                 window.location.href = "ghub://";
-                return;
+            } else {
+                console.log("Not a mobile device, staying on web landing page.");
+                window.location.replace('index.html');
             }
         } catch (e) {
             console.error(e);
+            console.log("Error occurred, staying on web landing page.");
+            window.location.replace('index.html');
         }
-        console.log("Not a mobile device, staying on web landing page.");
-        window.location.replace('index.html');
+
     </script>
 </head>
 
