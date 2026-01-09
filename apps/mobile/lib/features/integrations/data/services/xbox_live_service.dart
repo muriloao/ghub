@@ -1,7 +1,8 @@
+import 'dart:async';
 import 'dart:convert';
 import 'dart:math';
 import 'package:dio/dio.dart';
-import 'package:url_launcher/url_launcher.dart';
+import 'package:flutter_inappwebview/flutter_inappwebview.dart';
 import 'package:flutter/material.dart';
 import '../../../../core/error/exceptions.dart';
 import '../../../../core/config/xbox_config.dart';
@@ -99,6 +100,11 @@ class XboxLiveService {
 
   /// Inicia o processo de autenticação Xbox Live
   Future<void> authenticateWithXbox(BuildContext context) async {
+    await authenticateWithXboxForSync(context);
+  }
+
+  /// Inicia o processo de autenticação Xbox Live e retorna o usuário
+  Future<XboxUser> authenticateWithXboxForSync(BuildContext context) async {
     // Validar configurações
     if (!XboxConfig.isConfigured) {
       throw AuthenticationException(message: XboxConfig.configurationError);
@@ -111,8 +117,19 @@ class XboxLiveService {
     final authUrl = _buildXboxAuthUrl(state);
 
     try {
-      // Abrir browser para autenticação
-      await _launchXboxAuth(context, authUrl, state);
+      // Usar WebView para capturar callback diretamente
+      final code = await _launchXboxAuthWithWebView(context, authUrl, state);
+
+      if (code == null) {
+        throw const AuthenticationException(
+          message: 'Autenticação Xbox cancelada ou falhou',
+        );
+      }
+
+      // Completar fluxo de autenticação
+      final user = await completeAuthenticationWithCode(code);
+      debugPrint('Autenticação Xbox concluída para: ${user.gamertag}');
+      return user;
     } catch (e) {
       if (e is AuthenticationException) rethrow;
       throw AuthenticationException(message: 'Erro na autenticação Xbox: $e');
@@ -176,24 +193,28 @@ class XboxLiveService {
     return '${XboxConfig.authUrl}?$queryString';
   }
 
-  Future<void> _launchXboxAuth(
+  Future<String?> _launchXboxAuthWithWebView(
     BuildContext context,
     String authUrl,
     String state,
   ) async {
     try {
-      final uri = Uri.parse(authUrl);
-      final launched = await launchUrl(
-        uri,
-        mode: LaunchMode.inAppBrowserView,
-        browserConfiguration: const BrowserConfiguration(showTitle: true),
+      final result = await Navigator.of(context).push<String?>(
+        MaterialPageRoute(
+          builder: (context) => _XboxAuthWebView(
+            authUrl: authUrl,
+            expectedState: state,
+            onCodeReceived: (code) {
+              Navigator.of(context).pop(code);
+            },
+            onError: (error) {
+              Navigator.of(context).pop(null);
+            },
+          ),
+        ),
       );
 
-      if (!launched) {
-        throw const AuthenticationException(
-          message: 'Não foi possível abrir o navegador para autenticação Xbox',
-        );
-      }
+      return result;
     } catch (e) {
       throw AuthenticationException(
         message: 'Erro ao abrir autenticação Xbox: $e',
@@ -428,13 +449,132 @@ class XboxLiveService {
       throw ServerException(message: 'Erro ao buscar jogos Xbox: $e');
     }
   }
+}
 
-  /// Conecta conta Xbox para sincronização de jogos (usar para integrações)
-  Future<void> connectXboxForSync(BuildContext context) async {
-    // Delegar para o método existente de autenticação
-    await authenticateWithXbox(context);
+/// Widget WebView para autenticação Xbox
+class _XboxAuthWebView extends StatefulWidget {
+  final String authUrl;
+  final String expectedState;
+  final Function(String code) onCodeReceived;
+  final Function(String error) onError;
 
-    // O callback será processado via deep link similar ao Steam e Epic
-    // A lógica de completar a autenticação será executada na página de callback
+  const _XboxAuthWebView({
+    required this.authUrl,
+    required this.expectedState,
+    required this.onCodeReceived,
+    required this.onError,
+  });
+
+  @override
+  State<_XboxAuthWebView> createState() => _XboxAuthWebViewState();
+}
+
+class _XboxAuthWebViewState extends State<_XboxAuthWebView> {
+  bool _isLoading = true;
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: const Text('Xbox Login'),
+        backgroundColor: const Color(0xFF107c10), // Xbox green
+        foregroundColor: Colors.white,
+        leading: IconButton(
+          icon: const Icon(Icons.close),
+          onPressed: () => Navigator.of(context).pop(null),
+        ),
+      ),
+      body: Stack(
+        children: [
+          InAppWebView(
+            initialUrlRequest: URLRequest(url: WebUri(widget.authUrl)),
+            onLoadStart: (controller, url) {
+              setState(() => _isLoading = true);
+              _checkForCallback(url);
+            },
+            onLoadStop: (controller, url) {
+              setState(() => _isLoading = false);
+              _checkForCallback(url);
+            },
+            onUpdateVisitedHistory: (controller, url, androidIsReload) {
+              _checkForCallback(url);
+            },
+            initialSettings: InAppWebViewSettings(
+              useShouldOverrideUrlLoading: true,
+              mediaPlaybackRequiresUserGesture: false,
+              javaScriptEnabled: true,
+              javaScriptCanOpenWindowsAutomatically: false,
+              userAgent: 'Mozilla/5.0 (Linux; Android 10) AppleWebKit/537.36',
+            ),
+            shouldOverrideUrlLoading: (controller, navigationAction) async {
+              final url = navigationAction.request.url;
+              if (_checkForCallback(url)) {
+                return NavigationActionPolicy.CANCEL;
+              }
+              return NavigationActionPolicy.ALLOW;
+            },
+          ),
+          if (_isLoading)
+            const Center(
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  CircularProgressIndicator(
+                    valueColor: AlwaysStoppedAnimation<Color>(
+                      Color(0xFF107c10),
+                    ),
+                  ),
+                  SizedBox(height: 16),
+                  Text(
+                    'Carregando Xbox...',
+                    style: TextStyle(fontSize: 16, fontWeight: FontWeight.w500),
+                  ),
+                ],
+              ),
+            ),
+        ],
+      ),
+    );
+  }
+
+  bool _checkForCallback(WebUri? url) {
+    if (url == null) return false;
+
+    final urlString = url.toString();
+
+    // Verificar se é o callback do Xbox (redirect URI ou deep link)
+    if (urlString.contains('app.ghub.digital/integrations/xbox-callback') ||
+        urlString.contains('xbox-callback') ||
+        urlString.startsWith(XboxConfig.redirectUri)) {
+      try {
+        final uri = Uri.parse(urlString);
+        final code = uri.queryParameters['code'];
+        final state = uri.queryParameters['state'];
+        final error = uri.queryParameters['error'];
+
+        if (error != null) {
+          widget.onError('Xbox authentication error: $error');
+          return true;
+        }
+
+        if (state != widget.expectedState) {
+          widget.onError('Invalid state parameter');
+          return true;
+        }
+
+        if (code != null) {
+          widget.onCodeReceived(code);
+          return true;
+        } else {
+          widget.onError('Authorization code not found in callback');
+          return true;
+        }
+      } catch (e) {
+        widget.onError('Error processing Xbox callback: $e');
+        return true;
+      }
+    }
+
+    return false;
   }
 }

@@ -1,10 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:dio/dio.dart';
 
 import '../../domain/entities/gaming_platform.dart';
 import '../providers/integrations_providers.dart';
-import '../../data/services/xbox_live_service.dart';
 import '../../../../core/theme/app_theme.dart';
 
 class PlatformCard extends ConsumerWidget {
