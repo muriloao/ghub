@@ -1,5 +1,4 @@
 import 'package:dartz/dartz.dart';
-import 'package:flutter/material.dart';
 import '../../../../core/error/failures.dart';
 import '../entities/auth_result.dart';
 import '../entities/user.dart';

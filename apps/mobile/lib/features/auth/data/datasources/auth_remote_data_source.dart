@@ -1,5 +1,5 @@
 import 'package:dio/dio.dart';
-import 'package:flutter/material.dart';
+import 'package:ghub_mobile/features/auth/data/models/user_model.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import '../../../../core/error/exceptions.dart';
 import '../models/auth_result_model.dart';
@@ -104,9 +104,20 @@ class AuthRemoteDataSourceImpl implements AuthRemoteDataSource {
 
       final GoogleSignInAuthentication googleAuth =
           await googleUser.authentication;
-
-      if (googleAuth.idToken != null) {
-        return AuthResultModel.fromJson(googleAuth as dynamic);
+      if (googleAuth.idToken != null && googleAuth.accessToken != null) {
+        final now = DateTime.now();
+        return AuthResultModel(
+          userModel: UserModel(
+            id: googleUser.id,
+            email: googleUser.email,
+            name: googleUser.displayName,
+            avatarUrl: googleUser.photoUrl,
+            createdAt: now,
+            updatedAt: null,
+          ),
+          accessToken: googleAuth.accessToken!,
+          refreshToken: googleAuth.idToken!,
+        );
       } else {
         throw ServerException(message: 'Login com Google failed');
       }

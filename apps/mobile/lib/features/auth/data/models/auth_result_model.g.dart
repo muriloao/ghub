@@ -8,7 +8,7 @@ part of 'auth_result_model.dart';
 
 AuthResultModel _$AuthResultModelFromJson(Map<String, dynamic> json) =>
     AuthResultModel(
-      userModel: GoogleUserModel.fromJson(json['user'] as Map<String, dynamic>),
+      userModel: UserModel.fromJson(json['user'] as Map<String, dynamic>),
       accessToken: json['access_token'] as String,
       refreshToken: json['refresh_token'] as String,
     );

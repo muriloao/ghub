@@ -10,8 +10,8 @@ class UserModel extends User {
     required super.email,
     super.name,
     super.avatarUrl,
-    required super.createdAt,
-    required super.updatedAt,
+    super.createdAt,
+    super.updatedAt,
   });
 
   factory UserModel.fromJson(Map<String, dynamic> json) =>
