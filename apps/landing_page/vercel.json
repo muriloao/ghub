@@ -1,0 +1,18 @@
+{
+    "routes": [
+        {
+            "src": "/",
+            "dest": "/app.html",
+            "has": [
+                {
+                    "type": "host",
+                    "value": "app.ghub.digital"
+                }
+            ]
+        },
+        {
+            "src": "/(.*)",
+            "dest": "/$1"
+        }
+    ]
+}
