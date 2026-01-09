@@ -1,5 +1,5 @@
 import 'package:dartz/dartz.dart';
-import '../../../../core/error/failures.dart';
+import 'package:ghub_mobile/core/error/failure.dart';
 import '../entities/auth_result.dart';
 import '../repositories/auth_repository.dart';
 
@@ -14,19 +14,15 @@ class LoginWithCredentials {
   }) async {
     // Basic validation
     if (email.isEmpty || password.isEmpty) {
-      return const Left(
-        ValidationFailure(message: 'Email e senha são obrigatórios'),
-      );
+      return Left(ValidationFailure('Email e senha são obrigatórios'));
     }
 
     if (!_isValidEmail(email)) {
-      return const Left(ValidationFailure(message: 'Email inválido'));
+      return Left(ValidationFailure('Email inválido'));
     }
 
     if (password.length < 6) {
-      return const Left(
-        ValidationFailure(message: 'Senha deve ter pelo menos 6 caracteres'),
-      );
+      return Left(ValidationFailure('Senha deve ter pelo menos 6 caracteres'));
     }
 
     return await repository.loginWithCredentials(

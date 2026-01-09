@@ -1,6 +1,6 @@
 import 'package:flutter_test/flutter_test.dart';
 import 'package:ghub_mobile/core/error/exceptions.dart';
-import 'package:ghub_mobile/core/error/failures.dart';
+import 'package:ghub_mobile/core/error/failure.dart';
 
 void main() {
   group('Exceptions', () {
@@ -8,10 +8,10 @@ void main() {
       test('should create exception with message', () {
         // arrange
         const message = 'Server error occurred';
-        
+
         // act
         const exception = ServerException(message: message);
-        
+
         // assert
         expect(exception.message, message);
         expect(exception.toString(), 'ServerException: $message');
@@ -22,7 +22,7 @@ void main() {
         const exception1 = ServerException(message: 'Error');
         const exception2 = ServerException(message: 'Error');
         const differentException = ServerException(message: 'Different Error');
-        
+
         // assert
         expect(exception1, equals(exception2));
         expect(exception1, isNot(equals(differentException)));
@@ -33,10 +33,10 @@ void main() {
       test('should create exception with message', () {
         // arrange
         const message = 'Cache error occurred';
-        
+
         // act
         const exception = CacheException(message: message);
-        
+
         // assert
         expect(exception.message, message);
         expect(exception.toString(), 'CacheException: $message');
@@ -47,10 +47,10 @@ void main() {
       test('should create exception with message', () {
         // arrange
         const message = 'Authentication failed';
-        
+
         // act
         const exception = AuthenticationException(message: message);
-        
+
         // assert
         expect(exception.message, message);
         expect(exception.toString(), 'AuthenticationException: $message');
@@ -61,10 +61,10 @@ void main() {
       test('should create exception with message', () {
         // arrange
         const message = 'Network error occurred';
-        
+
         // act
         const exception = NetworkException(message: message);
-        
+
         // assert
         expect(exception.message, message);
         expect(exception.toString(), 'NetworkException: $message');
@@ -75,10 +75,10 @@ void main() {
       test('should create exception with message', () {
         // arrange
         const message = 'Validation failed';
-        
+
         // act
         const exception = ValidationException(message: message);
-        
+
         // assert
         expect(exception.message, message);
         expect(exception.toString(), 'ValidationException: $message');
@@ -91,10 +91,10 @@ void main() {
       test('should create failure with message', () {
         // arrange
         const message = 'Server failure occurred';
-        
+
         // act
-        const failure = ServerFailure(message: message);
-        
+        const failure = ServerFailure(message);
+
         // assert
         expect(failure.message, message);
         expect(failure.toString(), 'ServerFailure: $message');
@@ -102,10 +102,10 @@ void main() {
 
       test('should support equality', () {
         // arrange
-        const failure1 = ServerFailure(message: 'Error');
-        const failure2 = ServerFailure(message: 'Error');
-        const differentFailure = ServerFailure(message: 'Different Error');
-        
+        const failure1 = ServerFailure('Error');
+        const failure2 = ServerFailure('Error');
+        const differentFailure = ServerFailure('Different Error');
+
         // assert
         expect(failure1, equals(failure2));
         expect(failure1, isNot(equals(differentFailure)));
@@ -116,10 +116,10 @@ void main() {
       test('should create failure with message', () {
         // arrange
         const message = 'Cache failure occurred';
-        
+
         // act
-        const failure = CacheFailure(message: message);
-        
+        const failure = CacheFailure(message);
+
         // assert
         expect(failure.message, message);
         expect(failure.toString(), 'CacheFailure: $message');
@@ -130,10 +130,10 @@ void main() {
       test('should create failure with message', () {
         // arrange
         const message = 'Authentication failure occurred';
-        
+
         // act
-        const failure = AuthenticationFailure(message: message);
-        
+        const failure = AuthenticationFailure(message);
+
         // assert
         expect(failure.message, message);
         expect(failure.toString(), 'AuthenticationFailure: $message');
@@ -144,10 +144,10 @@ void main() {
       test('should create failure with message', () {
         // arrange
         const message = 'Network failure occurred';
-        
+
         // act
-        const failure = NetworkFailure(message: message);
-        
+        const failure = NetworkFailure(message);
+
         // assert
         expect(failure.message, message);
         expect(failure.toString(), 'NetworkFailure: $message');
@@ -158,10 +158,10 @@ void main() {
       test('should create failure with message', () {
         // arrange
         const message = 'Validation failure occurred';
-        
+
         // act
-        const failure = ValidationFailure(message: message);
-        
+        const failure = ValidationFailure(message);
+
         // assert
         expect(failure.message, message);
         expect(failure.toString(), 'ValidationFailure: $message');

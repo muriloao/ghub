@@ -1,6 +1,6 @@
 import 'package:dartz/dartz.dart';
 import '../../../../core/error/exceptions.dart';
-import '../../../../core/error/failures.dart';
+import '../../../../core/error/failure.dart';
 import '../../domain/entities/auth_result.dart';
 import '../../domain/entities/user.dart';
 import '../../domain/entities/signup_request.dart';
@@ -39,15 +39,15 @@ class AuthRepositoryImpl implements AuthRepository {
 
       return Right(result);
     } on AuthenticationException catch (e) {
-      return Left(AuthenticationFailure(message: e.message));
+      return Left(AuthenticationFailure(e.message));
     } on NetworkException catch (e) {
-      return Left(NetworkFailure(message: e.message));
+      return Left(NetworkFailure(e.message));
     } on ServerException catch (e) {
-      return Left(ServerFailure(message: e.message));
+      return Left(ServerFailure(e.message));
     } on CacheException catch (e) {
-      return Left(CacheFailure(message: e.message));
+      return Left(CacheFailure(e.message));
     } catch (e) {
-      return Left(ServerFailure(message: 'Erro inesperado: ${e.toString()}'));
+      return Left(ServerFailure('Erro inesperado: ${e.toString()}'));
     }
   }
 
@@ -70,15 +70,15 @@ class AuthRepositoryImpl implements AuthRepository {
 
       return Right(result);
     } on AuthenticationException catch (e) {
-      return Left(AuthenticationFailure(message: e.message));
+      return Left(AuthenticationFailure(e.message));
     } on NetworkException catch (e) {
-      return Left(NetworkFailure(message: e.message));
+      return Left(NetworkFailure(e.message));
     } on ServerException catch (e) {
-      return Left(ServerFailure(message: e.message));
+      return Left(ServerFailure(e.message));
     } on CacheException catch (e) {
-      return Left(CacheFailure(message: e.message));
+      return Left(CacheFailure(e.message));
     } catch (e) {
-      return Left(ServerFailure(message: 'Erro inesperado: ${e.toString()}'));
+      return Left(ServerFailure('Erro inesperado: ${e.toString()}'));
     }
   }
 
@@ -95,15 +95,15 @@ class AuthRepositoryImpl implements AuthRepository {
 
       return Right(result);
     } on AuthenticationException catch (e) {
-      return Left(AuthenticationFailure(message: e.message));
+      return Left(AuthenticationFailure(e.message));
     } on NetworkException catch (e) {
-      return Left(NetworkFailure(message: e.message));
+      return Left(NetworkFailure(e.message));
     } on ServerException catch (e) {
-      return Left(ServerFailure(message: e.message));
+      return Left(ServerFailure(e.message));
     } on CacheException catch (e) {
-      return Left(CacheFailure(message: e.message));
+      return Left(CacheFailure(e.message));
     } catch (e) {
-      return Left(ServerFailure(message: 'Erro inesperado: ${e.toString()}'));
+      return Left(ServerFailure('Erro inesperado: ${e.toString()}'));
     }
   }
 
@@ -114,13 +114,11 @@ class AuthRepositoryImpl implements AuthRepository {
       await localDataSource.clearCache();
       return const Right(null);
     } on ServerException catch (e) {
-      return Left(ServerFailure(message: e.message));
+      return Left(ServerFailure(e.message));
     } on CacheException catch (e) {
-      return Left(CacheFailure(message: e.message));
+      return Left(CacheFailure(e.message));
     } catch (e) {
-      return Left(
-        ServerFailure(message: 'Erro ao fazer logout: ${e.toString()}'),
-      );
+      return Left(ServerFailure('Erro ao fazer logout: ${e.toString()}'));
     }
   }
 
@@ -130,11 +128,9 @@ class AuthRepositoryImpl implements AuthRepository {
       final user = await localDataSource.getCachedUser();
       return Right(user);
     } on CacheException catch (e) {
-      return Left(CacheFailure(message: e.message));
+      return Left(CacheFailure(e.message));
     } catch (e) {
-      return Left(
-        CacheFailure(message: 'Erro ao recuperar usuário: ${e.toString()}'),
-      );
+      return Left(CacheFailure('Erro ao recuperar usuário: ${e.toString()}'));
     }
   }
 
@@ -154,11 +150,9 @@ class AuthRepositoryImpl implements AuthRepository {
       final token = await localDataSource.getCachedAccessToken();
       return Right(token);
     } on CacheException catch (e) {
-      return Left(CacheFailure(message: e.message));
+      return Left(CacheFailure(e.message));
     } catch (e) {
-      return Left(
-        CacheFailure(message: 'Erro ao recuperar token: ${e.toString()}'),
-      );
+      return Left(CacheFailure('Erro ao recuperar token: ${e.toString()}'));
     }
   }
 }

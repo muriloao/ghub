@@ -6,7 +6,7 @@
 import 'dart:async' as _i4;
 
 import 'package:dartz/dartz.dart' as _i2;
-import 'package:ghub_mobile/core/error/failures.dart' as _i5;
+import 'package:ghub_mobile/core/error/failure.dart' as _i5;
 import 'package:ghub_mobile/features/auth/domain/entities/auth_result.dart'
     as _i6;
 import 'package:ghub_mobile/features/auth/domain/entities/signup_request.dart'

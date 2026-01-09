@@ -1,5 +1,5 @@
 import 'package:dartz/dartz.dart';
-import '../../../../core/error/failures.dart';
+import 'package:ghub_mobile/core/error/failure.dart';
 import '../entities/auth_result.dart';
 import '../repositories/auth_repository.dart';
 
