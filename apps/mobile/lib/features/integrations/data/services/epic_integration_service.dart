@@ -2,13 +2,13 @@ import 'dart:convert';
 import 'dart:math';
 import 'package:crypto/crypto.dart';
 import 'package:dio/dio.dart';
+import 'package:ghub_mobile/features/auth/data/models/user_model.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:flutter/material.dart';
 import '../../../../core/config/epic_games_config.dart';
 import '../../../../core/error/exceptions.dart';
 import '../../../auth/data/models/epic_game_model.dart';
 import '../../../auth/data/models/auth_result_model.dart';
-import '../../../auth/data/models/google_user_model.dart';
 
 class EpicIntegrationService {
   final Dio _dio;
@@ -219,11 +219,12 @@ class EpicIntegrationService {
     final now = DateTime.now();
 
     // Criar usuário interno baseado nos dados Epic Games
-    final user = GoogleUserModel(
+    final user = UserModel(
       id: 'epic_${epicUser.id}',
       email: epicUser.email ?? '${epicUser.id}@epic.local',
       name: epicUser.displayName,
       avatarUrl: epicUser.avatar,
+      createdAt: now,
     );
 
     // Usar o access token real para Epic Games

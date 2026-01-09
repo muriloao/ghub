@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import '../../../auth/presentation/providers/auth_notifier.dart';
+import '../../../integrations/presentation/providers/integrations_providers.dart';
+import '../../../../core/services/platform_connections_service.dart';
 import '../widgets/game_filters.dart';
 import '../widgets/games_search_bar.dart';
 import '../widgets/games_view_controls.dart';
@@ -17,33 +19,51 @@ class GamesPage extends ConsumerStatefulWidget {
 }
 
 class _GamesPageState extends ConsumerState<GamesPage> {
-  String? _steamId;
-
   @override
   void initState() {
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      _loadUserGames();
+      _loadConnectedPlatformGames();
     });
   }
 
-  void _loadUserGames() {
-    final authState = ref.read(authNotifierProvider);
-    if (authState is AuthAuthenticated) {
-      // Extrair Steam ID do user ID (formato: steam_76561198000000000)
-      final userId = authState.user.id;
-      if (userId.startsWith('steam_')) {
-        final newSteamId = userId.substring(6);
-        if (_steamId != newSteamId) {
-          setState(() {
-            _steamId = newSteamId;
-          });
-          if (mounted) {
-            ref.read(gamesNotifierProvider.notifier).loadGames(newSteamId);
-          }
-        }
+  void _loadConnectedPlatformGames() async {
+    final connectedPlatforms =
+        await PlatformConnectionsService.getConnections();
+
+    // Carregar jogos de cada plataforma conectada
+    for (final platformConnection in connectedPlatforms) {
+      switch (platformConnection.platformId) {
+        case 'steam':
+          _loadSteamGames(platformConnection);
+          break;
+        case 'xbox':
+          _loadXboxGames(platformConnection);
+          break;
+        case 'epic_games':
+          _loadEpicGames(platformConnection);
+          break;
       }
     }
+  }
+
+  void _loadSteamGames(PlatformConnectionData platformConnection) {
+    // Extrair Steam ID dos dados da plataforma conectada
+    final steamId =
+        platformConnection.metadata['steamId'] ?? platformConnection.userId;
+    if (steamId != null) {
+      ref.read(gamesNotifierProvider.notifier).loadGames(steamId);
+    }
+  }
+
+  void _loadXboxGames(PlatformConnectionData platformConnection) {
+    // Implementar carregamento de jogos Xbox
+    // TODO: Implementar quando Xbox games service estiver pronto
+  }
+
+  void _loadEpicGames(PlatformConnectionData platformConnection) {
+    // Implementar carregamento de jogos Epic
+    // TODO: Implementar quando Epic games service estiver pronto
   }
 
   @override
@@ -53,25 +73,14 @@ class _GamesPageState extends ConsumerState<GamesPage> {
     final errorMessage = ref.watch(gamesErrorMessageProvider);
     final gamesState = ref.watch(gamesNotifierProvider);
 
-    // Listen for auth changes
-    ref.listen<AuthState>(authNotifierProvider, (previous, next) {
-      if (next is AuthAuthenticated && next != previous) {
-        final userId = next.user.id;
-        if (userId.startsWith('steam_')) {
-          final newSteamId = userId.substring(6);
-          if (_steamId != newSteamId) {
-            setState(() {
-              _steamId = newSteamId;
-            });
-            if (mounted) {
-              ref.read(gamesNotifierProvider.notifier).loadGames(newSteamId);
-            }
-          }
-        }
+    // Listen for connected platforms changes
+    ref.listen(connectedPlatformsProvider, (previous, next) {
+      if (previous != next && next.isNotEmpty) {
+        _loadConnectedPlatformGames();
       }
     });
 
-    if (gamesState.isLoading && _steamId == null) {
+    if (gamesState.isLoading) {
       return Scaffold(
         backgroundColor: Theme.of(context).brightness == Brightness.dark
             ? const Color(0xFF211022)
@@ -116,8 +125,8 @@ class _GamesPageState extends ConsumerState<GamesPage> {
 
             // Game Grid
             Expanded(
-              child: !hasError && _steamId != null
-                  ? GamesGrid(steamId: _steamId!)
+              child: !hasError
+                  ? const GamesGrid()
                   : _buildErrorState(errorMessage),
             ),
           ],
@@ -263,7 +272,7 @@ class _GamesPageState extends ConsumerState<GamesPage> {
             ),
             const SizedBox(height: 24),
             ElevatedButton(
-              onPressed: () => _loadUserGames(),
+              onPressed: () => _loadConnectedPlatformGames(),
               style: ElevatedButton.styleFrom(
                 backgroundColor: const Color(0xFFe225f4),
                 foregroundColor: Colors.white,

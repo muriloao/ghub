@@ -7,6 +7,9 @@ import '../widgets/platform_card.dart';
 import '../widgets/integrations_progress_bar.dart';
 import '../widgets/platform_sync_section.dart';
 import '../../../../core/theme/app_theme.dart';
+import '../../../../core/constants/app_constants.dart';
+import '../../../auth/presentation/providers/auth_providers.dart';
+import '../../../auth/presentation/providers/auth_notifier.dart';
 
 class IntegrationsPage extends ConsumerWidget {
   const IntegrationsPage({super.key});
@@ -61,7 +64,7 @@ class IntegrationsPage extends ConsumerWidget {
               ],
             ],
           ),
-          _buildFooter(context, isDarkMode),
+          _buildFooter(context, isDarkMode, ref),
         ],
       ),
     );
@@ -76,13 +79,15 @@ class IntegrationsPage extends ConsumerWidget {
       elevation: 0,
       floating: true,
       pinned: false,
-      leading: IconButton(
-        onPressed: () => context.pop(),
-        icon: Icon(
-          Icons.arrow_back,
-          color: isDarkMode ? Colors.white : Colors.black,
-        ),
-      ),
+      leading: context.canPop()
+          ? IconButton(
+              onPressed: () => context.pop(),
+              icon: Icon(
+                Icons.arrow_back,
+                color: isDarkMode ? Colors.white : Colors.black,
+              ),
+            )
+          : null,
       title: Text(
         'Connect Accounts',
         style: TextStyle(
@@ -177,7 +182,7 @@ class IntegrationsPage extends ConsumerWidget {
     );
   }
 
-  Widget _buildFooter(BuildContext context, bool isDarkMode) {
+  Widget _buildFooter(BuildContext context, bool isDarkMode, WidgetRef ref) {
     return Positioned(
       bottom: 0,
       left: 0,
@@ -204,7 +209,18 @@ class IntegrationsPage extends ConsumerWidget {
               width: double.infinity,
               height: 56,
               child: ElevatedButton(
-                onPressed: () => context.pop(),
+                onPressed: () async {
+                  // Marcar usuário como retornante e navegar para home
+                  final authState = ref.read(authNotifierProvider);
+                  if (authState is AuthAuthenticated) {
+                    await ref
+                        .read(navigationControllerProvider.notifier)
+                        .markUserAsReturning(authState.user.email);
+                    if (context.mounted) {
+                      context.go(AppConstants.homeRoute);
+                    }
+                  }
+                },
                 style: ElevatedButton.styleFrom(
                   backgroundColor: AppTheme.primary,
                   foregroundColor: Colors.white,

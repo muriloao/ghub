@@ -428,4 +428,13 @@ class XboxLiveService {
       throw ServerException(message: 'Erro ao buscar jogos Xbox: $e');
     }
   }
+
+  /// Conecta conta Xbox para sincronização de jogos (usar para integrações)
+  Future<void> connectXboxForSync(BuildContext context) async {
+    // Delegar para o método existente de autenticação
+    await authenticateWithXbox(context);
+
+    // O callback será processado via deep link similar ao Steam e Epic
+    // A lógica de completar a autenticação será executada na página de callback
+  }
 }

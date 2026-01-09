@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../../../core/services/cache_service.dart';
 import '../../../../core/services/platform_sync_service.dart';
+import '../../../../core/services/platform_connections_service.dart';
 import '../../../../core/theme/app_theme.dart';
 
 /// Widget para botão de sincronização de uma plataforma
@@ -371,12 +372,21 @@ class PlatformSyncSection extends ConsumerWidget {
   }
 
   Future<Map<Platform, bool>> _getConnectedPlatforms() async {
-    final cachedUser = await CacheService.getCachedUserData();
+    // Usar novo serviço de conexões das plataformas
+    final isConnectedSteam = await PlatformConnectionsService.isConnected(
+      'steam',
+    );
+    final isConnectedXbox = await PlatformConnectionsService.isConnected(
+      'xbox',
+    );
+    final isConnectedEpic = await PlatformConnectionsService.isConnected(
+      'epic_games',
+    );
 
     return {
-      Platform.steam: cachedUser?.steamId != null,
-      Platform.xbox: cachedUser?.authToken != null,
-      Platform.epic: false, // Quando implementado
+      Platform.steam: isConnectedSteam,
+      Platform.xbox: isConnectedXbox,
+      Platform.epic: isConnectedEpic,
     };
   }
 }

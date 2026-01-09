@@ -4,7 +4,10 @@ import 'package:dio/dio.dart';
 
 import '../../domain/entities/gaming_platform.dart';
 import '../../data/services/xbox_live_service.dart';
+import '../../data/services/steam_integration_service.dart';
+import '../../data/services/epic_integration_service.dart';
 import '../../../../core/services/integrations_cache_service.dart';
+import '../../../../core/services/platform_connections_service.dart';
 import '../../../../core/error/exceptions.dart';
 
 class IntegrationsState {
@@ -65,10 +68,34 @@ class IntegrationsNotifier extends StateNotifier<IntegrationsState> {
     );
   }
 
+  /// Recarrega o estado das plataformas
+  Future<void> refreshPlatforms() async {
+    state = state.copyWith(isLoading: true);
+    final platforms = await _getPlatformsData();
+    final connectedCount = platforms.where((p) => p.isConnected).length;
+
+    state = state.copyWith(
+      platforms: platforms,
+      isLoading: false,
+      connectedCount: connectedCount,
+    );
+  }
+
   Future<List<GamingPlatform>> _getPlatformsData() async {
-    // Verificar plataformas conectadas no cache
-    final connectedPlatforms =
-        await IntegrationsCacheService.getConnectedPlatforms();
+    // Verificar plataformas conectadas usando novo serviço
+    final connectedPlatformIds =
+        await PlatformConnectionsService.getConnectedPlatformIds();
+
+    // Obter dados de conexões
+    final steamConnection = await PlatformConnectionsService.getConnection(
+      'steam',
+    );
+    final xboxConnection = await PlatformConnectionsService.getConnection(
+      'xbox',
+    );
+    final epicConnection = await PlatformConnectionsService.getConnection(
+      'epic',
+    );
 
     return [
       GamingPlatform(
@@ -76,24 +103,22 @@ class IntegrationsNotifier extends StateNotifier<IntegrationsState> {
         name: 'Steam',
         description: 'Games • Achievements • Friends',
         type: PlatformType.steam,
-        status: connectedPlatforms.containsKey('steam')
+        status: connectedPlatformIds.contains('steam')
             ? ConnectionStatus.connected
-            : ConnectionStatus.connected, // Sempre conectado por autenticação
+            : ConnectionStatus.disconnected,
         primaryColor: const Color(0xFF171a21),
         backgroundColor: const Color(0xFF171a21),
         icon: Icons.sports_esports,
         features: ['Games', 'Achievements', 'Friends'],
-        connectedAt:
-            connectedPlatforms['steam']?.connectedAt ??
-            DateTime.now().subtract(const Duration(days: 7)),
-        connectedUsername: connectedPlatforms['steam']?.username ?? 'SteamUser',
+        connectedAt: steamConnection?.connectedAt,
+        connectedUsername: steamConnection?.username,
       ),
       GamingPlatform(
         id: 'xbox',
         name: 'Xbox',
         description: 'Games • Friends',
         type: PlatformType.xbox,
-        status: connectedPlatforms.containsKey('xbox')
+        status: connectedPlatformIds.contains('xbox')
             ? ConnectionStatus.connected
             : ConnectionStatus.disconnected,
         primaryColor: const Color(0xFF107C10),
@@ -101,8 +126,8 @@ class IntegrationsNotifier extends StateNotifier<IntegrationsState> {
         icon: Icons.gamepad,
         logoText: 'X',
         features: ['Games', 'Friends'],
-        connectedAt: connectedPlatforms['xbox']?.connectedAt,
-        connectedUsername: connectedPlatforms['xbox']?.username,
+        connectedAt: xboxConnection?.connectedAt,
+        connectedUsername: xboxConnection?.username,
       ),
       GamingPlatform(
         id: 'playstation',
@@ -121,11 +146,15 @@ class IntegrationsNotifier extends StateNotifier<IntegrationsState> {
         name: 'Epic Games',
         description: 'Games Only',
         type: PlatformType.epicGames,
-        status: ConnectionStatus.disconnected,
+        status: connectedPlatformIds.contains('epic_games')
+            ? ConnectionStatus.connected
+            : ConnectionStatus.disconnected,
         primaryColor: const Color(0xFF333333),
         backgroundColor: const Color(0xFF333333),
         icon: Icons.change_history,
         features: ['Games'],
+        connectedAt: epicConnection?.connectedAt,
+        connectedUsername: epicConnection?.username,
       ),
       GamingPlatform(
         id: 'gog_galaxy',
@@ -176,121 +205,78 @@ class IntegrationsNotifier extends StateNotifier<IntegrationsState> {
     ];
   }
 
-  Future<void> connectPlatform(
-    String platformId, [
-    BuildContext? context,
-  ]) async {
-    final platformIndex = state.platforms.indexWhere((p) => p.id == platformId);
-    if (platformIndex == -1) return;
-
-    // Update platform to connecting state
-    final updatedPlatforms = List<GamingPlatform>.from(state.platforms);
-    updatedPlatforms[platformIndex] = updatedPlatforms[platformIndex].copyWith(
-      status: ConnectionStatus.connecting,
-    );
-
-    state = state.copyWith(platforms: updatedPlatforms);
-
-    try {
-      if (platformId == 'xbox') {
-        // Conexão real com Xbox Live
-        await _connectXboxLive(context);
-      } else {
-        // Simulate API call for other platforms
-        await Future.delayed(const Duration(seconds: 2));
-
-        // Update to connected state
-        updatedPlatforms[platformIndex] = updatedPlatforms[platformIndex]
-            .copyWith(
-              status: ConnectionStatus.connected,
-              connectedAt: DateTime.now(),
-              connectedUsername: '${updatedPlatforms[platformIndex].name}User',
-            );
-      }
-
-      // Refresh platforms from cache
-      await refreshPlatforms();
-    } catch (e) {
-      // Para Xbox, é esperado que lance AuthenticationException
-      if (e is AuthenticationException && platformId == 'xbox') {
-        // Reset para disconnected apenas se houve erro real
-        updatedPlatforms[platformIndex] = updatedPlatforms[platformIndex]
-            .copyWith(status: ConnectionStatus.disconnected);
-
-        state = state.copyWith(platforms: updatedPlatforms);
-        return; // Xbox authentication flow iniciado com sucesso
-      }
-
-      // Reset to disconnected on error
-      updatedPlatforms[platformIndex] = updatedPlatforms[platformIndex]
-          .copyWith(status: ConnectionStatus.disconnected);
-
-      state = state.copyWith(
-        platforms: updatedPlatforms,
-        error:
-            'Failed to connect to ${updatedPlatforms[platformIndex].name}: $e',
-      );
-    }
-  }
-
-  Future<void> _connectXboxLive(BuildContext? context) async {
-    if (context == null) {
-      throw const AuthenticationException(
-        message: 'Context required for Xbox authentication',
-      );
-    }
-
-    // Iniciar fluxo de autenticação Xbox Live
-    final xboxService = XboxLiveService(Dio());
-    await xboxService.authenticateWithXbox(context);
-  }
-
-  Future<void> disconnectPlatform(String platformId) async {
-    final platformIndex = state.platforms.indexWhere((p) => p.id == platformId);
-    if (platformIndex == -1) return;
-
-    try {
-      // Remove from cache
-      await IntegrationsCacheService.removePlatformConnection(platformId);
-
-      // Update local state
-      final updatedPlatforms = List<GamingPlatform>.from(state.platforms);
-      updatedPlatforms[platformIndex] = updatedPlatforms[platformIndex]
-          .copyWith(
-            status: ConnectionStatus.disconnected,
-            connectedAt: null,
-            connectedUsername: null,
-          );
-
-      final connectedCount = updatedPlatforms
-          .where((p) => p.isConnected)
-          .length;
-
-      state = state.copyWith(
-        platforms: updatedPlatforms,
-        connectedCount: connectedCount,
-      );
-    } catch (e) {
-      state = state.copyWith(
-        error:
-            'Failed to disconnect from ${state.platforms[platformIndex].name}: $e',
-      );
-    }
-  }
-
-  /// Atualiza as plataformas a partir do cache
-  Future<void> refreshPlatforms() async {
-    final platforms = await _getPlatformsData();
-    final connectedCount = platforms.where((p) => p.isConnected).length;
-
-    state = state.copyWith(
-      platforms: platforms,
-      connectedCount: connectedCount,
-      isLoading: false,
-    );
-  }
-
   void clearError() {
     state = state.copyWith(error: null);
+  }
+
+  /// Conecta uma plataforma usando os serviços de integração
+  Future<void> connectPlatform(String platformId, BuildContext context) async {
+    try {
+      state = state.copyWith(isLoading: true);
+
+      switch (platformId) {
+        case 'steam':
+          await _connectSteam(context);
+          break;
+        case 'xbox':
+          await _connectXbox(context);
+          break;
+        case 'epic_games':
+          await _connectEpic(context);
+          break;
+        default:
+          throw Exception('Plataforma não suportada: $platformId');
+      }
+
+      // Atualizar estado das plataformas
+      await refreshPlatforms();
+    } catch (e) {
+      state = state.copyWith(
+        isLoading: false,
+        error: 'Erro ao conectar plataforma: $e',
+      );
+    }
+  }
+
+  /// Desconecta uma plataforma removendo dados locais
+  Future<void> disconnectPlatform(String platformId) async {
+    try {
+      state = state.copyWith(isLoading: true);
+
+      // Remover conexão local
+      await PlatformConnectionsService.removeConnection(platformId);
+
+      // Atualizar estado das plataformas
+      await refreshPlatforms();
+    } catch (e) {
+      state = state.copyWith(
+        isLoading: false,
+        error: 'Erro ao desconectar plataforma: $e',
+      );
+    }
+  }
+
+  Future<void> _connectSteam(BuildContext context) async {
+    final dio = Dio(); // Usando Dio diretamente por simplicidade
+    final steamService = SteamIntegrationService(dio);
+
+    // Chamar serviço real de integração Steam
+    await steamService.connectSteamForSync(context);
+  }
+
+  Future<void> _connectXbox(BuildContext context) async {
+    final dio = Dio(); // Usando Dio diretamente por simplicidade
+    final xboxService = XboxLiveService(dio);
+
+    // Chamar serviço real de integração Xbox
+    await xboxService.connectXboxForSync(context);
+  }
+
+  Future<void> _connectEpic(BuildContext context) async {
+    final dio = Dio(); // Usando Dio diretamente por simplicidade
+    final epicService = EpicIntegrationService(dio);
+
+    // Chamar serviço real de integração Epic Games
+    await epicService.connectEpicForSync(context);
   }
 }

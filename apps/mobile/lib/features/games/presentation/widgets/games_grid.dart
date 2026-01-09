@@ -8,9 +8,7 @@ import '../states/games_state.dart';
 import '../../domain/entities/game.dart';
 
 class GamesGrid extends ConsumerWidget {
-  final String steamId;
-
-  const GamesGrid({super.key, required this.steamId});
+  const GamesGrid({super.key});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -58,7 +56,9 @@ class GamesGrid extends ConsumerWidget {
     return RefreshIndicator(
       color: const Color(0xFFe225f4),
       onRefresh: () async {
-        await ref.read(gamesNotifierProvider.notifier).refreshGames(steamId);
+        // Recarregar games - implementar reload geral quando não há steamId específico
+        // Por enquanto, apenas simular refresh
+        await Future.delayed(const Duration(milliseconds: 500));
       },
       child: viewMode == GameViewMode.grid
           ? _buildGridView(games)

@@ -168,15 +168,13 @@ class PlatformCard extends ConsumerWidget {
       return SizedBox(
         width: double.infinity,
         child: TextButton(
-          onPressed: () => _showManageDialog(ref),
+          onPressed: () => _showDisconnectDialog(context, ref),
           style: TextButton.styleFrom(
-            foregroundColor: isDarkMode
-                ? Colors.white.withOpacity(0.3)
-                : Colors.grey.shade400,
+            foregroundColor: Colors.red,
             padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 8),
           ),
           child: const Text(
-            'Manage',
+            'Disconnect',
             style: TextStyle(fontWeight: FontWeight.bold, fontSize: 12),
           ),
         ),
@@ -207,11 +205,33 @@ class PlatformCard extends ConsumerWidget {
     );
   }
 
-  void _showManageDialog(WidgetRef ref) {
-    // TODO: Show manage platform dialog
-    // For now, just disconnect
-    ref
-        .read(integrationsNotifierProvider.notifier)
-        .disconnectPlatform(platform.id);
+  void _showDisconnectDialog(BuildContext context, WidgetRef ref) {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: Text('Disconnect ${platform.name}?'),
+          content: Text(
+            'This will remove all ${platform.name} data from your device. You can reconnect at any time.',
+          ),
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.of(context).pop(),
+              child: const Text('Cancel'),
+            ),
+            TextButton(
+              onPressed: () {
+                Navigator.of(context).pop();
+                ref
+                    .read(integrationsNotifierProvider.notifier)
+                    .disconnectPlatform(platform.id);
+              },
+              style: TextButton.styleFrom(foregroundColor: Colors.red),
+              child: const Text('Disconnect'),
+            ),
+          ],
+        );
+      },
+    );
   }
 }
