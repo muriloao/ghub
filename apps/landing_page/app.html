@@ -13,9 +13,15 @@
             console.log("User Agent: " + navigator.userAgent);
             const isMobile = /Android|iPhone|iPad/i.test(navigator.userAgent);
 
+            // Capturar o path atual
+            const currentPath = window.location.pathname;
+            console.log("Current path: " + currentPath);
+
             if (isMobile) {
                 console.log("Redirecting to mobile app...");
-                window.location.href = "ghub://";
+                // Para outros paths, redirecionar para o deep link com o path
+                console.log("Redirecting to app with path: " + currentPath);
+                window.location.href = "ghub://" + (currentPath === '/' ? '' : currentPath.substring(1));
             } else {
                 console.log("Not a mobile device, staying on web landing page.");
                 window.location.href = 'https://ghub.digital';
@@ -25,7 +31,6 @@
             console.log("Error occurred, staying on web landing page.");
             window.location.href = 'https://ghub.digital';
         }
-
     </script>
 </head>
 
