@@ -18,7 +18,7 @@ class SteamIntegrationService {
   /// Conecta conta Steam para sincronização de jogos
   Future<void> connectSteamForSync(BuildContext context) async {
     // Validar se a API key está configurada
-    if (SteamConfig.apiKey == 'SEU_STEAM_API_KEY_AQUI') {
+    if (SteamConfig.apiKey == null || SteamConfig.apiKey!.isEmpty) {
       throw const AuthenticationException(
         message:
             'Steam API Key não configurada. Configure em SteamConfig.apiKey',
@@ -110,7 +110,7 @@ class SteamIntegrationService {
   ) async {
     try {
       // Validar se a API key está configurada
-      if (SteamConfig.apiKey == 'SEU_STEAM_API_KEY_AQUI') {
+      if (SteamConfig.apiKey == null || SteamConfig.apiKey!.isEmpty) {
         throw const AuthenticationException(
           message:
               'Steam API Key não configurada. Configure em SteamConfig.apiKey',

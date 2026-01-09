@@ -16,7 +16,7 @@ class XboxConfig {
       dotenv.env['XBOX_CLIENT_SECRET'] ??
       'SEU_XBOX_CLIENT_SECRET_AQUI'; // Client secret value
   static String get redirectUri =>
-      dotenv.env['XBOX_REDIRECT_URI'] ?? 'ghub://xbox-callback';
+      '${dotenv.env['APP_WEB_URL'] ?? ''}/integrations/xbox-callback';
 
   // Xbox Live API URLs
   static String get authUrl =>

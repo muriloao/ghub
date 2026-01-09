@@ -23,6 +23,7 @@ class AppConstants {
   static const String splashRoute = '/';
 
   static const String xboxCallbackRoute = '/integrations/xbox-callback';
+  static const String steamCallbackRoute = '/integrations/steam-callback';
   static const String gameDetailRoute = '/game-detail';
   static const String integrationsRoute = '/integrations';
   static const String profileRoute = '/profile';

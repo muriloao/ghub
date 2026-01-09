@@ -8,7 +8,7 @@ class EpicGamesConfig {
   static String get clientSecret =>
       dotenv.env['EPIC_CLIENT_SECRET'] ?? 'SEU_EPIC_CLIENT_SECRET_AQUI';
   static String get redirectUri =>
-      dotenv.env['EPIC_REDIRECT_URI'] ?? 'ghubmobile://auth/epic-callback';
+      '${dotenv.env['APP_WEB_URL'] ?? ''}/integrations/epic-callback';
 
   // Epic Games API URLs
   static String get epicApiUrl =>

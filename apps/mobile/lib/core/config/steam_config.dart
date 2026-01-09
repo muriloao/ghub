@@ -3,8 +3,7 @@ import 'package:flutter_dotenv/flutter_dotenv.dart';
 class SteamConfig {
   // Steam Web API key - obtenha em: https://steamcommunity.com/dev/apikey
   // IMPORTANTE: Configure STEAM_API_KEY no arquivo .env
-  static String get apiKey =>
-      dotenv.env['STEAM_API_KEY'] ?? 'SEU_STEAM_API_KEY_AQUI';
+  static String? get apiKey => dotenv.env['STEAM_API_KEY'];
 
   // URLs da Steam API
   static String get steamApiUrl =>
@@ -29,7 +28,8 @@ class SteamConfig {
 
   // URL de retorno personalizada para o app móvel
   // Usa um scheme customizado que será capturado pelo app
-  static String get returnUrl => '$realm/auth/steam/callback';
+  static String get returnUrl =>
+      '${dotenv.env['APP_WEB_URL'] ?? ''}/integrations/steam-callback';
 
   // URLs específicas da Steam Web API para jogos
   static String get getOwnedGamesUrl =>
