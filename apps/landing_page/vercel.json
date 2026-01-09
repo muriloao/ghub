@@ -2,6 +2,16 @@
     "routes": [
         {
             "src": "/",
+            "dest": "/index.html",
+            "has": [
+                {
+                    "type": "host",
+                    "value": "ghub.digital"
+                }
+            ]
+        },
+        {
+            "src": "/(.*)",
             "dest": "/app.html",
             "has": [
                 {
@@ -9,10 +19,6 @@
                     "value": "app.ghub.digital"
                 }
             ]
-        },
-        {
-            "src": "/(.*)",
-            "dest": "/$1"
         }
     ]
 }
