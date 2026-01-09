@@ -2,8 +2,8 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:google_sign_in/google_sign_in.dart';
-
 import '../../../../core/network/dio_client.dart';
+import '../../../../core/constants/app_constants.dart';
 import '../../data/datasources/auth_local_data_source.dart';
 import '../../data/datasources/auth_remote_data_source.dart';
 import '../../data/repositories/auth_repository_impl.dart';
@@ -70,3 +70,62 @@ final getCurrentUserProvider = Provider<GetCurrentUser>((ref) {
 final signUpProvider = Provider<SignUp>((ref) {
   return SignUp(ref.watch(authRepositoryProvider));
 });
+
+// Provider para controle de navegação baseado em primeiro login
+final navigationControllerProvider =
+    StateNotifierProvider<NavigationController, NavigationState>((ref) {
+      return NavigationController();
+    });
+
+class NavigationState {
+  final bool shouldRedirectToIntegrations;
+  final String? userEmail;
+
+  const NavigationState({
+    this.shouldRedirectToIntegrations = false,
+    this.userEmail,
+  });
+
+  NavigationState copyWith({
+    bool? shouldRedirectToIntegrations,
+    String? userEmail,
+  }) {
+    return NavigationState(
+      shouldRedirectToIntegrations:
+          shouldRedirectToIntegrations ?? this.shouldRedirectToIntegrations,
+      userEmail: userEmail ?? this.userEmail,
+    );
+  }
+}
+
+class NavigationController extends StateNotifier<NavigationState> {
+  NavigationController() : super(const NavigationState());
+
+  Future<void> checkFirstTimeLogin(String userEmail) async {
+    final prefs = await SharedPreferences.getInstance();
+    final existingEmails =
+        prefs.getStringList(AppConstants.firstTimeUserKey) ?? [];
+    final isFirstTime = !existingEmails.contains(userEmail);
+
+    state = state.copyWith(
+      shouldRedirectToIntegrations: isFirstTime,
+      userEmail: userEmail,
+    );
+  }
+
+  Future<void> markUserAsReturning(String userEmail) async {
+    final prefs = await SharedPreferences.getInstance();
+    final existingEmails =
+        prefs.getStringList(AppConstants.firstTimeUserKey) ?? [];
+    if (!existingEmails.contains(userEmail)) {
+      existingEmails.add(userEmail);
+      await prefs.setStringList(AppConstants.firstTimeUserKey, existingEmails);
+    }
+
+    state = state.copyWith(shouldRedirectToIntegrations: false);
+  }
+
+  void reset() {
+    state = const NavigationState();
+  }
+}

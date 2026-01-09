@@ -11,6 +11,8 @@ import '../../domain/usecases/get_current_user.dart';
 import '../../domain/usecases/sign_up.dart';
 import '../../domain/entities/signup_request.dart';
 import '../../../../core/services/cache_service.dart';
+import '../../../../core/constants/app_constants.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'auth_providers.dart';
 
 abstract class AuthState extends Equatable {
@@ -181,6 +183,25 @@ class AuthNotifier extends StateNotifier<AuthState> {
     } catch (e) {
       // Mesmo com erro na API, garante que o estado local seja limpo
       state = const AuthUnauthenticated();
+    }
+  }
+
+  /// Verifica se é o primeiro login do usuário
+  Future<bool> isFirstTimeUser(String userEmail) async {
+    final prefs = await SharedPreferences.getInstance();
+    final existingEmails =
+        prefs.getStringList(AppConstants.firstTimeUserKey) ?? [];
+    return !existingEmails.contains(userEmail);
+  }
+
+  /// Marca o usuário como já tendo feito login
+  Future<void> markUserAsReturning(String userEmail) async {
+    final prefs = await SharedPreferences.getInstance();
+    final existingEmails =
+        prefs.getStringList(AppConstants.firstTimeUserKey) ?? [];
+    if (!existingEmails.contains(userEmail)) {
+      existingEmails.add(userEmail);
+      await prefs.setStringList(AppConstants.firstTimeUserKey, existingEmails);
     }
   }
 

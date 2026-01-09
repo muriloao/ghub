@@ -12,6 +12,7 @@ class AppConstants {
   static const String refreshTokenKey = 'refresh_token';
   static const String userDataKey = 'user_data';
   static const String isLoggedInKey = 'is_logged_in';
+  static const String firstTimeUserKey = 'first_time_user';
 
   // Routes
   static const String loginRoute = '/login';

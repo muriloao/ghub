@@ -5,6 +5,7 @@ import 'package:go_router/go_router.dart';
 import '../../../../core/constants/app_constants.dart';
 import '../../../../core/theme/app_theme.dart';
 import '../providers/auth_notifier.dart';
+import '../providers/auth_providers.dart';
 import '../widgets/social_login_buttons.dart';
 
 class LoginPage extends ConsumerWidget {
@@ -15,19 +16,24 @@ class LoginPage extends ConsumerWidget {
     final authState = ref.watch(authNotifierProvider);
 
     ref.listen<AuthState>(authNotifierProvider, (previous, next) {
-      switch (next) {
-        case AuthAuthenticated():
-          context.go(AppConstants.homeRoute);
-          break;
-        case AuthError(:final message):
-          ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(content: Text(message), backgroundColor: Colors.red),
-          );
-          break;
-        case AuthInitial():
-        case AuthLoading():
-        case AuthUnauthenticated():
-          break;
+      if (next is AuthAuthenticated) {
+        // Verifica se é primeiro login do usuário
+        ref
+            .read(navigationControllerProvider.notifier)
+            .checkFirstTimeLogin(next.user.email);
+      } else if (next is AuthError) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text(next.message), backgroundColor: Colors.red),
+        );
+      }
+    });
+
+    // Listen para redirecionamento baseado em primeiro login
+    ref.listen<NavigationState>(navigationControllerProvider, (previous, next) {
+      if (next.shouldRedirectToIntegrations) {
+        context.go(AppConstants.integrationsRoute);
+      } else if (next.userEmail != null && !next.shouldRedirectToIntegrations) {
+        context.go(AppConstants.homeRoute);
       }
     });
 
