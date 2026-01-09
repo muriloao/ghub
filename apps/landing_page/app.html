@@ -8,16 +8,20 @@
     <title>GHub - Unify Your Gaming Universe</title>
     <!-- App Scheme redirect -->
     <script>
+        console.log("Checking for mobile app...");
         try {
+            console.log("User Agent: " + navigator.userAgent);
             const isMobile = /Android|iPhone|iPad/i.test(navigator.userAgent);
 
             if (isMobile) {
+                console.log("Redirecting to mobile app...");
                 window.location.href = "ghub://";
                 return;
             }
         } catch (e) {
             console.error(e);
         }
+        console.log("Not a mobile device, staying on web landing page.");
         window.location.replace('index.html');
     </script>
 </head>
