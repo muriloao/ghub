@@ -2,11 +2,13 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import 'integrations_notifier.dart';
 import '../../domain/entities/gaming_platform.dart';
+import '../../data/repositories/platforms_repository_impl.dart';
 
 // Main integrations provider
 final integrationsNotifierProvider =
     StateNotifierProvider<IntegrationsNotifier, IntegrationsState>((ref) {
-      return IntegrationsNotifier();
+      final repository = ref.watch(platformsRepositoryProvider);
+      return IntegrationsNotifier(repository);
     });
 
 // Convenience providers for specific data

@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:ghub_mobile/features/integrations/domain/entities/gaming_platform.dart';
 import '../providers/games_providers.dart';
 import '../states/games_state.dart';
-import '../../../onboarding/domain/entities/gaming_platform.dart';
 
 class GameFilters extends ConsumerWidget {
   const GameFilters({super.key});

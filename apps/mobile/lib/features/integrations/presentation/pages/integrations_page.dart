@@ -7,6 +7,7 @@ import '../widgets/platform_card.dart';
 import '../widgets/integrations_progress_bar.dart';
 import '../widgets/platform_sync_section.dart';
 import '../widgets/steam_connection_widget.dart';
+import '../../domain/entities/gaming_platform.dart';
 import '../../../../core/theme/app_theme.dart';
 import '../../../../core/constants/app_constants.dart';
 import '../../../auth/presentation/providers/auth_providers.dart';
@@ -19,6 +20,7 @@ class IntegrationsPage extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final platforms = ref.watch(integrationsListProvider);
     final isLoading = ref.watch(isLoadingIntegrationsProvider);
+    final error = ref.watch(integrationsErrorProvider);
     final theme = Theme.of(context);
     final isDarkMode = theme.brightness == Brightness.dark;
 
@@ -57,6 +59,54 @@ class IntegrationsPage extends ConsumerWidget {
                     child: CircularProgressIndicator(color: AppTheme.primary),
                   ),
                 )
+              else if (error != null)
+                SliverFillRemaining(
+                  child: Center(
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Icon(
+                          Icons.error_outline,
+                          size: 64,
+                          color: Colors.red.shade300,
+                        ),
+                        const SizedBox(height: 16),
+                        Text(
+                          'Failed to load platforms',
+                          style: TextStyle(
+                            fontSize: 18,
+                            fontWeight: FontWeight.bold,
+                            color: isDarkMode ? Colors.white : Colors.black,
+                          ),
+                        ),
+                        const SizedBox(height: 8),
+                        Text(
+                          error,
+                          textAlign: TextAlign.center,
+                          style: TextStyle(
+                            fontSize: 14,
+                            color: isDarkMode
+                                ? Colors.white70
+                                : Colors.grey.shade600,
+                          ),
+                        ),
+                        const SizedBox(height: 24),
+                        ElevatedButton(
+                          onPressed: () {
+                            ref
+                                .read(integrationsNotifierProvider.notifier)
+                                .refreshPlatforms();
+                          },
+                          style: ElevatedButton.styleFrom(
+                            backgroundColor: AppTheme.primary,
+                            foregroundColor: Colors.white,
+                          ),
+                          child: const Text('Retry'),
+                        ),
+                      ],
+                    ),
+                  ),
+                )
               else ...[
                 _buildHeader(context, isDarkMode),
                 _buildSteamConnectionSection(),
@@ -66,7 +116,8 @@ class IntegrationsPage extends ConsumerWidget {
               ],
             ],
           ),
-          _buildFooter(context, isDarkMode, ref),
+          if (!isLoading && error == null)
+            _buildFooter(context, isDarkMode, ref),
         ],
       ),
     );
@@ -166,7 +217,21 @@ class IntegrationsPage extends ConsumerWidget {
     );
   }
 
-  Widget _buildPlatformsList(List platforms) {
+  Widget _buildPlatformsList(List<GamingPlatform> platforms) {
+    if (platforms.isEmpty) {
+      return const SliverToBoxAdapter(
+        child: Padding(
+          padding: EdgeInsets.all(24),
+          child: Center(
+            child: Text(
+              'No platforms available',
+              style: TextStyle(fontSize: 16),
+            ),
+          ),
+        ),
+      );
+    }
+
     return SliverPadding(
       padding: const EdgeInsets.symmetric(horizontal: 24),
       sliver: SliverList(

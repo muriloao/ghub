@@ -1,8 +1,8 @@
 import 'package:equatable/equatable.dart';
 import 'package:ghub_mobile/features/auth/domain/entities/user.dart';
 import '../../domain/entities/game.dart';
+import 'package:ghub_mobile/features/integrations/domain/entities/gaming_platform.dart';
 import '../../domain/usecases/sort_games.dart';
-import '../../../onboarding/domain/entities/gaming_platform.dart';
 
 enum GameFilter { all, favorites, backlog, completed, recentlyPlayed }
 

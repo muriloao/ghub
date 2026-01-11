@@ -1,7 +1,7 @@
+import 'package:ghub_mobile/features/integrations/domain/entities/gaming_platform.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import '../domain/usecases/sort_games.dart';
 import '../presentation/states/games_state.dart';
-import '../../onboarding/domain/entities/gaming_platform.dart';
 
 class GamesPreferencesService {
   static const String _sortCriteriaKey = 'games_sort_criteria';

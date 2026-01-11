@@ -1,5 +1,6 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:dio/dio.dart';
+import 'package:ghub_mobile/features/integrations/domain/entities/gaming_platform.dart';
 import '../../domain/entities/game.dart';
 import '../../data/datasources/games_remote_data_source.dart';
 import '../../data/datasources/games_remote_data_source_impl.dart';
@@ -12,7 +13,6 @@ import '../../domain/usecases/filter_games.dart';
 import '../../domain/usecases/sort_games.dart';
 import '../notifiers/games_notifier.dart';
 import '../states/games_state.dart';
-import '../../../onboarding/domain/entities/gaming_platform.dart';
 
 // Data Sources
 final gamesRemoteDataSourceProvider = Provider<GamesRemoteDataSource>((ref) {

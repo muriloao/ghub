@@ -1,6 +1,6 @@
 import 'package:flutter_test/flutter_test.dart';
 import 'package:ghub_mobile/features/games/domain/entities/game.dart';
-import 'package:ghub_mobile/features/onboarding/domain/entities/gaming_platform.dart';
+import 'package:ghub_mobile/features/integrations/domain/entities/gaming_platform.dart';
 
 void main() {
   group('Game Entity', () {

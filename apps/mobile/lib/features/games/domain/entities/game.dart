@@ -1,5 +1,5 @@
 import 'package:equatable/equatable.dart';
-import '../../../onboarding/domain/entities/gaming_platform.dart';
+import 'package:ghub_mobile/features/integrations/domain/entities/gaming_platform.dart';
 
 enum GameStatus {
   owned,

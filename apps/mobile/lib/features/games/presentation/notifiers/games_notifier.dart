@@ -1,4 +1,5 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:ghub_mobile/features/integrations/integrations.dart';
 import '../../domain/entities/game.dart';
 import '../../domain/usecases/get_user_games.dart';
 import '../../domain/usecases/search_games.dart';
@@ -6,7 +7,7 @@ import '../../domain/usecases/filter_games.dart';
 import '../../domain/usecases/sort_games.dart';
 import '../states/games_state.dart';
 import '../../../../core/services/games_favorites_service.dart';
-import '../../../onboarding/domain/entities/gaming_platform.dart';
+import 'package:ghub_mobile/features/integrations/domain/entities/gaming_platform.dart';
 import '../../services/games_preferences_service.dart';
 
 class GamesNotifier extends StateNotifier<GamesState> {

@@ -7,65 +7,85 @@ class SteamConnectionWidget extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final steamState = ref.watch(steamConnectionProvider);
-    final steamNotifier = ref.read(steamConnectionProvider.notifier);
+    try {
+      final steamState = ref.watch(steamConnectionProvider);
+      final steamNotifier = ref.read(steamConnectionProvider.notifier);
 
-    return Card(
-      margin: const EdgeInsets.all(16),
-      child: Padding(
-        padding: const EdgeInsets.all(20),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            // Header com ícone Steam
-            Row(
-              children: [
-                Container(
-                  width: 48,
-                  height: 48,
-                  decoration: BoxDecoration(
-                    color: const Color(0xFF171a21),
-                    borderRadius: BorderRadius.circular(12),
+      return Card(
+        margin: const EdgeInsets.all(16),
+        child: Padding(
+          padding: const EdgeInsets.all(20),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              // Header com ícone Steam
+              Row(
+                children: [
+                  Container(
+                    width: 48,
+                    height: 48,
+                    decoration: BoxDecoration(
+                      color: const Color(0xFF171a21),
+                      borderRadius: BorderRadius.circular(12),
+                    ),
+                    child: const Icon(
+                      Icons.videogame_asset,
+                      color: Color(0xFF66c0f4),
+                      size: 24,
+                    ),
                   ),
-                  child: const Icon(
-                    Icons.videogame_asset,
-                    color: Color(0xFF66c0f4),
-                    size: 24,
-                  ),
-                ),
-                const SizedBox(width: 16),
-                Expanded(
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      const Text(
-                        'Steam',
-                        style: TextStyle(
-                          fontSize: 18,
-                          fontWeight: FontWeight.bold,
+                  const SizedBox(width: 16),
+                  Expanded(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        const Text(
+                          'Steam',
+                          style: TextStyle(
+                            fontSize: 18,
+                            fontWeight: FontWeight.bold,
+                          ),
                         ),
-                      ),
-                      Text(
-                        _getStatusText(steamState.status),
-                        style: TextStyle(
-                          fontSize: 14,
-                          color: _getStatusColor(steamState.status),
+                        Text(
+                          _getStatusText(steamState.status),
+                          style: TextStyle(
+                            fontSize: 14,
+                            color: _getStatusColor(steamState.status),
+                          ),
                         ),
-                      ),
-                    ],
+                      ],
+                    ),
                   ),
-                ),
-                _buildActionButton(context, ref, steamState, steamNotifier),
-              ],
-            ),
+                  _buildActionButton(context, ref, steamState, steamNotifier),
+                ],
+              ),
 
-            // Conteúdo específico por status
-            const SizedBox(height: 16),
-            _buildStatusContent(steamState),
-          ],
+              // Conteúdo específico por status
+              const SizedBox(height: 16),
+              _buildStatusContent(steamState),
+            ],
+          ),
         ),
-      ),
-    );
+      );
+    } catch (e) {
+      return Card(
+        margin: const EdgeInsets.all(16),
+        child: Padding(
+          padding: const EdgeInsets.all(20),
+          child: Column(
+            children: [
+              Icon(Icons.error, color: Colors.red, size: 48),
+              const SizedBox(height: 16),
+              Text('Steam connection widget error'),
+              Text(
+                e.toString(),
+                style: TextStyle(fontSize: 12, color: Colors.grey),
+              ),
+            ],
+          ),
+        ),
+      );
+    }
   }
 
   Widget _buildActionButton(

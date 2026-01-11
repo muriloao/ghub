@@ -56,22 +56,6 @@ class MockGamesRepository extends _i1.Mock implements _i3.GamesRepository {
           as _i4.Future<_i2.Either<_i5.Failure, List<_i6.Game>>>);
 
   @override
-  _i4.Future<_i2.Either<_i5.Failure, List<_i6.Game>>> getEpicGames(
-    String? accessToken,
-  ) =>
-      (super.noSuchMethod(
-            Invocation.method(#getEpicGames, [accessToken]),
-            returnValue:
-                _i4.Future<_i2.Either<_i5.Failure, List<_i6.Game>>>.value(
-                  _FakeEither_0<_i5.Failure, List<_i6.Game>>(
-                    this,
-                    Invocation.method(#getEpicGames, [accessToken]),
-                  ),
-                ),
-          )
-          as _i4.Future<_i2.Either<_i5.Failure, List<_i6.Game>>>);
-
-  @override
   _i4.Future<_i2.Either<_i5.Failure, List<_i6.Game>>> getAllUserGames({
     String? steamId,
     String? epicAccessToken,

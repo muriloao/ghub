@@ -11,6 +11,8 @@ enum PlatformType {
   origin,
   battleNet,
   amazonGames,
+  nintendo,
+  gog,
 }
 
 enum ConnectionStatus { connected, disconnected, connecting }

@@ -1,6 +1,6 @@
+import 'package:ghub_mobile/features/integrations/integrations.dart';
 import 'package:json_annotation/json_annotation.dart';
 import '../../domain/entities/game.dart';
-import '../../../onboarding/domain/entities/gaming_platform.dart';
 
 part 'steam_game_model.g.dart';
 
