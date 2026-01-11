@@ -37,12 +37,6 @@ class _GamesPageState extends ConsumerState<GamesPage> {
         case 'steam':
           _loadSteamGames(platformConnection);
           break;
-        case 'xbox':
-          _loadXboxGames(platformConnection);
-          break;
-        case 'epic_games':
-          _loadEpicGames(platformConnection);
-          break;
       }
     }
   }
@@ -54,16 +48,6 @@ class _GamesPageState extends ConsumerState<GamesPage> {
     if (steamId != null) {
       ref.read(gamesNotifierProvider.notifier).loadGames(steamId);
     }
-  }
-
-  void _loadXboxGames(PlatformConnectionData platformConnection) {
-    // Implementar carregamento de jogos Xbox
-    // TODO: Implementar quando Xbox games service estiver pronto
-  }
-
-  void _loadEpicGames(PlatformConnectionData platformConnection) {
-    // Implementar carregamento de jogos Epic
-    // TODO: Implementar quando Epic games service estiver pronto
   }
 
   @override

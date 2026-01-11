@@ -12,7 +12,6 @@ class CacheManagementPage extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final steamState = ref.watch(steamGamesNotifierProvider);
-    final xboxState = ref.watch(xboxGamesNotifierProvider);
     final syncState = ref.watch(platformSyncNotifierProvider);
     final totalGamesCount = ref.watch(totalGamesCountProvider);
 
@@ -45,15 +44,6 @@ class CacheManagementPage extends ConsumerWidget {
               steamState,
               () => ref.read(steamGamesNotifierProvider.notifier).refresh(),
             ),
-            const SizedBox(height: 12),
-
-            _buildPlatformStatusCard(
-              'Xbox Live',
-              Icons.sports_esports,
-              Colors.green,
-              xboxState,
-              () => ref.read(xboxGamesNotifierProvider.notifier).refresh(),
-            ),
             const SizedBox(height: 16),
 
             // Seção de sincronização
@@ -65,7 +55,7 @@ class CacheManagementPage extends ConsumerWidget {
             const SizedBox(height: 16),
 
             // Lista de jogos em cache
-            _buildCachedGamesSection(steamState, xboxState),
+            _buildCachedGamesSection(steamState),
           ],
         ),
       ),
@@ -233,24 +223,6 @@ class CacheManagementPage extends ConsumerWidget {
                     label: const Text('Sync Steam'),
                   ),
                 ),
-                const SizedBox(width: 8),
-                Expanded(
-                  child: ElevatedButton.icon(
-                    onPressed: syncState.syncing.values.any((s) => s)
-                        ? null
-                        : () => ref
-                              .read(platformSyncNotifierProvider.notifier)
-                              .syncPlatform(Platform.xbox),
-                    icon: syncState.isSyncing(Platform.xbox)
-                        ? const SizedBox(
-                            width: 16,
-                            height: 16,
-                            child: CircularProgressIndicator(strokeWidth: 2),
-                          )
-                        : const Icon(Icons.cloud_sync),
-                    label: const Text('Sync Xbox'),
-                  ),
-                ),
               ],
             ),
             const SizedBox(height: 8),
@@ -298,15 +270,6 @@ class CacheManagementPage extends ConsumerWidget {
                     label: const Text('Limpar Steam'),
                   ),
                 ),
-                const SizedBox(width: 8),
-                Expanded(
-                  child: OutlinedButton.icon(
-                    onPressed: () =>
-                        _clearPlatformCache(context, ref, Platform.xbox),
-                    icon: const Icon(Icons.clear_all),
-                    label: const Text('Limpar Xbox'),
-                  ),
-                ),
               ],
             ),
             const SizedBox(height: 8),
@@ -328,11 +291,8 @@ class CacheManagementPage extends ConsumerWidget {
     );
   }
 
-  Widget _buildCachedGamesSection(
-    PlatformGamesState steamState,
-    PlatformGamesState xboxState,
-  ) {
-    final allGames = [...steamState.games, ...xboxState.games];
+  Widget _buildCachedGamesSection(PlatformGamesState steamState) {
+    final allGames = [...steamState.games];
 
     if (allGames.isEmpty) {
       return const Card(
@@ -468,8 +428,6 @@ class CacheManagementPage extends ConsumerWidget {
               // Recarregar dados
               if (platform == Platform.steam) {
                 ref.read(steamGamesNotifierProvider.notifier).refresh();
-              } else if (platform == Platform.xbox) {
-                ref.read(xboxGamesNotifierProvider.notifier).refresh();
               }
 
               if (context.mounted) {
@@ -510,7 +468,6 @@ class CacheManagementPage extends ConsumerWidget {
 
               // Recarregar dados de todas as plataformas
               ref.read(steamGamesNotifierProvider.notifier).refresh();
-              ref.read(xboxGamesNotifierProvider.notifier).refresh();
 
               if (context.mounted) {
                 ScaffoldMessenger.of(context).showSnackBar(

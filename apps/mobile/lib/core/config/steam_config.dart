@@ -27,9 +27,13 @@ class SteamConfig {
       'http://specs.openid.net/auth/2.0/identifier_select';
 
   // URL de retorno personalizada para o app móvel
-  // Usa um scheme customizado que será capturado pelo app
+  // Usa deep link scheme unificado
   static String get returnUrl =>
-      '${dotenv.env['APP_WEB_URL'] ?? ''}/integrations/steam-callback';
+      dotenv.env['STEAM_RETURN_URL'] ??
+      '${dotenv.env['APP_WEB_URL'] ?? 'https://app.ghub.digital'}/integrations/steam-callback';
+
+  // Deep link scheme para captura direta no app
+  static String get deepLinkScheme => 'ghub';
 
   // URLs específicas da Steam Web API para jogos
   static String get getOwnedGamesUrl =>

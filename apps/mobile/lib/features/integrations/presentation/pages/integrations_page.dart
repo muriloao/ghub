@@ -6,6 +6,7 @@ import '../providers/integrations_providers.dart';
 import '../widgets/platform_card.dart';
 import '../widgets/integrations_progress_bar.dart';
 import '../widgets/platform_sync_section.dart';
+import '../widgets/steam_connection_widget.dart';
 import '../../../../core/theme/app_theme.dart';
 import '../../../../core/constants/app_constants.dart';
 import '../../../auth/presentation/providers/auth_providers.dart';
@@ -58,6 +59,7 @@ class IntegrationsPage extends ConsumerWidget {
                 )
               else ...[
                 _buildHeader(context, isDarkMode),
+                _buildSteamConnectionSection(),
                 _buildProgressSection(),
                 _buildSyncSection(),
                 _buildPlatformsList(platforms),
@@ -149,6 +151,10 @@ class IntegrationsPage extends ConsumerWidget {
 
   Widget _buildProgressSection() {
     return const SliverToBoxAdapter(child: IntegrationsProgressBar());
+  }
+
+  Widget _buildSteamConnectionSection() {
+    return const SliverToBoxAdapter(child: SteamConnectionWidget());
   }
 
   Widget _buildSyncSection() {

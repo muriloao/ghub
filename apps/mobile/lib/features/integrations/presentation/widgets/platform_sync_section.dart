@@ -292,26 +292,6 @@ class PlatformSyncSection extends ConsumerWidget {
                     platformColor: const Color(0xFF1B2838),
                     isConnected: connectedPlatforms[Platform.steam] ?? false,
                   ),
-                  const SizedBox(height: 12),
-
-                  // Xbox
-                  PlatformSyncButton(
-                    platform: Platform.xbox,
-                    platformName: 'Xbox Live',
-                    platformIcon: Icons.sports_esports,
-                    platformColor: const Color(0xFF107C10),
-                    isConnected: connectedPlatforms[Platform.xbox] ?? false,
-                  ),
-                  const SizedBox(height: 12),
-
-                  // Epic Games (quando implementado)
-                  PlatformSyncButton(
-                    platform: Platform.epic,
-                    platformName: 'Epic Games',
-                    platformIcon: Icons.videogame_asset,
-                    platformColor: const Color(0xFF313131),
-                    isConnected: connectedPlatforms[Platform.epic] ?? false,
-                  ),
                 ],
               ),
             );
@@ -376,17 +356,7 @@ class PlatformSyncSection extends ConsumerWidget {
     final isConnectedSteam = await PlatformConnectionsService.isConnected(
       'steam',
     );
-    final isConnectedXbox = await PlatformConnectionsService.isConnected(
-      'xbox',
-    );
-    final isConnectedEpic = await PlatformConnectionsService.isConnected(
-      'epic_games',
-    );
 
-    return {
-      Platform.steam: isConnectedSteam,
-      Platform.xbox: isConnectedXbox,
-      Platform.epic: isConnectedEpic,
-    };
+    return {Platform.steam: isConnectedSteam};
   }
 }

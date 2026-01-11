@@ -4,7 +4,6 @@ import '../../domain/entities/game.dart';
 import '../../data/datasources/games_remote_data_source.dart';
 import '../../data/datasources/games_remote_data_source_impl.dart';
 import '../../data/services/steam_games_service.dart';
-import '../../data/services/epic_games_service.dart';
 import '../../data/repositories/games_repository_impl.dart';
 import '../../domain/repositories/games_repository.dart';
 import '../../domain/usecases/get_user_games.dart';
@@ -27,21 +26,14 @@ final steamGamesServiceProvider = Provider<SteamGamesService>((ref) {
   return SteamGamesService(dio);
 });
 
-final epicGamesServiceProvider = Provider<EpicGamesService>((ref) {
-  final dio = Dio();
-  return EpicGamesService(dio);
-});
-
 // Repository
 final gamesRepositoryProvider = Provider<GamesRepository>((ref) {
   final remoteDataSource = ref.watch(gamesRemoteDataSourceProvider);
   final steamGamesService = ref.watch(steamGamesServiceProvider);
-  final epicGamesService = ref.watch(epicGamesServiceProvider);
 
   return GamesRepositoryImpl(
     remoteDataSource: remoteDataSource,
     steamGamesService: steamGamesService,
-    epicGamesService: epicGamesService,
   );
 });
 

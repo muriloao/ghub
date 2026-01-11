@@ -3,7 +3,6 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:dio/dio.dart';
 
 import '../../features/games/data/services/steam_games_service.dart';
-import '../../features/integrations/data/services/xbox_live_service.dart';
 import 'cache_service.dart';
 
 /// Resultado da sincronização de uma plataforma
@@ -73,9 +72,8 @@ class PlatformSyncState {
 /// Serviço de sincronização de dados das plataformas
 class PlatformSyncService {
   final SteamGamesService _steamService;
-  final XboxLiveService _xboxService;
 
-  PlatformSyncService(this._steamService, this._xboxService);
+  PlatformSyncService(this._steamService);
 
   /// Sincroniza dados do Steam
   Future<SyncResult> syncSteam({String? steamId}) async {
@@ -120,59 +118,11 @@ class PlatformSyncService {
     }
   }
 
-  /// Sincroniza dados do Xbox
-  Future<SyncResult> syncXbox({String? accessToken}) async {
-    try {
-      // Buscar token do cache se não fornecido
-      if (accessToken == null) {
-        final cachedUser = await CacheService.getCachedUserData();
-        accessToken = cachedUser?.authToken;
-
-        if (accessToken == null) {
-          return SyncResult.error(Platform.xbox, 'Token Xbox não encontrado');
-        }
-      }
-
-      // Buscar perfil do usuário Xbox
-      final xboxUser = await _xboxService.getUserProfile(accessToken);
-
-      // Buscar jogos do usuário Xbox
-      final games = await _xboxService.getUserGames(accessToken);
-
-      // Salvar no cache
-      await PlatformCacheExtension.cacheXboxData(
-        userData: xboxUser,
-        games: games,
-      );
-
-      return SyncResult.success(Platform.xbox, gamesCount: games.length);
-    } catch (e) {
-      return SyncResult.error(Platform.xbox, 'Erro na sincronização Xbox: $e');
-    }
-  }
-
-  /// Sincroniza dados do Epic Games
-  Future<SyncResult> syncEpic({String? accessToken}) async {
-    try {
-      // Por enquanto, retornar um mock ou erro se não implementado
-      return SyncResult.error(
-        Platform.epic,
-        'Epic Games não implementado ainda',
-      );
-    } catch (e) {
-      return SyncResult.error(Platform.epic, 'Erro na sincronização Epic: $e');
-    }
-  }
-
   /// Sincroniza uma plataforma específica
   Future<SyncResult> syncPlatform(Platform platform) async {
     switch (platform) {
       case Platform.steam:
         return syncSteam();
-      case Platform.xbox:
-        return syncXbox();
-      case Platform.epic:
-        return syncEpic();
     }
   }
 
@@ -187,14 +137,6 @@ class PlatformSyncService {
     if (!onlyConnected || cachedUser?.steamId != null) {
       results.add(await syncSteam());
     }
-
-    // Xbox
-    if (!onlyConnected || cachedUser?.authToken != null) {
-      results.add(await syncXbox());
-    }
-
-    // Epic (quando implementado)
-    // results.add(await syncEpic());
 
     return results;
   }
@@ -232,8 +174,7 @@ class PlatformSyncService {
 final platformSyncServiceProvider = Provider<PlatformSyncService>((ref) {
   final dio = Dio();
   final steamService = SteamGamesService(dio);
-  final xboxService = XboxLiveService(dio);
-  return PlatformSyncService(steamService, xboxService);
+  return PlatformSyncService(steamService);
 });
 
 /// Notifier para o estado de sincronização
@@ -295,10 +236,7 @@ class PlatformSyncNotifier extends StateNotifier<PlatformSyncState> {
 
   /// Sincroniza todas as plataformas
   Future<void> syncAllPlatforms() async {
-    final platforms = [
-      Platform.steam,
-      Platform.xbox,
-    ]; // Platform.epic quando implementado
+    final platforms = [Platform.steam];
 
     // Marcar todas como sincronizando
     final syncingState = <Platform, bool>{};

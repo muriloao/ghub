@@ -1,7 +1,6 @@
 import 'dart:convert';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
-import '../../features/integrations/data/services/xbox_live_service.dart';
 
 /// Dados de uma plataforma conectada armazenados em cache
 class CachedPlatformData {
@@ -273,89 +272,6 @@ class IntegrationsCacheService {
       return true;
     } catch (e) {
       return false;
-    }
-  }
-
-  /// Métodos específicos para Xbox
-
-  /// Cache específico para dados Xbox
-  static Future<void> cacheXboxConnection(
-    XboxUser xboxUser,
-    String accessToken,
-  ) async {
-    await cachePlatformConnection(
-      platformId: 'xbox',
-      userId: xboxUser.xuid,
-      username: xboxUser.gamertag,
-      avatarUrl: xboxUser.avatarUrl,
-      additionalData: {
-        'gamerscore': xboxUser.gamerscore,
-        'displayName': xboxUser.displayName,
-      },
-      accessToken: accessToken,
-    );
-  }
-
-  /// Cache específico para jogos Xbox
-  static Future<void> cacheXboxGames(List<XboxGame> games) async {
-    final gamesJson = games
-        .map(
-          (game) => {
-            'titleId': game.titleId,
-            'name': game.name,
-            'imageUrl': game.imageUrl,
-            'achievementsUnlocked': game.achievementsUnlocked,
-            'totalAchievements': game.totalAchievements,
-            'gamerscore': game.gamerscore,
-            'lastPlayedDate': game.lastPlayedDate?.toIso8601String(),
-          },
-        )
-        .toList();
-
-    await cachePlatformGames(platformId: 'xbox', games: gamesJson);
-  }
-
-  /// Recupera dados Xbox em cache
-  static Future<XboxUser?> getCachedXboxUser() async {
-    try {
-      final platformData = await getPlatformData('xbox');
-      if (platformData == null) return null;
-
-      return XboxUser(
-        xuid: platformData.userId,
-        gamertag: platformData.username,
-        avatarUrl: platformData.avatarUrl,
-        gamerscore: platformData.additionalData?['gamerscore'] ?? 0,
-        displayName: platformData.additionalData?['displayName'],
-      );
-    } catch (e) {
-      return null;
-    }
-  }
-
-  /// Recupera jogos Xbox em cache
-  static Future<List<XboxGame>?> getCachedXboxGames() async {
-    try {
-      final gamesData = await getCachedPlatformGames('xbox');
-      if (gamesData == null) return null;
-
-      return gamesData
-          .map(
-            (gameJson) => XboxGame(
-              titleId: gameJson['titleId'],
-              name: gameJson['name'],
-              imageUrl: gameJson['imageUrl'],
-              achievementsUnlocked: gameJson['achievementsUnlocked'] ?? 0,
-              totalAchievements: gameJson['totalAchievements'] ?? 0,
-              gamerscore: gameJson['gamerscore'] ?? 0,
-              lastPlayedDate: gameJson['lastPlayedDate'] != null
-                  ? DateTime.parse(gameJson['lastPlayedDate'])
-                  : null,
-            ),
-          )
-          .toList();
-    } catch (e) {
-      return null;
     }
   }
 }

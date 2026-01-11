@@ -5,7 +5,6 @@ import 'package:shared_preferences/shared_preferences.dart';
 import '../../features/auth/domain/entities/user.dart';
 import '../../features/auth/domain/entities/auth_result.dart';
 import '../../features/games/data/models/steam_game_model.dart';
-import '../../features/integrations/data/services/xbox_live_service.dart';
 
 /// Serviço de cache para dados da aplicação
 /// Utiliza Flutter Secure Storage para dados sensíveis e SharedPreferences para outros dados
@@ -23,12 +22,6 @@ class CacheService {
   static const String _steamGamesKey = 'steam_games';
   static const String _steamUserKey = 'steam_user';
   static const String _steamLastSyncKey = 'steam_last_sync';
-  static const String _xboxGamesKey = 'xbox_games';
-  static const String _xboxUserKey = 'xbox_user';
-  static const String _xboxLastSyncKey = 'xbox_last_sync';
-  static const String _epicGamesKey = 'epic_games';
-  static const String _epicUserKey = 'epic_user';
-  static const String _epicLastSyncKey = 'epic_last_sync';
 
   /// Cache dos dados do usuário após login
   static Future<void> cacheUserData({
@@ -218,7 +211,7 @@ class CachedUserData {
 }
 
 /// Enumeração das plataformas suportadas
-enum Platform { steam, xbox, epic }
+enum Platform { steam }
 
 /// Dados de cache de uma plataforma
 class PlatformCacheData {
@@ -295,65 +288,6 @@ extension PlatformCacheExtension on CacheService {
     }
   }
 
-  /// Salva dados do Xbox no cache
-  static Future<void> cacheXboxData({
-    XboxUser? userData,
-    List<XboxGame>? games,
-  }) async {
-    try {
-      final prefs = await SharedPreferences.getInstance();
-      final now = DateTime.now();
-
-      if (userData != null) {
-        await prefs.setString(
-          CacheService._xboxUserKey,
-          jsonEncode(userData.toJson()),
-        );
-      }
-
-      if (games != null) {
-        final gamesJson = games.map((game) => game.toJson()).toList();
-        await prefs.setString(
-          CacheService._xboxGamesKey,
-          jsonEncode(gamesJson),
-        );
-      }
-
-      await prefs.setInt(
-        CacheService._xboxLastSyncKey,
-        now.millisecondsSinceEpoch,
-      );
-    } catch (e) {
-      throw Exception('Erro ao salvar cache Xbox: $e');
-    }
-  }
-
-  /// Salva dados do Epic Games no cache
-  static Future<void> cacheEpicData({
-    Map<String, dynamic>? userData,
-    List<Map<String, dynamic>>? games,
-  }) async {
-    try {
-      final prefs = await SharedPreferences.getInstance();
-      final now = DateTime.now();
-
-      if (userData != null) {
-        await prefs.setString(CacheService._epicUserKey, jsonEncode(userData));
-      }
-
-      if (games != null) {
-        await prefs.setString(CacheService._epicGamesKey, jsonEncode(games));
-      }
-
-      await prefs.setInt(
-        CacheService._epicLastSyncKey,
-        now.millisecondsSinceEpoch,
-      );
-    } catch (e) {
-      throw Exception('Erro ao salvar cache Epic: $e');
-    }
-  }
-
   /// Recupera dados do Steam do cache
   static Future<PlatformCacheData?> getSteamCache() async {
     try {
@@ -388,74 +322,6 @@ extension PlatformCacheExtension on CacheService {
     }
   }
 
-  /// Recupera dados do Xbox do cache
-  static Future<PlatformCacheData?> getXboxCache() async {
-    try {
-      final prefs = await SharedPreferences.getInstance();
-
-      final userDataJson = prefs.getString(CacheService._xboxUserKey);
-      final gamesDataJson = prefs.getString(CacheService._xboxGamesKey);
-      final lastSyncTimestamp = prefs.getInt(CacheService._xboxLastSyncKey);
-
-      Map<String, dynamic>? userData;
-      List<Map<String, dynamic>>? gamesData;
-
-      if (userDataJson != null) {
-        userData = jsonDecode(userDataJson) as Map<String, dynamic>;
-      }
-
-      if (gamesDataJson != null) {
-        final gamesList = jsonDecode(gamesDataJson) as List;
-        gamesData = gamesList.cast<Map<String, dynamic>>();
-      }
-
-      return PlatformCacheData(
-        platform: Platform.xbox,
-        userData: userData,
-        gamesData: gamesData,
-        lastSync: lastSyncTimestamp != null
-            ? DateTime.fromMillisecondsSinceEpoch(lastSyncTimestamp)
-            : null,
-      );
-    } catch (e) {
-      return null;
-    }
-  }
-
-  /// Recupera dados do Epic Games do cache
-  static Future<PlatformCacheData?> getEpicCache() async {
-    try {
-      final prefs = await SharedPreferences.getInstance();
-
-      final userDataJson = prefs.getString(CacheService._epicUserKey);
-      final gamesDataJson = prefs.getString(CacheService._epicGamesKey);
-      final lastSyncTimestamp = prefs.getInt(CacheService._epicLastSyncKey);
-
-      Map<String, dynamic>? userData;
-      List<Map<String, dynamic>>? gamesData;
-
-      if (userDataJson != null) {
-        userData = jsonDecode(userDataJson) as Map<String, dynamic>;
-      }
-
-      if (gamesDataJson != null) {
-        final gamesList = jsonDecode(gamesDataJson) as List;
-        gamesData = gamesList.cast<Map<String, dynamic>>();
-      }
-
-      return PlatformCacheData(
-        platform: Platform.epic,
-        userData: userData,
-        gamesData: gamesData,
-        lastSync: lastSyncTimestamp != null
-            ? DateTime.fromMillisecondsSinceEpoch(lastSyncTimestamp)
-            : null,
-      );
-    } catch (e) {
-      return null;
-    }
-  }
-
   /// Limpa cache de uma plataforma específica
   static Future<void> clearPlatformCache(Platform platform) async {
     try {
@@ -467,16 +333,6 @@ extension PlatformCacheExtension on CacheService {
           await prefs.remove(CacheService._steamGamesKey);
           await prefs.remove(CacheService._steamLastSyncKey);
           break;
-        case Platform.xbox:
-          await prefs.remove(CacheService._xboxUserKey);
-          await prefs.remove(CacheService._xboxGamesKey);
-          await prefs.remove(CacheService._xboxLastSyncKey);
-          break;
-        case Platform.epic:
-          await prefs.remove(CacheService._epicUserKey);
-          await prefs.remove(CacheService._epicGamesKey);
-          await prefs.remove(CacheService._epicLastSyncKey);
-          break;
       }
     } catch (e) {
       throw Exception('Erro ao limpar cache da plataforma: $e');
@@ -485,11 +341,7 @@ extension PlatformCacheExtension on CacheService {
 
   /// Limpa cache de todas as plataformas
   static Future<void> clearAllPlatformCache() async {
-    await Future.wait([
-      clearPlatformCache(Platform.steam),
-      clearPlatformCache(Platform.xbox),
-      clearPlatformCache(Platform.epic),
-    ]);
+    await Future.wait([clearPlatformCache(Platform.steam)]);
   }
 
   /// Verifica se o cache de uma plataforma é válido
@@ -503,12 +355,6 @@ extension PlatformCacheExtension on CacheService {
       case Platform.steam:
         cache = await getSteamCache();
         break;
-      case Platform.xbox:
-        cache = await getXboxCache();
-        break;
-      case Platform.epic:
-        cache = await getEpicCache();
-        break;
     }
 
     return cache != null && !cache.isExpired(maxAge: maxAge);
@@ -516,16 +362,8 @@ extension PlatformCacheExtension on CacheService {
 
   /// Recupera dados combinados de todas as plataformas
   static Future<Map<Platform, PlatformCacheData?>> getAllPlatformCache() async {
-    final results = await Future.wait([
-      getSteamCache(),
-      getXboxCache(),
-      getEpicCache(),
-    ]);
+    final results = await Future.wait([getSteamCache()]);
 
-    return {
-      Platform.steam: results[0],
-      Platform.xbox: results[1],
-      Platform.epic: results[2],
-    };
+    return {Platform.steam: results[0]};
   }
 }

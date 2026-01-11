@@ -5,17 +5,14 @@ import '../../domain/entities/game.dart';
 import '../../domain/repositories/games_repository.dart';
 import '../datasources/games_remote_data_source.dart';
 import '../services/steam_games_service.dart';
-import '../services/epic_games_service.dart';
 
 class GamesRepositoryImpl implements GamesRepository {
   final GamesRemoteDataSource remoteDataSource;
   final SteamGamesService steamGamesService;
-  final EpicGamesService epicGamesService;
 
   GamesRepositoryImpl({
     required this.remoteDataSource,
     required this.steamGamesService,
-    required this.epicGamesService,
   });
 
   @override
@@ -46,29 +43,6 @@ class GamesRepositoryImpl implements GamesRepository {
   }
 
   @override
-  Future<Either<Failure, List<Game>>> getEpicGames(String accessToken) async {
-    try {
-      final epicGames = await epicGamesService.getUserGames(accessToken);
-
-      // Converte EpicGameModel para Game entity
-      final games = epicGames.map((epicGame) {
-        return epicGame.toDomainEntity();
-      }).toList();
-
-      // Ordena por nome (Epic não fornece tempo de jogo)
-      games.sort((a, b) => a.name.compareTo(b.name));
-
-      return Right(games);
-    } on ServerException catch (e) {
-      return Left(ServerFailure(e.message));
-    } on CacheException catch (e) {
-      return Left(CacheFailure(e.message));
-    } catch (e) {
-      return Left(ServerFailure('Erro inesperado ao buscar jogos Epic: $e'));
-    }
-  }
-
-  @override
   Future<Either<Failure, List<Game>>> getAllUserGames({
     String? steamId,
     String? epicAccessToken,
@@ -82,15 +56,6 @@ class GamesRepositoryImpl implements GamesRepository {
         steamResult.fold((failure) {
           // Log do erro mas não falha a operação
           print('Erro ao buscar jogos Steam: ${failure.message}');
-        }, (games) => allGames.addAll(games));
-      }
-
-      // Buscar jogos Epic se accessToken fornecido
-      if (epicAccessToken != null && epicAccessToken.isNotEmpty) {
-        final epicResult = await getEpicGames(epicAccessToken);
-        epicResult.fold((failure) {
-          // Log do erro mas não falha a operação
-          print('Erro ao buscar jogos Epic: ${failure.message}');
         }, (games) => allGames.addAll(games));
       }
 

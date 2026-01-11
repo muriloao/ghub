@@ -3,7 +3,6 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../../core/services/cache_service.dart';
 import '../../../core/services/platform_sync_service.dart';
 import '../data/models/steam_game_model.dart';
-import '../../integrations/data/services/xbox_live_service.dart';
 
 /// Estado dos jogos de uma plataforma
 class PlatformGamesState {
@@ -101,82 +100,11 @@ class SteamGamesNotifier extends StateNotifier<PlatformGamesState> {
   }
 }
 
-/// Notifier para jogos Xbox
-class XboxGamesNotifier extends StateNotifier<PlatformGamesState> {
-  final PlatformSyncService _syncService;
-
-  XboxGamesNotifier(this._syncService)
-    : super(const PlatformGamesState(platform: Platform.xbox)) {
-    loadGames();
-  }
-
-  /// Carrega jogos do cache ou API
-  Future<void> loadGames({bool forceRefresh = false}) async {
-    state = state.copyWith(isLoading: true, error: null);
-
-    try {
-      // Buscar token do cache
-      final cachedUser = await CacheService.getCachedUserData();
-      final accessToken = cachedUser?.authToken;
-
-      if (accessToken == null) {
-        state = state.copyWith(
-          isLoading: false,
-          error: 'Token Xbox não encontrado. Faça login no Xbox primeiro.',
-        );
-        return;
-      }
-
-      // Verificar se precisa sincronizar
-      if (forceRefresh || await _syncService.shouldSync(Platform.xbox)) {
-        // Sincronizar dados
-        await _syncService.syncPlatform(Platform.xbox);
-      }
-
-      // Buscar dados do cache
-      final cache = await PlatformCacheExtension.getXboxCache();
-      if (cache?.gamesData != null) {
-        final games = cache!.gamesData!
-            .map((json) => XboxGame.fromJson(json))
-            .toList();
-
-        state = state.copyWith(
-          games: games,
-          isLoading: false,
-          lastSync: cache.lastSync,
-        );
-      } else {
-        state = state.copyWith(
-          isLoading: false,
-          error: 'Nenhum jogo encontrado',
-        );
-      }
-    } catch (e) {
-      state = state.copyWith(
-        isLoading: false,
-        error: 'Erro ao carregar jogos Xbox: $e',
-      );
-    }
-  }
-
-  /// Força atualização dos dados
-  Future<void> refresh() async {
-    await loadGames(forceRefresh: true);
-  }
-}
-
 /// Provider dos jogos Steam
 final steamGamesNotifierProvider =
     StateNotifierProvider<SteamGamesNotifier, PlatformGamesState>((ref) {
       final syncService = ref.watch(platformSyncServiceProvider);
       return SteamGamesNotifier(syncService);
-    });
-
-/// Provider dos jogos Xbox
-final xboxGamesNotifierProvider =
-    StateNotifierProvider<XboxGamesNotifier, PlatformGamesState>((ref) {
-      final syncService = ref.watch(platformSyncServiceProvider);
-      return XboxGamesNotifier(syncService);
     });
 
 /// Providers convenientes para UI
@@ -185,18 +113,8 @@ final steamGamesProvider = Provider<List<SteamGameModel>>((ref) {
   return state.games.cast<SteamGameModel>();
 });
 
-final xboxGamesProvider = Provider<List<XboxGame>>((ref) {
-  final state = ref.watch(xboxGamesNotifierProvider);
-  return state.games.cast<XboxGame>();
-});
-
 final isSteamGamesLoadingProvider = Provider<bool>((ref) {
   final state = ref.watch(steamGamesNotifierProvider);
-  return state.isLoading;
-});
-
-final isXboxGamesLoadingProvider = Provider<bool>((ref) {
-  final state = ref.watch(xboxGamesNotifierProvider);
   return state.isLoading;
 });
 
@@ -205,17 +123,11 @@ final steamGamesErrorProvider = Provider<String?>((ref) {
   return state.error;
 });
 
-final xboxGamesErrorProvider = Provider<String?>((ref) {
-  final state = ref.watch(xboxGamesNotifierProvider);
-  return state.error;
-});
-
 /// Provider para todos os jogos de todas as plataformas
 final allGamesProvider = Provider<List<dynamic>>((ref) {
   final steamGames = ref.watch(steamGamesProvider);
-  final xboxGames = ref.watch(xboxGamesProvider);
 
-  return [...steamGames, ...xboxGames];
+  return [...steamGames];
 });
 
 /// Provider para contagem total de jogos

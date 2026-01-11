@@ -3,9 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:dio/dio.dart';
 
 import '../../domain/entities/gaming_platform.dart';
-import '../../data/services/xbox_live_service.dart';
 import '../../data/services/steam_integration_service.dart';
-import '../../data/services/epic_integration_service.dart';
 import '../../../../core/services/platform_connections_service.dart';
 
 class IntegrationsState {
@@ -216,12 +214,6 @@ class IntegrationsNotifier extends StateNotifier<IntegrationsState> {
         case 'steam':
           await _connectSteam(context);
           break;
-        case 'xbox':
-          await _connectXbox(context);
-          break;
-        case 'epic_games':
-          await _connectEpic(context);
-          break;
         default:
           throw Exception('Plataforma não suportada: $platformId');
       }
@@ -303,63 +295,5 @@ class IntegrationsNotifier extends StateNotifier<IntegrationsState> {
       }
       rethrow;
     }
-  }
-
-  Future<void> _connectXbox(BuildContext context) async {
-    final dio = Dio(); // Usando Dio diretamente por simplicidade
-    final xboxService = XboxLiveService(dio);
-
-    try {
-      // Chamar serviço real de integração Xbox - agora retorna dados
-      final xboxUser = await xboxService.authenticateWithXboxForSync(context);
-
-      // Salvar conexão Xbox
-      final connectionData = PlatformConnectionData(
-        platformId: 'xbox',
-        platformName: 'Xbox Live',
-        username: xboxUser.gamertag,
-        userId: xboxUser.xuid,
-        tokens: {
-          // TODO: Add access tokens when available
-        },
-        connectedAt: DateTime.now(),
-        metadata: {
-          'xuid': xboxUser.xuid,
-          'gamertag': xboxUser.gamertag,
-          'gamerscore': xboxUser.gamerscore,
-          'avatarUrl': xboxUser.avatarUrl,
-          'displayName': xboxUser.displayName,
-        },
-      );
-
-      await PlatformConnectionsService.saveConnection(connectionData);
-
-      if (context.mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(
-            content: Text('✅ Xbox conectado com sucesso!'),
-            backgroundColor: Colors.green,
-          ),
-        );
-      }
-    } catch (e) {
-      if (context.mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: Text('❌ Erro ao conectar Xbox: $e'),
-            backgroundColor: Colors.red,
-          ),
-        );
-      }
-      rethrow;
-    }
-  }
-
-  Future<void> _connectEpic(BuildContext context) async {
-    final dio = Dio(); // Usando Dio diretamente por simplicidade
-    final epicService = EpicIntegrationService(dio);
-
-    // Chamar serviço real de integração Epic Games
-    await epicService.connectEpicForSync(context);
   }
 }

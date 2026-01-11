@@ -6,9 +6,6 @@ abstract class GamesRepository {
   /// Busca todos os jogos do usuário logado (Steam)
   Future<Either<Failure, List<Game>>> getUserGames(String steamId);
 
-  /// Busca jogos Epic Games do usuário
-  Future<Either<Failure, List<Game>>> getEpicGames(String accessToken);
-
   /// Busca todos os jogos de todas as plataformas conectadas
   Future<Either<Failure, List<Game>>> getAllUserGames({
     String? steamId,
