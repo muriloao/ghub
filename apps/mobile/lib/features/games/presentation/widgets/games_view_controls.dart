@@ -156,11 +156,15 @@ class GamesViewControls extends ConsumerWidget {
     showModalBottomSheet(
       context: context,
       backgroundColor: const Color(0xFF1a1a1a),
+      isScrollControlled: true,
       shape: const RoundedRectangleBorder(
         borderRadius: BorderRadius.vertical(top: Radius.circular(16)),
       ),
+      constraints: BoxConstraints(
+        maxHeight: MediaQuery.of(context).size.height * 0.7,
+      ),
       builder: (context) {
-        return SortBottomSheet();
+        return const SortBottomSheet();
       },
     );
   }
@@ -175,107 +179,114 @@ class SortBottomSheet extends ConsumerWidget {
     final currentOrder = ref.watch(currentSortOrderProvider);
 
     return Container(
-      padding: const EdgeInsets.all(20),
-      child: Column(
-        mainAxisSize: MainAxisSize.min,
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          // Header
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      constraints: BoxConstraints(
+        maxHeight: MediaQuery.of(context).size.height * 0.7,
+      ),
+      child: SingleChildScrollView(
+        child: Padding(
+          padding: const EdgeInsets.all(20),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: CrossAxisAlignment.start,
             children: [
+              // Header
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  const Text(
+                    'Ordenar por',
+                    style: TextStyle(
+                      fontSize: 18,
+                      fontWeight: FontWeight.bold,
+                      color: Colors.white,
+                    ),
+                  ),
+                  IconButton(
+                    onPressed: () => Navigator.of(context).pop(),
+                    icon: const Icon(Icons.close, color: Colors.white),
+                  ),
+                ],
+              ),
+              const SizedBox(height: 16),
+
+              // Sort Criteria Options
+              _buildSortOption(
+                context,
+                ref,
+                SortCriteria.name,
+                'Nome',
+                Icons.sort_by_alpha,
+                currentCriteria == SortCriteria.name,
+              ),
+              _buildSortOption(
+                context,
+                ref,
+                SortCriteria.lastPlayed,
+                'Jogado por último',
+                Icons.access_time,
+                currentCriteria == SortCriteria.lastPlayed,
+              ),
+              _buildSortOption(
+                context,
+                ref,
+                SortCriteria.releaseDate,
+                'Data de lançamento',
+                Icons.calendar_today,
+                currentCriteria == SortCriteria.releaseDate,
+              ),
+              _buildSortOption(
+                context,
+                ref,
+                SortCriteria.rating,
+                'Avaliação',
+                Icons.star,
+                currentCriteria == SortCriteria.rating,
+              ),
+              _buildSortOption(
+                context,
+                ref,
+                SortCriteria.playtime,
+                'Tempo de jogo',
+                Icons.schedule,
+                currentCriteria == SortCriteria.playtime,
+              ),
+
+              const SizedBox(height: 12),
+              const Divider(color: Colors.grey),
+              const SizedBox(height: 12),
+
+              // Sort Order
               const Text(
-                'Ordenar por',
+                'Ordem',
                 style: TextStyle(
-                  fontSize: 18,
+                  fontSize: 16,
                   fontWeight: FontWeight.bold,
                   color: Colors.white,
                 ),
               ),
-              IconButton(
-                onPressed: () => Navigator.of(context).pop(),
-                icon: const Icon(Icons.close, color: Colors.white),
+              const SizedBox(height: 8),
+
+              _buildOrderOption(
+                context,
+                ref,
+                SortOrder.ascending,
+                'Crescente',
+                Icons.arrow_upward,
+                currentOrder == SortOrder.ascending,
               ),
+              _buildOrderOption(
+                context,
+                ref,
+                SortOrder.descending,
+                'Decrescente',
+                Icons.arrow_downward,
+                currentOrder == SortOrder.descending,
+              ),
+
+              const SizedBox(height: 20),
             ],
           ),
-          const SizedBox(height: 16),
-
-          // Sort Criteria Options
-          _buildSortOption(
-            context,
-            ref,
-            SortCriteria.name,
-            'Nome',
-            Icons.sort_by_alpha,
-            currentCriteria == SortCriteria.name,
-          ),
-          _buildSortOption(
-            context,
-            ref,
-            SortCriteria.lastPlayed,
-            'Jogado por último',
-            Icons.access_time,
-            currentCriteria == SortCriteria.lastPlayed,
-          ),
-          _buildSortOption(
-            context,
-            ref,
-            SortCriteria.releaseDate,
-            'Data de lançamento',
-            Icons.calendar_today,
-            currentCriteria == SortCriteria.releaseDate,
-          ),
-          _buildSortOption(
-            context,
-            ref,
-            SortCriteria.rating,
-            'Avaliação',
-            Icons.star,
-            currentCriteria == SortCriteria.rating,
-          ),
-          _buildSortOption(
-            context,
-            ref,
-            SortCriteria.playtime,
-            'Tempo de jogo',
-            Icons.schedule,
-            currentCriteria == SortCriteria.playtime,
-          ),
-
-          const SizedBox(height: 16),
-          const Divider(color: Colors.grey),
-          const SizedBox(height: 16),
-
-          // Sort Order
-          const Text(
-            'Ordem',
-            style: TextStyle(
-              fontSize: 16,
-              fontWeight: FontWeight.bold,
-              color: Colors.white,
-            ),
-          ),
-          const SizedBox(height: 12),
-
-          _buildOrderOption(
-            context,
-            ref,
-            SortOrder.ascending,
-            'Crescente',
-            Icons.arrow_upward,
-            currentOrder == SortOrder.ascending,
-          ),
-          _buildOrderOption(
-            context,
-            ref,
-            SortOrder.descending,
-            'Decrescente',
-            Icons.arrow_downward,
-            currentOrder == SortOrder.descending,
-          ),
-
-          const SizedBox(height: 20),
-        ],
+        ),
       ),
     );
   }

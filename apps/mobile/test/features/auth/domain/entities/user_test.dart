@@ -51,9 +51,9 @@ void main() {
         'id': 'test-user-id',
         'email': 'test@example.com',
         'name': 'Test User',
-        'avatar_url': 'https://example.com/avatar.jpg',
-        'created_at': '2024-01-01T00:00:00Z',
-        'updated_at': '2024-01-01T00:00:00Z',
+        'avatarUrl': 'https://example.com/avatar.jpg',
+        'createdAt': '2024-01-01T00:00:00Z',
+        'updatedAt': '2024-01-01T00:00:00Z',
       };
       final user = User.fromJson(inputJson);
 
@@ -64,9 +64,9 @@ void main() {
       expect(outputJson['id'], 'test-user-id');
       expect(outputJson['email'], 'test@example.com');
       expect(outputJson['name'], 'Test User');
-      expect(outputJson['avatar_url'], 'https://example.com/avatar.jpg');
-      expect(outputJson['created_at'], '2024-01-01T00:00:00.000Z');
-      expect(outputJson['updated_at'], '2024-01-01T00:00:00.000Z');
+      expect(outputJson['avatarUrl'], 'https://example.com/avatar.jpg');
+      expect(outputJson['createdAt'], '2024-01-01T00:00:00.000Z');
+      expect(outputJson['updatedAt'], '2024-01-01T00:00:00.000Z');
     });
 
     test('should support equality comparison', () {
@@ -75,9 +75,9 @@ void main() {
         'id': 'test-user-id',
         'email': 'test@example.com',
         'name': 'Test User',
-        'avatar_url': 'https://example.com/avatar.jpg',
-        'created_at': '2024-01-01T00:00:00Z',
-        'updated_at': '2024-01-01T00:00:00Z',
+        'avatarUrl': 'https://example.com/avatar.jpg',
+        'createdAt': '2024-01-01T00:00:00Z',
+        'updatedAt': '2024-01-01T00:00:00Z',
       };
       final user1 = User.fromJson(json);
       final user2 = User.fromJson(json);
@@ -94,9 +94,9 @@ void main() {
         'id': 'test-user-id',
         'email': 'test@example.com',
         'name': 'Test User',
-        'avatar_url': 'https://example.com/avatar.jpg',
-        'created_at': '2024-01-01T00:00:00Z',
-        'updated_at': '2024-01-01T00:00:00Z',
+        'avatarUrl': 'https://example.com/avatar.jpg',
+        'createdAt': '2024-01-01T00:00:00Z',
+        'updatedAt': '2024-01-01T00:00:00Z',
       };
       final user = User.fromJson(json);
 
@@ -117,9 +117,9 @@ void main() {
         'id': 'test-user-id',
         'email': 'test@example.com',
         'name': 'Test User',
-        'avatar_url': 'https://example.com/avatar.jpg',
-        'created_at': '2024-01-01T00:00:00Z',
-        'updated_at': '2024-01-01T00:00:00Z',
+        'avatarUrl': 'https://example.com/avatar.jpg',
+        'createdAt': '2024-01-01T00:00:00Z',
+        'updatedAt': '2024-01-01T00:00:00Z',
       };
       final user = User.fromJson(json);
 

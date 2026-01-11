@@ -233,6 +233,14 @@ class GameFilters extends ConsumerWidget {
         return Icons.sports_esports;
       case PlatformType.uplay:
         return Icons.shield;
+      case PlatformType.eaPlay:
+        return Icons.sports_soccer;
+      case PlatformType.battleNet:
+        return Icons.cloud;
+      case PlatformType.amazonGames:
+        return Icons.shopping_cart;
+      case PlatformType.gogGalaxy:
+        return Icons.games;
     }
   }
 }

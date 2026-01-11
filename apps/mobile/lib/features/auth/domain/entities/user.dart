@@ -23,12 +23,12 @@ class User extends Equatable {
       id: json['id'] as String,
       email: json['email'] as String,
       name: json['name'] as String?,
-      avatarUrl: json['avatar_url'] as String?,
-      createdAt: json['created_at'] != null
-          ? DateTime.parse(json['created_at'] as String)
+      avatarUrl: json['avatarUrl'] as String?,
+      createdAt: json['createdAt'] != null
+          ? DateTime.parse(json['createdAt'] as String)
           : null,
-      updatedAt: json['updated_at'] != null
-          ? DateTime.parse(json['updated_at'] as String)
+      updatedAt: json['updatedAt'] != null
+          ? DateTime.parse(json['updatedAt'] as String)
           : null,
     );
   }
