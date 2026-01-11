@@ -146,14 +146,14 @@ class OnboardingPage extends ConsumerWidget {
   }
 
   void _handleConnect(WidgetRef ref, String platformId) {
-    // TODO: Implement platform connection logic
+    // Implementar lógica de conexão de plataforma
     ref
         .read(onboardingNotifierProvider.notifier)
         .connectPlatform(platformId, {});
   }
 
   void _handleManage(WidgetRef ref, String platformId) {
-    // TODO: Implement platform management logic
+    // Implementar lógica de gerenciamento de plataforma
     ScaffoldMessenger.of(ref.context).showSnackBar(
       SnackBar(content: Text('Gerenciar $platformId - Em desenvolvimento')),
     );

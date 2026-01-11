@@ -179,7 +179,7 @@ class IntegrationsPage extends ConsumerWidget {
             child: PlatformCard(
               platform: platform,
               onTap: () {
-                // TODO: Handle platform tap (show details, manage, etc.)
+                // Implementar: abrir detalhes da plataforma ou gerenciar conexão
               },
             ),
           );

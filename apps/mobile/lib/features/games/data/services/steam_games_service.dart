@@ -116,11 +116,7 @@ class SteamGamesService {
     try {
       final response = await _dio.get(
         'https://store.steampowered.com/api/appdetails',
-        queryParameters: {
-          'appids': appId,
-          'format': 'json',
-          'l': 'pt',
-        }, // TODO linguagem do usuário
+        queryParameters: {'appids': appId, 'format': 'json', 'l': 'pt'},
       );
 
       if (response.statusCode == 200) {

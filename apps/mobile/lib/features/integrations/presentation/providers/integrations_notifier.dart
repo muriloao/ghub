@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:dio/dio.dart';
 
 import '../../domain/entities/gaming_platform.dart';
 import '../../../../core/services/platform_connections_service.dart';
