@@ -1,5 +1,6 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:dio/dio.dart';
+import 'package:ghub_mobile/core/constants/app_constants.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'dart:async';
 
@@ -69,7 +70,6 @@ class SteamConnectionNotifier extends StateNotifier<SteamConnectionState> {
   Timer? _pollingTimer;
 
   // Configurações - ajustar conforme seu backend
-  static const String _baseUrl = 'http://localhost:3000';
   static const Duration _pollingInterval = Duration(seconds: 2);
   static const Duration _maxPollingDuration = Duration(minutes: 10);
 
@@ -92,7 +92,7 @@ class SteamConnectionNotifier extends StateNotifier<SteamConnectionState> {
 
       // Chamar endpoint /api/auth/steam/start
       final response = await _dio.get(
-        '$_baseUrl/api/auth/steam/start',
+        '${AppConstants.baseUrl}/auth/steam/start',
         options: Options(
           followRedirects: false, // Importante: não seguir redirect
           validateStatus: (status) => status != null && status < 400,
@@ -190,7 +190,7 @@ class SteamConnectionNotifier extends StateNotifier<SteamConnectionState> {
 
     try {
       final response = await _dio.get(
-        '$_baseUrl/api/auth/status/${state.sessionId}',
+        '${AppConstants.baseUrl}/auth/status/${state.sessionId}',
       );
 
       final data = response.data;

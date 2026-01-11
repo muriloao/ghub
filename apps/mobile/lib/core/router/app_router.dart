@@ -12,7 +12,6 @@ import '../../features/onboarding/presentation/pages/onboarding_loading_page.dar
 import '../../features/games/presentation/pages/games_page.dart';
 import '../../features/games/presentation/pages/game_detail_page.dart';
 import '../../features/integrations/presentation/pages/integrations_page.dart';
-import '../../features/integrations/presentation/pages/steam_callback_page.dart';
 import '../../features/profile/presentation/pages/profile_page.dart';
 import '../constants/app_constants.dart';
 
@@ -106,20 +105,6 @@ final routerProvider = Provider<GoRouter>((ref) {
         path: AppConstants.integrationsRoute,
         name: 'integrations',
         builder: (context, state) => const IntegrationsPage(),
-      ),
-      GoRoute(
-        path: AppConstants.steamCallbackRoute,
-        name: 'steam-callback',
-        builder: (context, state) {
-          return SteamCallbackPage(queryParameters: state.uri.queryParameters);
-        },
-      ),
-      GoRoute(
-        path: '/steam-callback',
-        name: 'steam-callback2',
-        builder: (context, state) {
-          return SteamCallbackPage(queryParameters: state.uri.queryParameters);
-        },
       ),
       GoRoute(
         path: AppConstants.profileRoute,

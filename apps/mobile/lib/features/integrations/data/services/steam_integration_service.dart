@@ -6,7 +6,7 @@ import '../../../../core/config/steam_config.dart';
 import '../../../../core/error/exceptions.dart';
 import '../../../../core/auth/platform_auth_service.dart';
 import '../../../../core/auth/auth_helpers.dart';
-import '../../../auth/data/models/steam_user_model.dart';
+import '../models/steam_user_model.dart';
 import '../../../auth/data/models/auth_result_model.dart';
 import '../../../auth/data/models/user_model.dart';
 

@@ -10,7 +10,8 @@ final dioProvider = Provider<Dio>((ref) => Dio());
 
 /// Provider para gerenciador de plataformas
 final platformManagerProvider = Provider<PlatformManager>((ref) {
-  final services = <PlatformAuthService>[ref.read(steamServiceProvider)];
+  // final services = <PlatformAuthService>[ref.read(steamServiceProvider)];
+  final services = <PlatformAuthService>[];
 
   return PlatformManager(services);
 });
