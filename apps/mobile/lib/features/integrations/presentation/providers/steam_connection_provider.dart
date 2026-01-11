@@ -5,6 +5,7 @@ import 'package:ghub_mobile/core/constants/app_constants.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'dart:async';
 import 'dart:convert';
+import '../../../../core/services/platform_connections_service.dart';
 
 // Estados da conexão Steam
 enum SteamConnectionStatus { idle, connecting, polling, success, error }
@@ -264,7 +265,7 @@ class SteamConnectionNotifier extends StateNotifier<SteamConnectionState> {
     state = const SteamConnectionState(status: SteamConnectionStatus.idle);
   }
 
-  /// Salva tokens de forma segura no FlutterSecureStorage
+  /// Salva tokens de forma segura no FlutterSecureStorage e PlatformConnectionsService
   Future<void> _saveTokensSecurely(
     String? steamId,
     SteamUserData userData,
@@ -299,20 +300,47 @@ class SteamConnectionNotifier extends StateNotifier<SteamConnectionState> {
         value: json.encode(userDataToSave),
       );
 
+      // IMPORTANTE: Também salvar no PlatformConnectionsService para integração
+      if (steamId != null) {
+        final platformConnection = PlatformConnectionData(
+          platformId: 'steam',
+          platformName: 'Steam',
+          username: userData.name,
+          userId: steamId,
+          tokens: {
+            'access_token': userData.accessToken,
+            'refresh_token': userData.refreshToken,
+          },
+          connectedAt: DateTime.now(),
+          metadata: {
+            'steamId': steamId,
+            'avatar': userData.avatar,
+            'profileUrl': userData.profileUrl,
+          },
+        );
+
+        await PlatformConnectionsService.saveConnection(platformConnection);
+        print('✅ Conexão Steam salva no PlatformConnectionsService');
+      }
+
       print('✅ Tokens Steam salvos de forma segura');
     } catch (e) {
       print('❌ Erro ao salvar tokens Steam: $e');
     }
   }
 
-  /// Limpa todos os tokens salvos
+  /// Limpa todos os tokens salvos do FlutterSecureStorage e PlatformConnectionsService
   Future<void> _clearSavedTokens() async {
     try {
       await _secureStorage.delete(key: _steamIdKey);
       await _secureStorage.delete(key: _steamAccessTokenKey);
       await _secureStorage.delete(key: _steamRefreshTokenKey);
       await _secureStorage.delete(key: _steamUserDataKey);
-      print('🗑️ Tokens Steam removidos');
+
+      // Também remover do PlatformConnectionsService
+      await PlatformConnectionsService.removeConnection('steam');
+
+      print('🗑️ Tokens Steam removidos de todos os storages');
     } catch (e) {
       print('❌ Erro ao limpar tokens Steam: $e');
     }
@@ -341,18 +369,28 @@ class SteamConnectionNotifier extends StateNotifier<SteamConnectionState> {
   }
 
   /// Verifica se há tokens salvos (usuário já conectou antes)
+  /// Verifica se existem tokens válidos salvos (em ambos os storages)
   Future<bool> hasValidSavedTokens() async {
     try {
+      // Primeiro, verificar no FlutterSecureStorage
       final tokens = await getSavedTokens();
-      return tokens['steamId'] != null && tokens['accessToken'] != null;
+      if (tokens['steamId'] != null && tokens['accessToken'] != null) {
+        return true;
+      }
+
+      // Se não encontrar, verificar no PlatformConnectionsService
+      final isConnected = await PlatformConnectionsService.isConnected('steam');
+      return isConnected;
     } catch (e) {
       return false;
     }
   }
 
   /// Restaura conexão usando tokens salvos
+  /// Restaura conexão a partir de tokens salvos (FlutterSecureStorage ou PlatformConnectionsService)
   Future<void> restoreConnection() async {
     try {
+      // Primeiro, tentar do FlutterSecureStorage (método original)
       final tokens = await getSavedTokens();
 
       if (tokens['steamId'] != null && tokens['userData'] != null) {
@@ -371,7 +409,31 @@ class SteamConnectionNotifier extends StateNotifier<SteamConnectionState> {
           userData: userData,
         );
 
-        print('🔄 Conexão Steam restaurada automaticamente');
+        print('🔄 Conexão Steam restaurada do FlutterSecureStorage');
+        return;
+      }
+
+      // Se não encontrar no FlutterSecureStorage, tentar no PlatformConnectionsService
+      final platformConnection = await PlatformConnectionsService.getConnection(
+        'steam',
+      );
+
+      if (platformConnection != null) {
+        final userData = SteamUserData(
+          name: platformConnection.username ?? '',
+          avatar: platformConnection.metadata['avatar'] ?? '',
+          profileUrl: platformConnection.metadata['profileUrl'] ?? '',
+          accessToken: platformConnection.tokens['access_token'],
+          refreshToken: platformConnection.tokens['refresh_token'],
+        );
+
+        state = state.copyWith(
+          status: SteamConnectionStatus.success,
+          steamId: platformConnection.userId,
+          userData: userData,
+        );
+
+        print('🔄 Conexão Steam restaurada do PlatformConnectionsService');
       }
     } catch (e) {
       print('❌ Erro ao restaurar conexão Steam: $e');

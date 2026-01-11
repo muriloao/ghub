@@ -1,3 +1,4 @@
+import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import 'integrations_notifier.dart';
@@ -51,4 +52,16 @@ final platformByIdProvider = Provider.family<GamingPlatform?, String>((
   } catch (e) {
     return null;
   }
+});
+
+// Provider para auto-inicialização dos dados
+final autoInitProvider = Provider<bool>((ref) {
+  final notifier = ref.watch(integrationsNotifierProvider.notifier);
+
+  // Trigger automático para sincronizar estado
+  WidgetsBinding.instance.addPostFrameCallback((_) {
+    notifier.syncConnectionStates();
+  });
+
+  return true;
 });

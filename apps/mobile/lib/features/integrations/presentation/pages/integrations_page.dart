@@ -18,11 +18,26 @@ class IntegrationsPage extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final platforms = ref.watch(integrationsListProvider);
-    final isLoading = ref.watch(isLoadingIntegrationsProvider);
+    // Garantir auto-inicialização dos providers
+    ref.watch(autoInitProvider);
+
+    final platforms = ref.watch(integrationsListProvider) ?? [];
+    final isLoading = ref.watch(isLoadingIntegrationsProvider) ?? false;
     final error = ref.watch(integrationsErrorProvider);
     final theme = Theme.of(context);
     final isDarkMode = theme.brightness == Brightness.dark;
+
+    // Inicializar providers na primeira construção
+    ref.listen(integrationsNotifierProvider, (previous, next) {
+      // Trigger inicial para carregar dados
+    });
+
+    // Recuperar estado salvo ao inicializar
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (platforms.isEmpty && !isLoading) {
+        ref.read(integrationsNotifierProvider.notifier).refreshPlatforms();
+      }
+    });
 
     // Listen to errors and show snackbar
     ref.listen(integrationsErrorProvider, (previous, next) {
@@ -205,20 +220,43 @@ class IntegrationsPage extends ConsumerWidget {
   }
 
   Widget _buildSteamConnectionSection() {
-    return const SliverToBoxAdapter(child: SteamConnectionWidget());
+    return SliverToBoxAdapter(
+      child: Container(
+        constraints: const BoxConstraints(
+          maxWidth: double.infinity,
+          minHeight: 0,
+        ),
+        child: Consumer(
+          builder: (context, ref, child) {
+            // Force rebuild quando providers mudam
+            final _ = ref.watch(integrationsNotifierProvider);
+            return const SteamConnectionWidget();
+          },
+        ),
+      ),
+    );
   }
 
   Widget _buildSyncSection() {
-    return const SliverToBoxAdapter(
-      child: Padding(
-        padding: EdgeInsets.symmetric(vertical: 16),
-        child: PlatformSyncSection(),
+    return SliverToBoxAdapter(
+      child: Container(
+        constraints: const BoxConstraints(
+          maxWidth: double.infinity,
+          minHeight: 0,
+        ),
+        child: const Padding(
+          padding: EdgeInsets.symmetric(vertical: 16),
+          child: PlatformSyncSection(),
+        ),
       ),
     );
   }
 
   Widget _buildPlatformsList(List<GamingPlatform> platforms) {
-    if (platforms.isEmpty) {
+    // Garantir que platforms não é null
+    final safePlatforms = platforms ?? [];
+
+    if (safePlatforms.isEmpty) {
       return const SliverToBoxAdapter(
         child: Padding(
           padding: EdgeInsets.all(24),
@@ -236,10 +274,12 @@ class IntegrationsPage extends ConsumerWidget {
       padding: const EdgeInsets.symmetric(horizontal: 24),
       sliver: SliverList(
         delegate: SliverChildBuilderDelegate((context, index) {
-          final platform = platforms[index];
+          if (index >= safePlatforms.length) return null;
+
+          final platform = safePlatforms[index];
           return Padding(
             padding: EdgeInsets.only(
-              bottom: index == platforms.length - 1 ? 120 : 16,
+              bottom: index == safePlatforms.length - 1 ? 120 : 16,
             ),
             child: PlatformCard(
               platform: platform,
@@ -248,7 +288,7 @@ class IntegrationsPage extends ConsumerWidget {
               },
             ),
           );
-        }, childCount: platforms.length),
+        }, childCount: safePlatforms.length),
       ),
     );
   }
@@ -281,12 +321,22 @@ class IntegrationsPage extends ConsumerWidget {
               height: 56,
               child: ElevatedButton(
                 onPressed: () async {
-                  // Marcar usuário como retornante e navegar para home
-                  final authState = ref.read(authNotifierProvider);
-                  if (authState is AuthAuthenticated) {
-                    await ref
-                        .read(navigationControllerProvider.notifier)
-                        .markUserAsReturning(authState.user.email);
+                  try {
+                    // Marcar usuário como retornante e navegar para home
+                    final authState = ref.read(authNotifierProvider);
+                    if (authState is AuthAuthenticated && context.mounted) {
+                      await ref
+                          .read(navigationControllerProvider.notifier)
+                          .markUserAsReturning(authState.user.email);
+                      if (context.mounted) {
+                        context.go(AppConstants.homeRoute);
+                      }
+                    } else if (context.mounted) {
+                      // Se não autenticado, apenas navegar
+                      context.go(AppConstants.homeRoute);
+                    }
+                  } catch (e) {
+                    // Em caso de erro, apenas navegar
                     if (context.mounted) {
                       context.go(AppConstants.homeRoute);
                     }

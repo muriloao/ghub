@@ -56,11 +56,46 @@ class IntegrationsNotifier extends StateNotifier<IntegrationsState> {
 
   void _initializePlatforms() async {
     try {
+      // Primeiro, carregar plataformas disponíveis da API
       final platforms = await _platformsRepository.getAvailablePlatforms();
-      final connectedCount = platforms.where((p) => p.isConnected).length;
+
+      // Depois, verificar conexões salvas localmente
+      final updatedPlatforms = <GamingPlatform>[];
+
+      for (final platform in platforms) {
+        try {
+          // Verificar se existe conexão salva para esta plataforma
+          final isConnected = await PlatformConnectionsService.isConnected(
+            platform.id,
+          );
+          final connectionData = isConnected
+              ? await PlatformConnectionsService.getConnection(platform.id)
+              : null;
+
+          // Atualizar plataforma com dados de conexão
+          final updatedPlatform = platform.copyWith(
+            status: isConnected
+                ? ConnectionStatus.connected
+                : ConnectionStatus.disconnected,
+            connectedUsername: connectionData?.username,
+            connectedAt: connectionData?.connectedAt != null
+                ? DateTime.tryParse(connectionData!.connectedAt as String)
+                : null,
+          );
+
+          updatedPlatforms.add(updatedPlatform);
+        } catch (e) {
+          // Em caso de erro, manter plataforma desconectada
+          updatedPlatforms.add(platform);
+        }
+      }
+
+      final connectedCount = updatedPlatforms
+          .where((p) => p.isConnected)
+          .length;
 
       state = state.copyWith(
-        platforms: platforms,
+        platforms: updatedPlatforms,
         isLoading: false,
         connectedCount: connectedCount,
         error: null,
@@ -77,11 +112,44 @@ class IntegrationsNotifier extends StateNotifier<IntegrationsState> {
   Future<void> refreshPlatforms() async {
     try {
       state = state.copyWith(isLoading: true, error: null);
+
+      // Carregar plataformas da API
       final platforms = await _platformsRepository.getAvailablePlatforms();
-      final connectedCount = platforms.where((p) => p.isConnected).length;
+
+      // Recuperar estados de conexão salvos
+      final updatedPlatforms = <GamingPlatform>[];
+
+      for (final platform in platforms) {
+        try {
+          final isConnected = await PlatformConnectionsService.isConnected(
+            platform.id,
+          );
+          final connectionData = isConnected
+              ? await PlatformConnectionsService.getConnection(platform.id)
+              : null;
+
+          final updatedPlatform = platform.copyWith(
+            status: isConnected
+                ? ConnectionStatus.connected
+                : ConnectionStatus.disconnected,
+            connectedUsername: connectionData?.username,
+            connectedAt: connectionData?.connectedAt != null
+                ? DateTime.tryParse(connectionData!.connectedAt as String)
+                : null,
+          );
+
+          updatedPlatforms.add(updatedPlatform);
+        } catch (e) {
+          updatedPlatforms.add(platform);
+        }
+      }
+
+      final connectedCount = updatedPlatforms
+          .where((p) => p.isConnected)
+          .length;
 
       state = state.copyWith(
-        platforms: platforms,
+        platforms: updatedPlatforms,
         isLoading: false,
         connectedCount: connectedCount,
         error: null,
@@ -137,5 +205,43 @@ class IntegrationsNotifier extends StateNotifier<IntegrationsState> {
         error: 'Erro ao desconectar plataforma: $e',
       );
     }
+  }
+
+  /// Sincroniza o estado das conexões com o storage local
+  Future<void> syncConnectionStates() async {
+    final platforms = state.platforms;
+    final updatedPlatforms = <GamingPlatform>[];
+
+    for (final platform in platforms) {
+      try {
+        final isConnected = await PlatformConnectionsService.isConnected(
+          platform.id,
+        );
+        final connectionData = isConnected
+            ? await PlatformConnectionsService.getConnection(platform.id)
+            : null;
+
+        final updatedPlatform = platform.copyWith(
+          status: isConnected
+              ? ConnectionStatus.connected
+              : ConnectionStatus.disconnected,
+          connectedUsername: connectionData?.username,
+          connectedAt: connectionData?.connectedAt != null
+              ? DateTime.tryParse(connectionData!.connectedAt as String)
+              : null,
+        );
+
+        updatedPlatforms.add(updatedPlatform);
+      } catch (e) {
+        updatedPlatforms.add(platform);
+      }
+    }
+
+    final connectedCount = updatedPlatforms.where((p) => p.isConnected).length;
+
+    state = state.copyWith(
+      platforms: updatedPlatforms,
+      connectedCount: connectedCount,
+    );
   }
 }
