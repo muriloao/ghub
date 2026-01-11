@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import '../../../auth/presentation/providers/auth_notifier.dart';
 import '../../../integrations/presentation/providers/integrations_providers.dart';
+import '../../../integrations/presentation/providers/steam_connection_provider.dart';
 import '../../../../core/services/platform_connections_service.dart';
 import '../widgets/game_filters.dart';
 import '../widgets/games_search_bar.dart';
@@ -23,11 +24,31 @@ class _GamesPageState extends ConsumerState<GamesPage> {
   void initState() {
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      _loadConnectedPlatformGames();
+      _autoRestoreSteamAndLoadGames();
     });
   }
 
-  void _loadConnectedPlatformGames() async {
+  void _autoRestoreSteamAndLoadGames() async {
+    // Auto-restaurar conexão Steam se houver tokens salvos
+    final steamNotifier = ref.read(steamConnectionProvider.notifier);
+
+    if (await steamNotifier.hasValidSavedTokens()) {
+      await steamNotifier.restoreConnection();
+
+      // Aguardar um frame para garantir que o state foi atualizado
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        final steamState = ref.read(steamConnectionProvider);
+        if (steamState.isConnected && steamState.steamId != null) {
+          _loadSteamGames(steamState.steamId!);
+        }
+      });
+    }
+
+    // Também carregar de outras plataformas conectadas (método legado)
+    await _loadConnectedPlatformGames();
+  }
+
+  Future<void> _loadConnectedPlatformGames() async {
     final connectedPlatforms =
         await PlatformConnectionsService.getConnections();
 
@@ -35,19 +56,24 @@ class _GamesPageState extends ConsumerState<GamesPage> {
     for (final platformConnection in connectedPlatforms) {
       switch (platformConnection.platformId) {
         case 'steam':
-          _loadSteamGames(platformConnection);
+          _loadSteamGamesFromPlatform(platformConnection);
           break;
       }
     }
   }
 
-  void _loadSteamGames(PlatformConnectionData platformConnection) {
+  void _loadSteamGamesFromPlatform(PlatformConnectionData platformConnection) {
     // Extrair Steam ID dos dados da plataforma conectada
     final steamId =
         platformConnection.metadata['steamId'] ?? platformConnection.userId;
     if (steamId != null) {
-      ref.read(gamesNotifierProvider.notifier).loadGames(steamId);
+      _loadSteamGames(steamId);
     }
+  }
+
+  void _loadSteamGames(String steamId) {
+    print('🎮 Carregando jogos Steam para ID: $steamId');
+    ref.read(gamesNotifierProvider.notifier).loadGames(steamId);
   }
 
   @override
@@ -64,14 +90,50 @@ class _GamesPageState extends ConsumerState<GamesPage> {
       }
     });
 
+    // Listen for Steam connection changes
+    ref.listen(steamConnectionProvider, (previous, next) {
+      // Se Steam conectou com sucesso e temos Steam ID, carregar jogos
+      if (previous?.status != SteamConnectionStatus.success &&
+          next.status == SteamConnectionStatus.success &&
+          next.steamId != null) {
+        _loadSteamGames(next.steamId!);
+      }
+    });
+
     if (gamesState.isLoading) {
       return Scaffold(
         backgroundColor: Theme.of(context).brightness == Brightness.dark
             ? const Color(0xFF211022)
             : const Color(0xFFf8f5f8),
-        body: const Center(
-          child: CircularProgressIndicator(
-            valueColor: AlwaysStoppedAnimation<Color>(Color(0xFFe225f4)),
+        body: Center(
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              const CircularProgressIndicator(
+                valueColor: AlwaysStoppedAnimation<Color>(Color(0xFFe225f4)),
+              ),
+              const SizedBox(height: 16),
+              const Text(
+                'Carregando jogos...',
+                style: TextStyle(fontSize: 16, fontWeight: FontWeight.w500),
+              ),
+              const SizedBox(height: 8),
+              Consumer(
+                builder: (context, ref, child) {
+                  final steamState = ref.watch(steamConnectionProvider);
+                  if (steamState.isConnected && steamState.userData != null) {
+                    return Text(
+                      'Sincronizando com Steam API...',
+                      style: TextStyle(
+                        fontSize: 14,
+                        color: Colors.grey.shade600,
+                      ),
+                    );
+                  }
+                  return const SizedBox.shrink();
+                },
+              ),
+            ],
           ),
         ),
       );
@@ -93,6 +155,9 @@ class _GamesPageState extends ConsumerState<GamesPage> {
               child: const GamesSearchBar(),
             ),
             const SizedBox(height: 16),
+
+            // Steam Connection Status
+            _buildSteamConnectionStatus(),
 
             // Filters & Controls
             Column(
@@ -227,6 +292,210 @@ class _GamesPageState extends ConsumerState<GamesPage> {
         ],
       ),
     );
+  }
+
+  Widget _buildSteamConnectionStatus() {
+    final steamState = ref.watch(steamConnectionProvider);
+    final steamNotifier = ref.read(steamConnectionProvider.notifier);
+
+    if (steamState.status == SteamConnectionStatus.success) {
+      // Exibir informações do usuário Steam conectado
+      return Container(
+        margin: const EdgeInsets.symmetric(horizontal: 20, vertical: 8),
+        padding: const EdgeInsets.all(12),
+        decoration: BoxDecoration(
+          color: Colors.green.shade50,
+          borderRadius: BorderRadius.circular(12),
+          border: Border.all(color: Colors.green.shade200),
+        ),
+        child: Row(
+          children: [
+            Container(
+              width: 32,
+              height: 32,
+              decoration: BoxDecoration(
+                color: const Color(0xFF171a21),
+                borderRadius: BorderRadius.circular(6),
+              ),
+              child: const Icon(
+                Icons.videogame_asset,
+                color: Color(0xFF66c0f4),
+                size: 16,
+              ),
+            ),
+            const SizedBox(width: 12),
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    'Steam conectado',
+                    style: TextStyle(
+                      fontSize: 14,
+                      fontWeight: FontWeight.w600,
+                      color: Colors.green.shade700,
+                    ),
+                  ),
+                  if (steamState.userData != null)
+                    Text(
+                      steamState.userData!.name,
+                      style: TextStyle(
+                        fontSize: 12,
+                        color: Colors.green.shade600,
+                      ),
+                    ),
+                ],
+              ),
+            ),
+            if (steamState.userData?.avatar != null)
+              CircleAvatar(
+                radius: 16,
+                backgroundImage: NetworkImage(steamState.userData!.avatar),
+              ),
+          ],
+        ),
+      );
+    } else if (steamState.status == SteamConnectionStatus.idle) {
+      // Mostrar opção para conectar Steam
+      return Container(
+        margin: const EdgeInsets.symmetric(horizontal: 20, vertical: 8),
+        padding: const EdgeInsets.all(12),
+        decoration: BoxDecoration(
+          color: Colors.blue.shade50,
+          borderRadius: BorderRadius.circular(12),
+          border: Border.all(color: Colors.blue.shade200),
+        ),
+        child: Row(
+          children: [
+            Container(
+              width: 32,
+              height: 32,
+              decoration: BoxDecoration(
+                color: const Color(0xFF171a21),
+                borderRadius: BorderRadius.circular(6),
+              ),
+              child: const Icon(
+                Icons.videogame_asset,
+                color: Color(0xFF66c0f4),
+                size: 16,
+              ),
+            ),
+            const SizedBox(width: 12),
+            const Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    'Conecte sua Steam',
+                    style: TextStyle(fontSize: 14, fontWeight: FontWeight.w600),
+                  ),
+                  Text(
+                    'Para sincronizar seus jogos',
+                    style: TextStyle(fontSize: 12, color: Colors.grey),
+                  ),
+                ],
+              ),
+            ),
+            TextButton(
+              onPressed: () => steamNotifier.connectSteam(),
+              child: const Text(
+                'Conectar',
+                style: TextStyle(fontSize: 12, fontWeight: FontWeight.w600),
+              ),
+            ),
+          ],
+        ),
+      );
+    } else if (steamState.isLoading) {
+      // Mostrar loading da conexão Steam
+      return Container(
+        margin: const EdgeInsets.symmetric(horizontal: 20, vertical: 8),
+        padding: const EdgeInsets.all(12),
+        decoration: BoxDecoration(
+          color: Colors.orange.shade50,
+          borderRadius: BorderRadius.circular(12),
+          border: Border.all(color: Colors.orange.shade200),
+        ),
+        child: Row(
+          children: [
+            const SizedBox(
+              width: 16,
+              height: 16,
+              child: CircularProgressIndicator(strokeWidth: 2),
+            ),
+            const SizedBox(width: 12),
+            const Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    'Conectando Steam...',
+                    style: TextStyle(fontSize: 14, fontWeight: FontWeight.w600),
+                  ),
+                  Text(
+                    'Aguarde o processo no navegador',
+                    style: TextStyle(fontSize: 12, color: Colors.grey),
+                  ),
+                ],
+              ),
+            ),
+            TextButton(
+              onPressed: () => steamNotifier.disconnect(),
+              child: const Text('Cancelar', style: TextStyle(fontSize: 12)),
+            ),
+          ],
+        ),
+      );
+    } else if (steamState.status == SteamConnectionStatus.error) {
+      // Mostrar erro da conexão Steam
+      return Container(
+        margin: const EdgeInsets.symmetric(horizontal: 20, vertical: 8),
+        padding: const EdgeInsets.all(12),
+        decoration: BoxDecoration(
+          color: Colors.red.shade50,
+          borderRadius: BorderRadius.circular(12),
+          border: Border.all(color: Colors.red.shade200),
+        ),
+        child: Row(
+          children: [
+            Icon(Icons.error, color: Colors.red.shade600, size: 20),
+            const SizedBox(width: 12),
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    'Erro na conexão Steam',
+                    style: TextStyle(
+                      fontSize: 14,
+                      fontWeight: FontWeight.w600,
+                      color: Colors.red.shade700,
+                    ),
+                  ),
+                  Text(
+                    steamState.error ?? 'Erro desconhecido',
+                    style: TextStyle(fontSize: 12, color: Colors.red.shade600),
+                  ),
+                ],
+              ),
+            ),
+            TextButton(
+              onPressed: () => steamNotifier.retry(),
+              child: Text(
+                'Tentar Novamente',
+                style: TextStyle(
+                  fontSize: 12,
+                  color: Colors.red.shade600,
+                  fontWeight: FontWeight.w600,
+                ),
+              ),
+            ),
+          ],
+        ),
+      );
+    }
+
+    return const SizedBox.shrink();
   }
 
   Widget _buildErrorState(String? errorMessage) {

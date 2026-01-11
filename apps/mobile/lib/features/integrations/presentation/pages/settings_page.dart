@@ -7,6 +7,11 @@ class SettingsPage extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    // Auto-restaurar conexão Steam se houver tokens salvos
+    ref.listen(steamAutoRestoreProvider, (previous, next) {
+      // Listener para acompanhar o processo de auto-restauração
+    });
+
     return Scaffold(
       appBar: AppBar(title: const Text('Configurações')),
       body: ListView(
@@ -83,7 +88,31 @@ class SettingsPage extends ConsumerWidget {
                 radius: 16,
               ),
               title: Text(steamState.userData!.name),
-              subtitle: Text('Steam ID: ${steamState.steamId}'),
+              subtitle: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text('Steam ID: ${steamState.steamId}'),
+                  const SizedBox(height: 4),
+                  Row(
+                    children: [
+                      Icon(
+                        Icons.security,
+                        size: 12,
+                        color: Colors.green.shade600,
+                      ),
+                      const SizedBox(width: 4),
+                      Text(
+                        'Tokens salvos de forma segura',
+                        style: TextStyle(
+                          fontSize: 10,
+                          color: Colors.green.shade600,
+                          fontWeight: FontWeight.w500,
+                        ),
+                      ),
+                    ],
+                  ),
+                ],
+              ),
               dense: true,
             ),
           ],

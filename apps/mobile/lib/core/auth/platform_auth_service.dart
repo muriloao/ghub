@@ -41,6 +41,7 @@ class AuthCallbackResult {
   final String? steamId;
   final String? authCode;
   final String? accessToken;
+  final String? refreshToken;
   final String? error;
   final Map<String, String>? additionalParams;
 
@@ -49,6 +50,7 @@ class AuthCallbackResult {
     this.steamId,
     this.authCode,
     this.accessToken,
+    this.refreshToken,
     this.error,
     this.additionalParams,
   });
@@ -57,6 +59,7 @@ class AuthCallbackResult {
     String? steamId,
     String? authCode,
     String? accessToken,
+    String? refreshToken,
     Map<String, String>? additionalParams,
   }) {
     return AuthCallbackResult(
@@ -64,11 +67,25 @@ class AuthCallbackResult {
       steamId: steamId,
       authCode: authCode,
       accessToken: accessToken,
+      refreshToken: refreshToken,
       additionalParams: additionalParams,
     );
   }
 
   factory AuthCallbackResult.error(String error) {
     return AuthCallbackResult(success: false, error: error);
+  }
+
+  /// Converte para Map para armazenamento seguro
+  Map<String, dynamic> toSecureStorageMap() {
+    return {
+      'success': success,
+      if (steamId != null) 'steamId': steamId,
+      if (authCode != null) 'authCode': authCode,
+      if (accessToken != null) 'accessToken': accessToken,
+      if (refreshToken != null) 'refreshToken': refreshToken,
+      if (error != null) 'error': error,
+      if (additionalParams != null) 'additionalParams': additionalParams,
+    };
   }
 }

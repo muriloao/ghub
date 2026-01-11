@@ -61,10 +61,7 @@ class SteamIntegrationService extends PlatformAuthService {
 
       // Abrir no navegador externo
       if (await canLaunchUrl(Uri.parse(authUrl))) {
-        await launchUrl(
-          Uri.parse(authUrl),
-          mode: LaunchMode.externalApplication,
-        );
+        await launchUrl(Uri.parse(authUrl), mode: LaunchMode.inAppBrowserView);
 
         // Aguardar callback via deep link
         // O callback será processado pela SteamCallbackPage via deep link

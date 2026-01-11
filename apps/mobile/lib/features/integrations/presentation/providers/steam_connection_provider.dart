@@ -1,8 +1,10 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:dio/dio.dart';
+import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:ghub_mobile/core/constants/app_constants.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'dart:async';
+import 'dart:convert';
 
 // Estados da conexão Steam
 enum SteamConnectionStatus { idle, connecting, polling, success, error }
@@ -48,11 +50,15 @@ class SteamUserData {
   final String name;
   final String avatar;
   final String profileUrl;
+  final String? accessToken;
+  final String? refreshToken;
 
   const SteamUserData({
     required this.name,
     required this.avatar,
     required this.profileUrl,
+    this.accessToken,
+    this.refreshToken,
   });
 
   factory SteamUserData.fromJson(Map<String, dynamic> json) {
@@ -60,6 +66,8 @@ class SteamUserData {
       name: json['name'] ?? '',
       avatar: json['avatar'] ?? '',
       profileUrl: json['profileUrl'] ?? '',
+      accessToken: json['access_token'],
+      refreshToken: json['refresh_token'],
     );
   }
 }
@@ -67,13 +75,20 @@ class SteamUserData {
 // Notifier para gerenciar conexão Steam
 class SteamConnectionNotifier extends StateNotifier<SteamConnectionState> {
   final Dio _dio;
+  final FlutterSecureStorage _secureStorage;
   Timer? _pollingTimer;
 
   // Configurações - ajustar conforme seu backend
   static const Duration _pollingInterval = Duration(seconds: 2);
   static const Duration _maxPollingDuration = Duration(minutes: 10);
 
-  SteamConnectionNotifier(this._dio)
+  // Keys para armazenamento seguro
+  static const String _steamAccessTokenKey = 'steam_access_token';
+  static const String _steamRefreshTokenKey = 'steam_refresh_token';
+  static const String _steamUserDataKey = 'steam_user_data';
+  static const String _steamIdKey = 'steam_id';
+
+  SteamConnectionNotifier(this._dio, this._secureStorage)
     : super(const SteamConnectionState(status: SteamConnectionStatus.idle));
 
   @override
@@ -138,7 +153,7 @@ class SteamConnectionNotifier extends StateNotifier<SteamConnectionState> {
     if (await canLaunchUrl(uri)) {
       await launchUrl(
         uri,
-        mode: LaunchMode.externalApplication, // Força navegador externo
+        mode: LaunchMode.inAppBrowserView, // Força navegador externo
         webViewConfiguration: const WebViewConfiguration(
           enableJavaScript: true,
         ),
@@ -190,7 +205,7 @@ class SteamConnectionNotifier extends StateNotifier<SteamConnectionState> {
 
     try {
       final response = await _dio.get(
-        '${AppConstants.baseUrl}/auth/status/${state.sessionId}',
+        '${AppConstants.baseUrl}/auth/steam/status/${state.sessionId}',
       );
 
       final data = response.data;
@@ -204,9 +219,16 @@ class SteamConnectionNotifier extends StateNotifier<SteamConnectionState> {
               ? SteamUserData.fromJson(data['userData'])
               : null;
 
+          final steamId = data['steamId'] as String?;
+
+          // Salvar tokens de forma segura
+          if (userData != null) {
+            await _saveTokensSecurely(steamId, userData);
+          }
+
           state = state.copyWith(
             status: SteamConnectionStatus.success,
-            steamId: data['steamId'],
+            steamId: steamId,
             userData: userData,
           );
           break;
@@ -232,10 +254,128 @@ class SteamConnectionNotifier extends StateNotifier<SteamConnectionState> {
     }
   }
 
-  /// Desconecta Steam (limpa estado local)
-  void disconnect() {
+  /// Desconecta Steam (limpa estado local e tokens)
+  Future<void> disconnect() async {
     _pollingTimer?.cancel();
+
+    // Limpar tokens salvos
+    await _clearSavedTokens();
+
     state = const SteamConnectionState(status: SteamConnectionStatus.idle);
+  }
+
+  /// Salva tokens de forma segura no FlutterSecureStorage
+  Future<void> _saveTokensSecurely(
+    String? steamId,
+    SteamUserData userData,
+  ) async {
+    try {
+      if (steamId != null) {
+        await _secureStorage.write(key: _steamIdKey, value: steamId);
+      }
+
+      if (userData.accessToken != null) {
+        await _secureStorage.write(
+          key: _steamAccessTokenKey,
+          value: userData.accessToken!,
+        );
+      }
+
+      if (userData.refreshToken != null) {
+        await _secureStorage.write(
+          key: _steamRefreshTokenKey,
+          value: userData.refreshToken!,
+        );
+      }
+
+      // Salvar dados do usuário (sem tokens sensíveis)
+      final userDataToSave = {
+        'name': userData.name,
+        'avatar': userData.avatar,
+        'profileUrl': userData.profileUrl,
+      };
+      await _secureStorage.write(
+        key: _steamUserDataKey,
+        value: json.encode(userDataToSave),
+      );
+
+      print('✅ Tokens Steam salvos de forma segura');
+    } catch (e) {
+      print('❌ Erro ao salvar tokens Steam: $e');
+    }
+  }
+
+  /// Limpa todos os tokens salvos
+  Future<void> _clearSavedTokens() async {
+    try {
+      await _secureStorage.delete(key: _steamIdKey);
+      await _secureStorage.delete(key: _steamAccessTokenKey);
+      await _secureStorage.delete(key: _steamRefreshTokenKey);
+      await _secureStorage.delete(key: _steamUserDataKey);
+      print('🗑️ Tokens Steam removidos');
+    } catch (e) {
+      print('❌ Erro ao limpar tokens Steam: $e');
+    }
+  }
+
+  /// Recupera tokens salvos (para reconexão automática)
+  Future<Map<String, String?>> getSavedTokens() async {
+    try {
+      final steamId = await _secureStorage.read(key: _steamIdKey);
+      final accessToken = await _secureStorage.read(key: _steamAccessTokenKey);
+      final refreshToken = await _secureStorage.read(
+        key: _steamRefreshTokenKey,
+      );
+      final userDataJson = await _secureStorage.read(key: _steamUserDataKey);
+
+      return {
+        'steamId': steamId,
+        'accessToken': accessToken,
+        'refreshToken': refreshToken,
+        'userData': userDataJson,
+      };
+    } catch (e) {
+      print('❌ Erro ao recuperar tokens Steam: $e');
+      return {};
+    }
+  }
+
+  /// Verifica se há tokens salvos (usuário já conectou antes)
+  Future<bool> hasValidSavedTokens() async {
+    try {
+      final tokens = await getSavedTokens();
+      return tokens['steamId'] != null && tokens['accessToken'] != null;
+    } catch (e) {
+      return false;
+    }
+  }
+
+  /// Restaura conexão usando tokens salvos
+  Future<void> restoreConnection() async {
+    try {
+      final tokens = await getSavedTokens();
+
+      if (tokens['steamId'] != null && tokens['userData'] != null) {
+        final userDataJson = json.decode(tokens['userData']!);
+        final userData = SteamUserData(
+          name: userDataJson['name'] ?? '',
+          avatar: userDataJson['avatar'] ?? '',
+          profileUrl: userDataJson['profileUrl'] ?? '',
+          accessToken: tokens['accessToken'],
+          refreshToken: tokens['refreshToken'],
+        );
+
+        state = state.copyWith(
+          status: SteamConnectionStatus.success,
+          steamId: tokens['steamId'],
+          userData: userData,
+        );
+
+        print('🔄 Conexão Steam restaurada automaticamente');
+      }
+    } catch (e) {
+      print('❌ Erro ao restaurar conexão Steam: $e');
+    }
   }
 
   /// Retry conexão em caso de erro
@@ -250,7 +390,13 @@ class SteamConnectionNotifier extends StateNotifier<SteamConnectionState> {
 final steamConnectionProvider =
     StateNotifierProvider<SteamConnectionNotifier, SteamConnectionState>((ref) {
       final dio = Dio();
-      return SteamConnectionNotifier(dio);
+      const secureStorage = FlutterSecureStorage(
+        aOptions: AndroidOptions(encryptedSharedPreferences: true),
+        iOptions: IOSOptions(
+          accessibility: KeychainAccessibility.first_unlock_this_device,
+        ),
+      );
+      return SteamConnectionNotifier(dio, secureStorage);
     });
 
 // Providers convenientes para UI
@@ -267,4 +413,19 @@ final isSteamLoadingProvider = Provider<bool>((ref) {
 final steamUserDataProvider = Provider<SteamUserData?>((ref) {
   final steamState = ref.watch(steamConnectionProvider);
   return steamState.userData;
+});
+
+// Provider para auto-restaurar conexão se houver tokens salvos
+final steamAutoRestoreProvider = FutureProvider<void>((ref) async {
+  final steamNotifier = ref.read(steamConnectionProvider.notifier);
+
+  if (await steamNotifier.hasValidSavedTokens()) {
+    await steamNotifier.restoreConnection();
+  }
+});
+
+// Provider conveniente para verificar se há tokens salvos
+final hasSavedSteamTokensProvider = FutureProvider<bool>((ref) async {
+  final steamNotifier = ref.read(steamConnectionProvider.notifier);
+  return await steamNotifier.hasValidSavedTokens();
 });

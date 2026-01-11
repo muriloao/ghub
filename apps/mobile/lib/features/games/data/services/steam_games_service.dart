@@ -18,10 +18,21 @@ class SteamGamesService {
     bool forceRefresh = false,
   }) async {
     try {
+      // Validar configuração da API key
+      if (SteamConfig.apiKey == null || SteamConfig.apiKey!.isEmpty) {
+        throw const ServerException(
+          message:
+              'Steam API Key não configurada. Configure STEAM_API_KEY no arquivo .env',
+        );
+      }
+
+      print('🎮 Buscando jogos Steam para ID: $steamId');
+
       // Verificar cache se não for refresh forçado
       if (!forceRefresh) {
         final cache = await PlatformCacheExtension.getSteamCache();
         if (cache != null && !cache.isExpired() && cache.gamesData != null) {
+          print('📦 Usando dados do cache Steam');
           // Converter dados do cache para modelos
           return cache.gamesData!
               .map((json) => SteamGameModel.fromJson(json))
@@ -30,6 +41,7 @@ class SteamGamesService {
       }
 
       // Buscar dados da API
+      print('🌐 Fazendo requisição para Steam API...');
       final response = await _dio.get(
         '${SteamConfig.steamApiUrl}/IPlayerService/GetOwnedGames/v0001/',
         queryParameters: {
@@ -42,9 +54,20 @@ class SteamGamesService {
       );
 
       if (response.statusCode == 200) {
+        final responseData = response.data;
+
+        if (responseData['response'] == null) {
+          throw const ServerException(
+            message:
+                'Resposta inválida da Steam API. Verifique se o Steam ID está correto.',
+          );
+        }
+
         final steamResponse = SteamOwnedGamesResponse.fromJson(
-          response.data['response'],
+          responseData['response'],
         );
+
+        print('✅ ${steamResponse.games.length} jogos encontrados na Steam API');
 
         // Salvar no cache
         await PlatformCacheExtension.cacheSteamData(games: steamResponse.games);
@@ -56,18 +79,34 @@ class SteamGamesService {
         );
       }
     } on DioException catch (e) {
+      print('❌ Erro de conexão com Steam API: ${e.message}');
+
       // Em caso de erro de rede, tentar usar cache mesmo se expirado
       final cache = await PlatformCacheExtension.getSteamCache();
       if (cache != null && cache.gamesData != null) {
+        print('📦 Usando cache expirado devido a erro de rede');
         return cache.gamesData!
             .map((json) => SteamGameModel.fromJson(json))
             .toList();
       }
 
-      throw ServerException(
-        message: 'Erro de conexão com Steam API: ${e.message}',
-      );
+      // Tratar diferentes tipos de erro
+      String errorMessage;
+      if (e.response?.statusCode == 403) {
+        errorMessage = 'API Key Steam inválida ou sem permissões';
+      } else if (e.response?.statusCode == 401) {
+        errorMessage = 'Acesso negado pela Steam API';
+      } else if (e.type == DioExceptionType.connectionTimeout) {
+        errorMessage = 'Timeout na conexão com Steam API';
+      } else if (e.type == DioExceptionType.connectionError) {
+        errorMessage = 'Erro de conexão com Steam API';
+      } else {
+        errorMessage = 'Erro de comunicação com Steam API: ${e.message}';
+      }
+
+      throw ServerException(message: errorMessage);
     } catch (e) {
+      print('❌ Erro inesperado ao buscar jogos Steam: $e');
       throw ServerException(message: 'Erro inesperado ao buscar jogos: $e');
     }
   }

@@ -5,6 +5,7 @@ import 'game_card.dart';
 import '../../../../core/constants/app_constants.dart';
 import '../providers/games_providers.dart';
 import '../states/games_state.dart';
+import '../../../integrations/presentation/providers/steam_connection_provider.dart';
 import '../../domain/entities/game.dart';
 
 class GamesGrid extends ConsumerWidget {
@@ -25,31 +26,101 @@ class GamesGrid extends ConsumerWidget {
     }
 
     if (games.isEmpty) {
-      return Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Icon(
-              Icons.sports_esports_outlined,
-              size: 64,
-              color: Colors.grey.shade400,
-            ),
-            const SizedBox(height: 16),
-            Text(
-              'No games found',
-              style: TextStyle(
-                fontSize: 18,
-                fontWeight: FontWeight.w500,
-                color: Colors.grey.shade400,
+      return Consumer(
+        builder: (context, ref, child) {
+          final steamState = ref.watch(steamConnectionProvider);
+          final steamNotifier = ref.read(steamConnectionProvider.notifier);
+
+          if (steamState.status == SteamConnectionStatus.idle) {
+            // Steam não conectado
+            return Center(
+              child: Padding(
+                padding: const EdgeInsets.all(32),
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Container(
+                      width: 80,
+                      height: 80,
+                      decoration: BoxDecoration(
+                        color: const Color(0xFF171a21),
+                        borderRadius: BorderRadius.circular(16),
+                      ),
+                      child: const Icon(
+                        Icons.videogame_asset,
+                        color: Color(0xFF66c0f4),
+                        size: 36,
+                      ),
+                    ),
+                    const SizedBox(height: 24),
+                    const Text(
+                      'Conecte sua Steam',
+                      style: TextStyle(
+                        fontSize: 20,
+                        fontWeight: FontWeight.w600,
+                      ),
+                    ),
+                    const SizedBox(height: 8),
+                    Text(
+                      'Sincronize seus jogos da Steam para visualizá-los aqui',
+                      style: TextStyle(
+                        fontSize: 14,
+                        color: Colors.grey.shade600,
+                      ),
+                      textAlign: TextAlign.center,
+                    ),
+                    const SizedBox(height: 24),
+                    ElevatedButton.icon(
+                      onPressed: () => steamNotifier.connectSteam(),
+                      icon: const Icon(Icons.link, size: 18),
+                      label: const Text('Conectar Steam'),
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: const Color(0xFF171a21),
+                        foregroundColor: const Color(0xFF66c0f4),
+                        elevation: 0,
+                        padding: const EdgeInsets.symmetric(
+                          horizontal: 24,
+                          vertical: 12,
+                        ),
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(12),
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
               ),
-            ),
-            const SizedBox(height: 8),
-            Text(
-              'Try adjusting your filters or search terms',
-              style: TextStyle(fontSize: 14, color: Colors.grey.shade500),
-            ),
-          ],
-        ),
+            );
+          } else {
+            // Steam conectado mas sem jogos
+            return Center(
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Icon(
+                    Icons.sports_esports_outlined,
+                    size: 64,
+                    color: Colors.grey.shade400,
+                  ),
+                  const SizedBox(height: 16),
+                  Text(
+                    'Nenhum jogo encontrado',
+                    style: TextStyle(
+                      fontSize: 18,
+                      fontWeight: FontWeight.w500,
+                      color: Colors.grey.shade400,
+                    ),
+                  ),
+                  const SizedBox(height: 8),
+                  Text(
+                    'Verifique seus filtros ou termos de pesquisa',
+                    style: TextStyle(fontSize: 14, color: Colors.grey.shade500),
+                  ),
+                ],
+              ),
+            );
+          }
+        },
       );
     }
 
