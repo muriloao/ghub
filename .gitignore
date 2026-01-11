@@ -1,4 +1,5 @@
-apps/steam-auth/node_modules/**
 apps/mobile/.env
 apps/mobile/android/app/google-services.json
 apps/mobile/ios/Runner/GoogleService-Info.plist
+
+apps/api/node_modules/**
