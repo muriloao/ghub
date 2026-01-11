@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import '../../../core/auth/platform_auth_service.dart';
-import '../../../features/integrations/data/services/steam_integration_service.dart';
 import '../../../features/auth/data/models/auth_result_model.dart';
 
 /// Gerenciador unificado para todas as plataformas de jogos
@@ -47,9 +46,6 @@ class PlatformManager {
     if (service == null) {
       throw Exception('Plataforma $platformName não encontrada');
     }
-
-    // Injetar contexto se for serviço implementado
-    _injectContextIfNeeded(service, context);
 
     return service.authenticate();
   }
@@ -115,16 +111,6 @@ class PlatformManager {
           ),
         )
         .toList();
-  }
-
-  void _injectContextIfNeeded(
-    PlatformAuthService service,
-    BuildContext context,
-  ) {
-    // Injeta contexto nos serviços que precisam
-    if (service is SteamIntegrationService) {
-      service.setContext(context);
-    }
   }
 }
 

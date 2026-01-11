@@ -8,11 +8,6 @@ import '../models/signup_request_model.dart';
 abstract class AuthRemoteDataSource {
   Future<AuthResultModel> signUp(SignUpRequestModel request);
 
-  Future<AuthResultModel> loginWithCredentials({
-    required String email,
-    required String password,
-  });
-
   Future<AuthResultModel> loginWithGoogle();
 
   Future<void> logout();
@@ -46,38 +41,6 @@ class AuthRemoteDataSourceImpl implements AuthRemoteDataSource {
         throw AuthenticationException(
           message: e.response?.data['message'] ?? 'Dados inválidos',
         );
-      } else if (e.type == DioExceptionType.connectionTimeout ||
-          e.type == DioExceptionType.receiveTimeout) {
-        throw const NetworkException(message: 'Timeout de conexão');
-      } else {
-        throw ServerException(
-          message: e.response?.data['message'] ?? 'Erro no servidor',
-        );
-      }
-    } catch (e) {
-      throw ServerException(message: e.toString());
-    }
-  }
-
-  @override
-  Future<AuthResultModel> loginWithCredentials({
-    required String email,
-    required String password,
-  }) async {
-    try {
-      final response = await dio.post(
-        '/auth/login',
-        data: {'email': email, 'password': password},
-      );
-
-      if (response.statusCode == 200) {
-        return AuthResultModel.fromJson(response.data);
-      } else {
-        throw ServerException(message: 'Login failed');
-      }
-    } on DioException catch (e) {
-      if (e.response?.statusCode == 401) {
-        throw const AuthenticationException(message: 'Credenciais inválidas');
       } else if (e.type == DioExceptionType.connectionTimeout ||
           e.type == DioExceptionType.receiveTimeout) {
         throw const NetworkException(message: 'Timeout de conexão');

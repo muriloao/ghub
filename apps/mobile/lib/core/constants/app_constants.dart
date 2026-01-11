@@ -1,9 +1,11 @@
+import 'package:flutter_dotenv/flutter_dotenv.dart';
+
 class AppConstants {
   static const String appName = 'GHub';
   static const String appSlogan = 'Sync your stats. Dominate the game.';
   static const String appSchemaName = 'ghub';
   // API
-  static const String baseUrl = String.fromEnvironment('API_BASE_URL');
+  static final String baseUrl = dotenv.env['API_BASE_URL'] ?? '';
   static const Duration connectionTimeout = Duration(seconds: 30);
   static const Duration receiveTimeout = Duration(seconds: 30);
 

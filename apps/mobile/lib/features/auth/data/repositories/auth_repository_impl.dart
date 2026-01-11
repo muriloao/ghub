@@ -52,37 +52,6 @@ class AuthRepositoryImpl implements AuthRepository {
   }
 
   @override
-  Future<Either<Failure, AuthResult>> loginWithCredentials({
-    required String email,
-    required String password,
-  }) async {
-    try {
-      final result = await remoteDataSource.loginWithCredentials(
-        email: email,
-        password: password,
-      );
-
-      await localDataSource.cacheAuthData(
-        accessToken: result.accessToken,
-        refreshToken: result.refreshToken,
-        user: result.user as dynamic,
-      );
-
-      return Right(result);
-    } on AuthenticationException catch (e) {
-      return Left(AuthenticationFailure(e.message));
-    } on NetworkException catch (e) {
-      return Left(NetworkFailure(e.message));
-    } on ServerException catch (e) {
-      return Left(ServerFailure(e.message));
-    } on CacheException catch (e) {
-      return Left(CacheFailure(e.message));
-    } catch (e) {
-      return Left(ServerFailure('Erro inesperado: ${e.toString()}'));
-    }
-  }
-
-  @override
   Future<Either<Failure, AuthResult>> loginWithGoogle() async {
     try {
       final result = await remoteDataSource.loginWithGoogle();

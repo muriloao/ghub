@@ -3,7 +3,6 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:dio/dio.dart';
 
 import '../../domain/entities/gaming_platform.dart';
-import '../../data/services/steam_integration_service.dart';
 import '../../../../core/services/platform_connections_service.dart';
 
 class IntegrationsState {
@@ -212,7 +211,7 @@ class IntegrationsNotifier extends StateNotifier<IntegrationsState> {
 
       switch (platformId) {
         case 'steam':
-          await _connectSteam(context);
+          // await _connectSteam(context);
           break;
         default:
           throw Exception('Plataforma não suportada: $platformId');
@@ -243,57 +242,6 @@ class IntegrationsNotifier extends StateNotifier<IntegrationsState> {
         isLoading: false,
         error: 'Erro ao desconectar plataforma: $e',
       );
-    }
-  }
-
-  Future<void> _connectSteam(BuildContext context) async {
-    final dio = Dio(); // Usando Dio diretamente por simplicidade
-    final steamService = SteamIntegrationService(dio);
-
-    try {
-      // Chamar serviço real de integração Steam - agora retorna dados
-      final authResult = await steamService.connectSteamForSync(context);
-
-      if (authResult != null) {
-        // Salvar conexão Steam
-        final connectionData = PlatformConnectionData(
-          platformId: 'steam',
-          platformName: 'Steam',
-          username: authResult.userModel.name,
-          userId: authResult.userModel.id.replaceFirst('steam_', ''),
-          tokens: {
-            'accessToken': authResult.accessToken,
-            'refreshToken': authResult.refreshToken,
-          },
-          connectedAt: DateTime.now(),
-          metadata: {
-            'steamId': authResult.userModel.id.replaceFirst('steam_', ''),
-            'personaname': authResult.userModel.name,
-            'avatarUrl': authResult.userModel.avatarUrl,
-          },
-        );
-
-        await PlatformConnectionsService.saveConnection(connectionData);
-
-        if (context.mounted) {
-          ScaffoldMessenger.of(context).showSnackBar(
-            const SnackBar(
-              content: Text('✅ Steam conectado com sucesso!'),
-              backgroundColor: Colors.green,
-            ),
-          );
-        }
-      }
-    } catch (e) {
-      if (context.mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: Text('❌ Erro ao conectar Steam: $e'),
-            backgroundColor: Colors.red,
-          ),
-        );
-      }
-      rethrow;
     }
   }
 }

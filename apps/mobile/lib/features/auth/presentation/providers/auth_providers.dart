@@ -8,7 +8,6 @@ import '../../data/datasources/auth_local_data_source.dart';
 import '../../data/datasources/auth_remote_data_source.dart';
 import '../../data/repositories/auth_repository_impl.dart';
 import '../../domain/repositories/auth_repository.dart';
-import '../../domain/usecases/login_with_credentials.dart';
 import '../../domain/usecases/login_with_google.dart';
 import '../../domain/usecases/logout.dart';
 import '../../domain/usecases/get_current_user.dart';
@@ -51,10 +50,6 @@ final authRepositoryProvider = Provider<AuthRepository>((ref) {
 });
 
 // Use cases
-final loginWithCredentialsProvider = Provider<LoginWithCredentials>((ref) {
-  return LoginWithCredentials(ref.watch(authRepositoryProvider));
-});
-
 final loginWithGoogleProvider = Provider<LoginWithGoogle>((ref) {
   return LoginWithGoogle(ref.watch(authRepositoryProvider));
 });

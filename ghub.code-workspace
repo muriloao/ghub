@@ -50,6 +50,9 @@
             "**/.dart_tool": true,
             "**/.packages": true,
             "**/pubspec.lock": false
+        },
+        "yaml.schemas": {
+            "https://www.artillery.io/schema.json": []
         }
     },
     "launch": {

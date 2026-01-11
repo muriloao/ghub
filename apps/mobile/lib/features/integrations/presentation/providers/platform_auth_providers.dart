@@ -3,17 +3,10 @@ import 'package:dio/dio.dart';
 import 'package:ghub_mobile/core/auth/platform_auth_service.dart';
 import 'package:ghub_mobile/core/auth/platform_manager.dart';
 import 'package:ghub_mobile/features/auth/data/models/auth_result_model.dart';
-import 'package:ghub_mobile/features/integrations/data/services/steam_integration_service.dart';
 import 'package:flutter/material.dart';
 
 /// Provider para instância do Dio
 final dioProvider = Provider<Dio>((ref) => Dio());
-
-/// Provider para serviço Steam
-final steamServiceProvider = Provider<SteamIntegrationService>((ref) {
-  final dio = ref.read(dioProvider);
-  return SteamIntegrationService(dio);
-});
 
 /// Provider para gerenciador de plataformas
 final platformManagerProvider = Provider<PlatformManager>((ref) {

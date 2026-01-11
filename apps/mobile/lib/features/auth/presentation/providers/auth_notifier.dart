@@ -4,7 +4,6 @@ import 'package:equatable/equatable.dart';
 import 'package:ghub_mobile/features/auth/domain/entities/auth_result.dart';
 
 import '../../domain/entities/user.dart';
-import '../../domain/usecases/login_with_credentials.dart';
 import '../../domain/usecases/login_with_google.dart';
 import '../../domain/usecases/logout.dart';
 import '../../domain/usecases/get_current_user.dart';
@@ -53,20 +52,17 @@ class AuthError extends AuthState {
 }
 
 class AuthNotifier extends StateNotifier<AuthState> {
-  final LoginWithCredentials _loginWithCredentials;
   final LoginWithGoogle _loginWithGoogle;
   final SignUp _signUp;
   final Logout _logout;
   final GetCurrentUser _getCurrentUser;
 
   AuthNotifier({
-    required LoginWithCredentials loginWithCredentials,
     required LoginWithGoogle loginWithGoogle,
     required SignUp signUp,
     required Logout logout,
     required GetCurrentUser getCurrentUser,
-  }) : _loginWithCredentials = loginWithCredentials,
-       _loginWithGoogle = loginWithGoogle,
+  }) : _loginWithGoogle = loginWithGoogle,
        _signUp = signUp,
        _logout = logout,
        _getCurrentUser = getCurrentUser,
@@ -107,23 +103,6 @@ class AuthNotifier extends StateNotifier<AuthState> {
       // Em caso de erro, assume como não autenticado
       state = const AuthUnauthenticated();
     }
-  }
-
-  Future<void> loginWithCredentials(String email, String password) async {
-    state = const AuthLoading();
-
-    final result = await _loginWithCredentials(
-      email: email,
-      password: password,
-    );
-
-    result.fold((failure) => state = AuthError(failure.toString()), (
-      authResult,
-    ) async {
-      // Cache dos dados após login bem-sucedido
-      await _cacheAuthResult(authResult);
-      state = AuthAuthenticated(authResult.user);
-    });
   }
 
   Future<void> loginWithGoogle() async {
@@ -227,7 +206,6 @@ final authNotifierProvider = StateNotifierProvider<AuthNotifier, AuthState>((
   ref,
 ) {
   return AuthNotifier(
-    loginWithCredentials: ref.watch(loginWithCredentialsProvider),
     loginWithGoogle: ref.watch(loginWithGoogleProvider),
     signUp: ref.watch(signUpProvider),
     logout: ref.watch(logoutProvider),

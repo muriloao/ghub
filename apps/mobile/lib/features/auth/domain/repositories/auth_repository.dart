@@ -7,11 +7,6 @@ import '../entities/signup_request.dart';
 abstract class AuthRepository {
   Future<Either<Failure, AuthResult>> signUp(SignUpRequest request);
 
-  Future<Either<Failure, AuthResult>> loginWithCredentials({
-    required String email,
-    required String password,
-  });
-
   Future<Either<Failure, AuthResult>> loginWithGoogle();
 
   Future<Either<Failure, void>> logout();
