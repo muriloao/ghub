@@ -1,5 +1,16 @@
+# ROOT
+apps/.idea/**
+apps/.vscode/**
+
+# APP
 apps/mobile/.env
+apps/mobile/build/**
 apps/mobile/android/app/google-services.json
 apps/mobile/ios/Runner/GoogleService-Info.plist
+apps/mobile/.dart_tool/**
 
+
+# API
+apps/api/.env
 apps/api/node_modules/**
+apps/api/dist/**
