@@ -1,5 +1,5 @@
 import { Controller, Get, Query, Res } from '@nestjs/common';
-import { Response } from 'express';
+import type { Response } from 'express';
 import { ApiTags, ApiOperation } from '@nestjs/swagger';
 
 @ApiTags('Auth Complete')
@@ -7,12 +7,12 @@ import { ApiTags, ApiOperation } from '@nestjs/swagger';
 export class AuthCompleteController {
     @Get('complete')
     @ApiOperation({ summary: 'Página visual de conclusão de autenticação' })
-    async showCompletePage(
+    showCompletePage(
+        @Res() res: Response,
         @Query('platform') platform: string,
         @Query('status') status: string,
         @Query('session_id') sessionId?: string,
         @Query('error') error?: string,
-        @Res() res: Response,
     ) {
         const html = this.generateCompletePage(platform, status, sessionId, error);
         res.setHeader('Content-Type', 'text/html');
@@ -34,7 +34,9 @@ export class AuthCompleteController {
             ? `Sua conta ${platform.charAt(0).toUpperCase() + platform.slice(1)} foi conectada com sucesso!`
             : `Não foi possível conectar sua conta ${platform.charAt(0).toUpperCase() + platform.slice(1)}.`;
 
-        const errorDetails = error ? `<p style="color: #666; margin-top: 10px;"><small>Erro: ${error}</small></p>` : '';
+        const errorDetails = error
+            ? `<p style="color: #666; margin-top: 10px;"><small>Erro: ${error}</small></p>`
+            : '';
 
         return `
       <!DOCTYPE html>
@@ -131,8 +133,8 @@ export class AuthCompleteController {
               }
             }
             
-            // Auto-close em caso de sucesso após 3 segundos
-            ${isSuccess ? 'setTimeout(handleClose, 3000);' : ''}
+            // Auto-close em caso de sucesso após 1 segundo
+            ${isSuccess ? 'setTimeout(handleClose, 1000);' : ''}
           </script>
         </div>
       </body>

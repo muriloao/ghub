@@ -1,19 +1,21 @@
+/* eslint-disable @typescript-eslint/no-unsafe-argument */
+/* eslint-disable @typescript-eslint/no-unsafe-member-access */
+/* eslint-disable @typescript-eslint/no-unsafe-assignment */
+/* eslint-disable @typescript-eslint/no-unsafe-return */
+/* eslint-disable @typescript-eslint/no-unsafe-call */
+
 import {
     Injectable,
     Logger,
     BadRequestException,
     UnauthorizedException,
+    InternalServerErrorException,
 } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { JwtService } from '@nestjs/jwt';
 import axios from 'axios';
 import * as crypto from 'crypto';
-import {
-    SteamApiResponse,
-    SteamUserData,
-    AuthSession,
-    AuthResponse,
-} from '../interfaces/steam.interface';
+import { SteamApiResponse, SteamUserData } from '../interfaces/steam.interface';
 
 interface SessionData {
     sessionId: string;
@@ -45,13 +47,16 @@ export class SteamService {
     }
 
     /**
-     * Inicia processo de conexão Steam - Endpoint: GET /api/auth/steam/start
+     * Inicia processo de conexão Steam - Endpoint: GET /auth/steam/start
      */
-    async startSteamConnection(): Promise<{ sessionId: string; authUrl: string }> {
+    startSteamConnection(): { sessionId: string; authUrl: string } {
         const sessionId = this.generateSessionId();
         const state = this.generateSecureState();
-        const callbackUrl = this.configService.get('STEAM_CALLBACK_URL') ||
-            'http://localhost:3000/api/auth/steam/callback';
+        const callbackUrl: string | undefined =
+            this.configService.get<string>('STEAM_CALLBACK_URL');
+        if (!callbackUrl) {
+            throw new InternalServerErrorException('Steam API callback URL is not configured');
+        }
 
         // Criar sessão temporária
         const sessionData: SessionData = {
@@ -82,12 +87,12 @@ export class SteamService {
     }
 
     /**
-     * Processa callback Steam - Endpoint: GET /api/auth/steam/callback
+     * Processa callback Steam - Endpoint: GET /auth/steam/callback
      */
     async processSteamCallback(callbackData: any): Promise<{ redirectUrl: string }> {
         try {
             this.logger.log('Processing Steam callback', {
-                returnTo: callbackData['openid.return_to']?.substring(0, 100)
+                returnTo: callbackData['openid.return_to']?.substring(0, 100),
             });
 
             // Extrair session_id e state
@@ -137,16 +142,19 @@ export class SteamService {
             sessionData.steamId = steamId;
             sessionData.userData = userData;
 
-            this.logger.log(`Steam connection successful - Session: ${sessionId}, User: ${userData.personaname}`);
+            this.logger.log(
+                `Steam connection successful - Session: ${sessionId}, User: ${userData.personaname}`,
+            );
 
             // Redirecionar para página de conclusão
-            const completeUrl = this.configService.get('STEAM_COMPLETE_URL') ||
-                'http://localhost:3000/auth/complete';
+            const completeUrl = this.configService.get('STEAM_COMPLETE_URL');
+            if (!completeUrl) {
+                throw new InternalServerErrorException('Steam complete URL is not configured');
+            }
 
             return {
-                redirectUrl: `${completeUrl}?platform=steam&status=success&session_id=${sessionId}`
+                redirectUrl: `${completeUrl}?platform=steam&status=success&session_id=${sessionId}`,
             };
-
         } catch (error) {
             this.logger.error('Steam callback error', error);
 
@@ -161,24 +169,25 @@ export class SteamService {
                         sessionData.status = 'error';
                         sessionData.error = error.message;
                     }
-                } catch (e) {
-                    // Ignore parsing errors
+                } catch (e: any) {
+                    console.error('Error updating session on failure', e);
                 }
             }
 
-            const completeUrl = this.configService.get('STEAM_COMPLETE_URL') ||
+            const completeUrl =
+                this.configService.get('STEAM_COMPLETE_URL') ||
                 'http://localhost:3000/auth/complete';
 
             return {
-                redirectUrl: `${completeUrl}?platform=steam&status=error&error=${encodeURIComponent(error.message)}`
+                redirectUrl: `${completeUrl}?platform=steam&status=error&error=${encodeURIComponent(error.message)}`,
             };
         }
     }
 
     /**
-     * Consulta status da sessão - Endpoint: GET /api/auth/status/{session_id}
+     * Consulta status da sessão - Endpoint: GET /auth/status/{session_id}
      */
-    async getSessionStatus(sessionId: string): Promise<{
+    getSessionStatus(sessionId: string): {
         platform: string;
         status: 'pending' | 'success' | 'error';
         steamId?: string;
@@ -188,7 +197,7 @@ export class SteamService {
             profileUrl: string;
         };
         error?: string;
-    }> {
+    } {
         const sessionData = this.sessions.get(sessionId);
 
         if (!sessionData) {
@@ -209,7 +218,17 @@ export class SteamService {
             };
         }
 
-        const response: any = {
+        const response: {
+            platform: string;
+            status: 'pending' | 'success' | 'error';
+            steamId?: string | undefined;
+            userData?: {
+                name: string;
+                avatar: string;
+                profileUrl: string;
+            };
+            error?: string;
+        } = {
             platform: 'steam',
             status: sessionData.status,
         };

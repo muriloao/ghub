@@ -1,14 +1,16 @@
-import { IsString, IsNotEmpty, IsOptional, IsUrl } from 'class-validator';
+import { IsString, IsNotEmpty } from 'class-validator';
+import { ApiProperty } from '@nestjs/swagger';
 
 export class StartSteamAuthDto {
+    @ApiProperty({ description: 'Client ID' })
     @IsString()
     @IsNotEmpty()
     clientId: string;
 
+    @ApiProperty({ description: 'URL de redirecionamento' })
     @IsString()
-    @IsUrl()
-    @IsOptional()
-    redirectUrl?: string;
+    @IsNotEmpty()
+    redirectUrl: string;
 }
 
 export class SteamCallbackDto {

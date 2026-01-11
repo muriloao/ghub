@@ -17,4 +17,4 @@ import { SessionCleanupService } from '../services/session-cleanup.service';
     providers: [SteamService, SessionCleanupService],
     exports: [SteamService],
 })
-export class SteamModule { }
+export class SteamModule {}

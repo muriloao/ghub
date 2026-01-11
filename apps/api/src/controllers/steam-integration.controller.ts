@@ -1,26 +1,22 @@
 import {
     Controller,
     Get,
-    Post,
-    Body,
     Query,
     Param,
     Logger,
     HttpCode,
     HttpStatus,
-    Res,
     Redirect,
 } from '@nestjs/common';
-import { Response } from 'express';
 import { ApiTags, ApiOperation, ApiResponse, ApiQuery, ApiParam } from '@nestjs/swagger';
 import { SteamService } from '../services/steam.service';
 
 @ApiTags('Steam Integration')
-@Controller('api/auth/steam')
+@Controller('auth/steam')
 export class SteamController {
     private readonly logger = new Logger(SteamController.name);
 
-    constructor(private readonly steamService: SteamService) { }
+    constructor(private readonly steamService: SteamService) {}
 
     @Get('start')
     @ApiOperation({ summary: 'Inicia conexão Steam - Redireciona para Steam OpenID' })
@@ -29,10 +25,10 @@ export class SteamController {
         description: 'Redirecionamento para Steam OpenID',
     })
     @Redirect()
-    async startSteamConnection() {
+    startSteamConnection() {
         this.logger.log('Starting Steam connection');
 
-        const { sessionId, authUrl } = await this.steamService.startSteamConnection();
+        const { sessionId, authUrl } = this.steamService.startSteamConnection();
 
         this.logger.log(`Redirecting to Steam - Session: ${sessionId}`);
 
@@ -70,7 +66,7 @@ export class SteamController {
     @ApiParam({
         name: 'sessionId',
         description: 'ID da sessão retornado pelo endpoint /start',
-        type: 'string'
+        type: 'string',
     })
     @ApiResponse({
         status: 200,
@@ -86,16 +82,19 @@ export class SteamController {
                     properties: {
                         name: { type: 'string', example: 'PlayerName' },
                         avatar: { type: 'string', example: 'https://...' },
-                        profileUrl: { type: 'string', example: 'https://steamcommunity.com/profiles/...' },
+                        profileUrl: {
+                            type: 'string',
+                            example: 'https://steamcommunity.com/profiles/...',
+                        },
                     },
                 },
                 error: { type: 'string', example: 'Error message' },
             },
         },
     })
-    async getConnectionStatus(@Param('sessionId') sessionId: string) {
+    getConnectionStatus(@Param('sessionId') sessionId: string) {
         this.logger.log(`Checking status for session: ${sessionId}`);
 
-        return await this.steamService.getSessionStatus(sessionId);
+        return this.steamService.getSessionStatus(sessionId);
     }
 }

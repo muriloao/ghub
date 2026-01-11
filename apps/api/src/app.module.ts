@@ -6,14 +6,14 @@ import { SteamModule } from './modules/steam.module';
 import { AuthCompleteController } from './controllers/auth-complete.controller';
 
 @Module({
-  imports: [
-    ConfigModule.forRoot({
-      isGlobal: true,
-      envFilePath: '.env',
-    }),
-    SteamModule,
-  ],
-  controllers: [AppController, AuthCompleteController],
-  providers: [AppService],
+    imports: [
+        ConfigModule.forRoot({
+            isGlobal: true,
+            envFilePath: '.env',
+        }),
+        SteamModule,
+    ],
+    controllers: [AppController, AuthCompleteController],
+    providers: [AppService],
 })
-export class AppModule { }
+export class AppModule {}
