@@ -6,6 +6,8 @@ import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'core/router/app_router.dart';
 import 'core/theme/app_theme.dart';
 import 'core/providers/deep_link_provider.dart';
+import 'core/cache/cache_manager.dart';
+import 'core/services/cache_migration_service.dart';
 import 'features/auth/presentation/providers/auth_providers.dart';
 
 void main() async {
@@ -16,6 +18,12 @@ void main() async {
 
   // Initialize SharedPreferences
   final sharedPreferences = await SharedPreferences.getInstance();
+
+  // Initialize optimized cache system
+  await CacheManager.initialize();
+
+  // Run cache migration from legacy system (one-time)
+  await CacheMigrationService.runFullMigration();
 
   runApp(
     ProviderScope(
