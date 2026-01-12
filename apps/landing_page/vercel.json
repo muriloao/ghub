@@ -11,6 +11,16 @@
             ]
         },
         {
+            "src": "/",
+            "dest": "/static/privacy-policy.html",
+            "has": [
+                {
+                    "type": "host",
+                    "value": "ghub.digital/privacy-policy"
+                }
+            ]
+        },
+        {
             "src": "/(.*)",
             "dest": "/app.html",
             "has": [
