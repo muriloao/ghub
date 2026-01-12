@@ -7,6 +7,7 @@ import '../widgets/platform_card.dart';
 import '../widgets/integrations_progress_bar.dart';
 import '../widgets/platform_sync_section.dart';
 import '../widgets/steam_connection_widget.dart';
+import '../widgets/epic_connection_card.dart';
 import '../../domain/entities/gaming_platform.dart';
 import '../../../../core/theme/app_theme.dart';
 import '../../../../core/constants/app_constants.dart';
@@ -21,8 +22,8 @@ class IntegrationsPage extends ConsumerWidget {
     // Garantir auto-inicialização dos providers
     ref.watch(autoInitProvider);
 
-    final platforms = ref.watch(integrationsListProvider) ?? [];
-    final isLoading = ref.watch(isLoadingIntegrationsProvider) ?? false;
+    final platforms = ref.watch(integrationsListProvider);
+    final isLoading = ref.watch(isLoadingIntegrationsProvider);
     final error = ref.watch(integrationsErrorProvider);
     final theme = Theme.of(context);
     final isDarkMode = theme.brightness == Brightness.dark;
@@ -122,12 +123,28 @@ class IntegrationsPage extends ConsumerWidget {
                     ),
                   ),
                 )
-              else ...[
+              else if (platforms.isNotEmpty) ...[
                 _buildHeader(context, isDarkMode),
                 _buildSteamConnectionSection(),
+                _buildEpicConnectionSection(),
                 _buildProgressSection(),
                 _buildSyncSection(),
                 _buildPlatformsList(platforms),
+              ] else ...[
+                _buildHeader(context, isDarkMode),
+                _buildSteamConnectionSection(),
+                _buildEpicConnectionSection(),
+                const SliverToBoxAdapter(
+                  child: Center(
+                    child: Padding(
+                      padding: EdgeInsets.all(32),
+                      child: Text(
+                        'Nenhuma plataforma disponível',
+                        style: TextStyle(fontSize: 16),
+                      ),
+                    ),
+                  ),
+                ),
               ],
             ],
           ),
@@ -221,42 +238,42 @@ class IntegrationsPage extends ConsumerWidget {
 
   Widget _buildSteamConnectionSection() {
     return SliverToBoxAdapter(
-      child: Container(
-        constraints: const BoxConstraints(
-          maxWidth: double.infinity,
-          minHeight: 0,
-        ),
-        child: Consumer(
-          builder: (context, ref, child) {
-            // Force rebuild quando providers mudam
-            final _ = ref.watch(integrationsNotifierProvider);
-            return const SteamConnectionWidget();
-          },
-        ),
+      child: Consumer(
+        builder: (context, ref, child) {
+          // Force rebuild quando providers mudam
+          final _ = ref.watch(integrationsNotifierProvider);
+          return const SteamConnectionWidget();
+        },
+      ),
+    );
+  }
+
+  Widget _buildEpicConnectionSection() {
+    return SliverToBoxAdapter(
+      child: Consumer(
+        builder: (context, ref, child) {
+          // Force rebuild quando providers mudam
+          final _ = ref.watch(integrationsNotifierProvider);
+          return const Padding(
+            padding: EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+            child: EpicConnectionCard(),
+          );
+        },
       ),
     );
   }
 
   Widget _buildSyncSection() {
-    return SliverToBoxAdapter(
-      child: Container(
-        constraints: const BoxConstraints(
-          maxWidth: double.infinity,
-          minHeight: 0,
-        ),
-        child: const Padding(
-          padding: EdgeInsets.symmetric(vertical: 16),
-          child: PlatformSyncSection(),
-        ),
+    return const SliverToBoxAdapter(
+      child: Padding(
+        padding: EdgeInsets.symmetric(vertical: 16),
+        child: PlatformSyncSection(),
       ),
     );
   }
 
   Widget _buildPlatformsList(List<GamingPlatform> platforms) {
-    // Garantir que platforms não é null
-    final safePlatforms = platforms ?? [];
-
-    if (safePlatforms.isEmpty) {
+    if (platforms.isEmpty) {
       return const SliverToBoxAdapter(
         child: Padding(
           padding: EdgeInsets.all(24),
@@ -274,12 +291,12 @@ class IntegrationsPage extends ConsumerWidget {
       padding: const EdgeInsets.symmetric(horizontal: 24),
       sliver: SliverList(
         delegate: SliverChildBuilderDelegate((context, index) {
-          if (index >= safePlatforms.length) return null;
+          if (index >= platforms.length) return null;
 
-          final platform = safePlatforms[index];
+          final platform = platforms[index];
           return Padding(
             padding: EdgeInsets.only(
-              bottom: index == safePlatforms.length - 1 ? 120 : 16,
+              bottom: index == platforms.length - 1 ? 120 : 16,
             ),
             child: PlatformCard(
               platform: platform,
@@ -288,7 +305,7 @@ class IntegrationsPage extends ConsumerWidget {
               },
             ),
           );
-        }, childCount: safePlatforms.length),
+        }, childCount: platforms.length),
       ),
     );
   }
