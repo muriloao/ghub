@@ -1,0 +1,61 @@
+{
+    "version": 2,
+    "builds": [
+        {
+            "src": "api/package.json",
+            "use": "@vercel/node",
+            "config": {
+                "buildCommand": "npm run build"
+            }
+        }
+    ],
+    "routes": [
+        {
+            "src": "/(.*)",
+            "dest": "/landing_page/index.html",
+            "has": [
+                {
+                    "type": "host",
+                    "value": "ghub.digital"
+                }
+            ]
+        },
+        {
+            "src": "/api/(.*)",
+            "dest": "/api/dist/main.js",
+            "has": [
+                {
+                    "type": "host",
+                    "value": "api.ghub.digital"
+                }
+            ]
+        },
+        {
+            "src": "/(.*)",
+            "dest": "/api/dist/main.js",
+            "has": [
+                {
+                    "type": "host",
+                    "value": "api.ghub.digital"
+                }
+            ]
+        }
+    ],
+    "functions": {
+        "api/dist/main.js": {
+            "runtime": "nodejs18.x"
+        }
+    },
+    "rewrites": [
+        {
+            "source": "/api/(.*)",
+            "destination": "/api/dist/main.js",
+            "has": [
+                {
+                    "type": "host",
+                    "value": "api.ghub.digital"
+                }
+            ]
+        }
+    ]
+}
