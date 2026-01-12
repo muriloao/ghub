@@ -5,6 +5,7 @@ import { AppService } from './app.service';
 import { SteamModule } from './modules/steam.module';
 import { GamingPlatformModule } from './modules/gaming-platform.module';
 import { AuthCompleteController } from './controllers/auth-complete.controller';
+import { EpicModule } from './modules/epic.module';
 
 @Module({
     imports: [
@@ -13,9 +14,10 @@ import { AuthCompleteController } from './controllers/auth-complete.controller';
             envFilePath: '.env',
         }),
         SteamModule,
+        EpicModule,
         GamingPlatformModule,
     ],
     controllers: [AppController, AuthCompleteController],
     providers: [AppService],
 })
-export class AppModule { }
+export class AppModule {}

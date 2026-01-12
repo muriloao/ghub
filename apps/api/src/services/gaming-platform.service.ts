@@ -74,8 +74,8 @@ export class GamingPlatformService {
                 screenshots: false,
                 gameTime: false,
             },
-            isEnabled: false,
-            comingSoon: true,
+            isEnabled: true,
+            comingSoon: false,
             priority: 2,
         },
         {
