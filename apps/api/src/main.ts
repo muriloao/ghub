@@ -5,13 +5,7 @@ import { NestExpressApplication } from '@nestjs/platform-express';
 import { AppModule } from './app.module';
 import { join } from 'path';
 
-let cachedServer: NestExpressApplication;
-
-async function createServer() {
-    if (cachedServer) {
-        return cachedServer;
-    }
-
+async function bootstrap() {
     const app = await NestFactory.create<NestExpressApplication>(AppModule);
 
     // Servir arquivos estáticos
@@ -43,14 +37,6 @@ async function createServer() {
     const document = SwaggerModule.createDocument(app, config);
     SwaggerModule.setup('docs', app, document);
 
-    await app.init();
-    cachedServer = app;
-
-    return app;
-}
-
-async function bootstrap() {
-    const app = await createServer();
     const port = process.env.PORT || 3000;
     await app.listen(port);
 
@@ -58,13 +44,4 @@ async function bootstrap() {
     console.log(`📚 Swagger docs available at http://localhost:${port}/docs`);
 }
 
-// Export handler for Vercel
-export default async (req: any, res: any) => {
-    const app = await createServer();
-    return app.getHttpAdapter().getInstance()(req, res);
-};
-
-// Only run bootstrap when not in Vercel environment
-if (process.env.NODE_ENV !== 'production' || !process.env.VERCEL) {
-    bootstrap().catch(console.error);
-}
+bootstrap().catch(console.error);

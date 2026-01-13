@@ -2,14 +2,14 @@
     "version": 2,
     "builds": [
         {
-            "src": "api/src/main.ts",
+            "src": "api/api/index.ts",
             "use": "@vercel/node"
         }
     ],
-    "rewrites": [
+    "routes": [
         {
-            "source": "/(.*)",
-            "destination": "/landing_page/index.html",
+            "src": "/(.*)",
+            "dest": "/landing_page/index.html",
             "has": [
                 {
                     "type": "host",
@@ -18,8 +18,8 @@
             ]
         },
         {
-            "source": "/privacy-policy",
-            "destination": "/api/public/privacy-policy.html",
+            "src": "/privacy-policy",
+            "dest": "/api/public/privacy-policy.html",
             "has": [
                 {
                     "type": "host",
@@ -28,8 +28,8 @@
             ]
         },
         {
-            "source": "/(.*)",
-            "destination": "/api/src/main.ts",
+            "src": "/(.*)",
+            "dest": "/api/api/index.ts",
             "has": [
                 {
                     "type": "host",
@@ -37,5 +37,10 @@
                 }
             ]
         }
-    ]
+    ],
+    "functions": {
+        "api/api/index.ts": {
+            "runtime": "nodejs18.x"
+        }
+    }
 }
