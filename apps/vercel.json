@@ -21,8 +21,8 @@
             ]
         },
         {
-            "src": "/api/(.*)",
-            "dest": "/api/dist/main.js",
+            "src": "/privacy-policy",
+            "dest": "/api/public/privacy-policy.html",
             "has": [
                 {
                     "type": "host",
@@ -45,17 +45,5 @@
         "api/dist/main.js": {
             "runtime": "nodejs18.x"
         }
-    },
-    "rewrites": [
-        {
-            "source": "/api/(.*)",
-            "destination": "/api/dist/main.js",
-            "has": [
-                {
-                    "type": "host",
-                    "value": "api.ghub.digital"
-                }
-            ]
-        }
-    ]
+    }
 }
