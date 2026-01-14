@@ -14,3 +14,4 @@ apps/mobile/.dart_tool/**
 apps/api/.env
 apps/api/node_modules/**
 apps/api/dist/**
+apps/api/package.json
