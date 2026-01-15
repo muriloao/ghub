@@ -4,7 +4,7 @@ import { GamingPlatformDto, PlatformsListResponseDto } from '../dto/gaming-platf
 
 @Controller('platforms')
 export class GamingPlatformController {
-    constructor(private readonly gamingPlatformService: GamingPlatformService) { }
+    constructor(private readonly gamingPlatformService: GamingPlatformService) {}
 
     @Get()
     getAllPlatforms(): PlatformsListResponseDto {

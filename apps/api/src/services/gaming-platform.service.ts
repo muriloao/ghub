@@ -19,9 +19,11 @@ export class GamingPlatformService {
                 auth: 'https://steamcommunity.com/openid/login',
                 userProfile: 'https://api.steampowered.com/ISteamUser/GetPlayerSummaries/v0002/',
                 gameLibrary: 'https://api.steampowered.com/IPlayerService/GetOwnedGames/v0001/',
-                achievements: 'https://api.steampowered.com/ISteamUserStats/GetPlayerAchievements/v0001/',
+                achievements:
+                    'https://api.steampowered.com/ISteamUserStats/GetPlayerAchievements/v0001/',
                 friendsList: 'https://api.steampowered.com/ISteamUser/GetFriendList/v0001/',
-                gameStats: 'https://api.steampowered.com/ISteamUserStats/GetUserStatsForGame/v0002/',
+                gameStats:
+                    'https://api.steampowered.com/ISteamUserStats/GetUserStatsForGame/v0002/',
             },
             authConfig: {
                 type: 'openid',
@@ -47,7 +49,8 @@ export class GamingPlatformService {
             name: 'epic_games',
             displayName: 'Epic Games',
             description: 'Plataforma da Epic Games com jogos gratuitos semanais',
-            logoUrl: 'https://cdn2.unrealengine.com/Fortnite+Esports%2Fstatic%2Fimages%2FEpic_Games_logo.svg',
+            logoUrl:
+                'https://cdn2.unrealengine.com/Fortnite+Esports%2Fstatic%2Fimages%2FEpic_Games_logo.svg',
             colorScheme: {
                 primary: '#0078f3',
                 secondary: '#ffffff',
@@ -92,7 +95,8 @@ export class GamingPlatformService {
                 baseUrl: 'https://xbl.io/api/v2',
                 auth: 'https://login.microsoftonline.com/consumers/oauth2/v2.0/authorize',
                 userProfile: 'https://profile.xboxlive.com/users/me/profile/settings',
-                gameLibrary: 'https://titlehub.xboxlive.com/users/xuid({xuid})/titles/titlehistory/decoration/detail,image',
+                gameLibrary:
+                    'https://titlehub.xboxlive.com/users/xuid({xuid})/titles/titlehistory/decoration/detail,image',
                 achievements: 'https://achievements.xboxlive.com/users/xuid({xuid})/achievements',
                 friendsList: 'https://social.xboxlive.com/users/me/people',
                 gameStats: 'https://userstats.xboxlive.com/users/xuid({xuid})/stats',
@@ -121,7 +125,8 @@ export class GamingPlatformService {
             name: 'playstation_network',
             displayName: 'PlayStation Network',
             description: 'Rede online da Sony para jogos PlayStation',
-            logoUrl: 'https://gmedia.playstation.com/is/image/GMCTNS/ps-logo-and-wordmark-copyright-white-01-en-14sep21',
+            logoUrl:
+                'https://gmedia.playstation.com/is/image/GMCTNS/ps-logo-and-wordmark-copyright-white-01-en-14sep21',
             colorScheme: {
                 primary: '#003791',
                 secondary: '#ffffff',
@@ -129,9 +134,12 @@ export class GamingPlatformService {
             endpoints: {
                 baseUrl: 'https://us-prof.np.community.playstation.net/userProfile/v1/users',
                 auth: 'https://id.sonyentertainmentnetwork.com/signin/',
-                userProfile: 'https://us-prof.np.community.playstation.net/userProfile/v1/users/me/profile2',
-                gameLibrary: 'https://us-prof.np.community.playstation.net/userProfile/v1/users/me/gameList',
-                achievements: 'https://us-prof.np.community.playstation.net/userProfile/v1/users/me/trophyList',
+                userProfile:
+                    'https://us-prof.np.community.playstation.net/userProfile/v1/users/me/profile2',
+                gameLibrary:
+                    'https://us-prof.np.community.playstation.net/userProfile/v1/users/me/gameList',
+                achievements:
+                    'https://us-prof.np.community.playstation.net/userProfile/v1/users/me/trophyList',
             },
             authConfig: {
                 type: 'oauth2',
@@ -156,8 +164,7 @@ export class GamingPlatformService {
 
     getAllPlatforms(): PlatformsListResponseDto {
         // Ordena por prioridade e filtra apenas plataformas habilitadas ou em breve
-        const sortedPlatforms = this.platforms
-            .sort((a, b) => a.priority - b.priority);
+        const sortedPlatforms = this.platforms.sort((a, b) => a.priority - b.priority);
 
         return {
             platforms: sortedPlatforms,

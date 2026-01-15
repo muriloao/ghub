@@ -5,12 +5,13 @@ import { EpicService } from '../services/epic.service';
 @ApiTags('Epic Games Integration')
 @Controller('auth/epic')
 export class EpicController {
-    constructor(private readonly epicService: EpicService) { }
+    constructor(private readonly epicService: EpicService) {}
 
     @Get('start')
     @ApiOperation({
         summary: 'Iniciar processo de conexão com Epic Games',
-        description: 'Gera uma sessão temporária e retorna URL para autenticação OAuth2 do Epic Games'
+        description:
+            'Gera uma sessão temporária e retorna URL para autenticação OAuth2 do Epic Games',
     })
     @ApiResponse({
         status: 200,
@@ -21,7 +22,7 @@ export class EpicController {
                 sessionId: { type: 'string', example: 'abc123xyz789' },
                 authUrl: {
                     type: 'string',
-                    example: 'https://www.epicgames.com/id/authorize?client_id=...'
+                    example: 'https://www.epicgames.com/id/authorize?client_id=...',
                 },
             },
         },
@@ -43,22 +44,22 @@ export class EpicController {
     @Get('callback')
     @ApiOperation({
         summary: 'Processar callback do Epic Games OAuth',
-        description: 'Endpoint chamado pelo Epic Games após autorização do usuário'
+        description: 'Endpoint chamado pelo Epic Games após autorização do usuário',
     })
     @ApiQuery({
         name: 'code',
         required: false,
-        description: 'Authorization code retornado pelo Epic Games'
+        description: 'Authorization code retornado pelo Epic Games',
     })
     @ApiQuery({
         name: 'state',
         required: false,
-        description: 'State parameter para validação CSRF'
+        description: 'State parameter para validação CSRF',
     })
     @ApiQuery({
         name: 'error',
         required: false,
-        description: 'Erro retornado pelo Epic Games em caso de falha'
+        description: 'Erro retornado pelo Epic Games em caso de falha',
     })
     @ApiResponse({
         status: 200,
@@ -68,7 +69,7 @@ export class EpicController {
             properties: {
                 redirectUrl: {
                     type: 'string',
-                    example: 'ghub://epic-auth?status=success'
+                    example: 'ghub://epic-auth?status=success',
                 },
             },
         },
@@ -88,11 +89,11 @@ export class EpicController {
     @Get('status/:sessionId')
     @ApiOperation({
         summary: 'Consultar status da conexão Epic Games',
-        description: 'Verifica o status atual de uma sessão de conexão Epic Games'
+        description: 'Verifica o status atual de uma sessão de conexão Epic Games',
     })
     @ApiParam({
         name: 'sessionId',
-        description: 'ID da sessão gerada no endpoint /start'
+        description: 'ID da sessão gerada no endpoint /start',
     })
     @ApiResponse({
         status: 200,

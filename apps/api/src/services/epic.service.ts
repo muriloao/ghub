@@ -33,9 +33,12 @@ export class EpicService {
         private readonly jwtService: JwtService,
     ) {
         // Cleanup expired sessions every 5 minutes
-        setInterval(() => {
-            this.cleanupExpiredSessions();
-        }, 5 * 60 * 1000);
+        setInterval(
+            () => {
+                this.cleanupExpiredSessions();
+            },
+            5 * 60 * 1000,
+        );
     }
 
     /**
@@ -44,10 +47,8 @@ export class EpicService {
     startEpicConnection(): { sessionId: string; authUrl: string } {
         const sessionId = this.generateSessionId();
         const state = this.generateSecureState();
-        const clientId: string | undefined =
-            this.configService.get<string>('EPIC_CLIENT_ID');
-        const redirectUri: string | undefined =
-            this.configService.get<string>('EPIC_CALLBACK_URL');
+        const clientId: string | undefined = this.configService.get<string>('EPIC_CLIENT_ID');
+        const redirectUri: string | undefined = this.configService.get<string>('EPIC_CALLBACK_URL');
 
         if (!clientId) {
             throw new InternalServerErrorException('Epic Games Client ID is not configured');
@@ -237,7 +238,9 @@ export class EpicService {
             return response.data;
         } catch (error) {
             this.logger.error(`Failed to exchange Epic code for token: ${error.message}`);
-            throw new Error(`Token exchange failed: ${error.response?.data?.error_description || error.message}`);
+            throw new Error(
+                `Token exchange failed: ${error.response?.data?.error_description || error.message}`,
+            );
         }
     }
 
@@ -250,7 +253,7 @@ export class EpicService {
         try {
             const response = await axios.get(userEndpoint, {
                 headers: {
-                    'Authorization': `Bearer ${accessToken}`,
+                    Authorization: `Bearer ${accessToken}`,
                 },
             });
 
@@ -267,7 +270,9 @@ export class EpicService {
             };
         } catch (error) {
             this.logger.error(`Failed to fetch Epic user data: ${error.message}`);
-            throw new Error(`User data fetch failed: ${error.response?.data?.error_description || error.message}`);
+            throw new Error(
+                `User data fetch failed: ${error.response?.data?.error_description || error.message}`,
+            );
         }
     }
 
@@ -302,13 +307,17 @@ export class EpicService {
     }
 
     private generateSessionId(): string {
-        return Math.random().toString(36).substring(2, 15) +
-            Math.random().toString(36).substring(2, 15);
+        return (
+            Math.random().toString(36).substring(2, 15) +
+            Math.random().toString(36).substring(2, 15)
+        );
     }
 
     private generateSecureState(): string {
-        return Math.random().toString(36).substring(2, 15) +
-            Math.random().toString(36).substring(2, 15);
+        return (
+            Math.random().toString(36).substring(2, 15) +
+            Math.random().toString(36).substring(2, 15)
+        );
     }
 
     private cleanupExpiredSessions(): void {

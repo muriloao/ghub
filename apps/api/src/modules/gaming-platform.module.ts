@@ -7,4 +7,4 @@ import { GamingPlatformService } from '../services/gaming-platform.service';
     providers: [GamingPlatformService],
     exports: [GamingPlatformService],
 })
-export class GamingPlatformModule { }
+export class GamingPlatformModule {}

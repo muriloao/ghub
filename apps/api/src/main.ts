@@ -12,11 +12,13 @@ async function bootstrap() {
     app.useStaticAssets(join(__dirname, '..', 'public'));
 
     // Global validation pipe
-    app.useGlobalPipes(new ValidationPipe({
-        whitelist: true,
-        forbidNonWhitelisted: true,
-        transform: true,
-    }));
+    app.useGlobalPipes(
+        new ValidationPipe({
+            whitelist: true,
+            forbidNonWhitelisted: true,
+            transform: true,
+        }),
+    );
 
     // Enable CORS
     app.enableCors({
