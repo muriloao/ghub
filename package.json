@@ -1,0 +1,17 @@
+{
+  "name": "ghub",
+  "version": "1.0.0",
+  "private": true,
+  "description": "GHub - Multi-platform game stats sync",
+  "scripts": {
+    "api:dev": "cd apps/api && npm run start:dev",
+    "api:build": "cd apps/api && npm run build",
+    "api:start": "cd apps/api && npm run start:prod",
+    "api:install": "cd apps/api && npm install",
+    "mobile:run": "cd apps/mobile && flutter run",
+    "mobile:build": "cd apps/mobile && flutter build"
+  },
+  "workspaces": [
+    "apps/api"
+  ]
+}

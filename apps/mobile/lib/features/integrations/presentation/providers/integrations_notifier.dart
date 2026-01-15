@@ -173,7 +173,12 @@ class IntegrationsNotifier extends StateNotifier<IntegrationsState> {
 
       switch (platformId) {
         case 'steam':
-          // await _connectSteam(context);
+          // Steam: delegado para SteamConnectionProvider
+          // A conexão é gerenciada pelo SteamConnectionNotifier
+          break;
+        case 'epic':
+          // Epic Games: delegado para EpicConnectionProvider
+          // A conexão é gerenciada pelo EpicConnectionNotifier
           break;
         default:
           throw Exception('Plataforma não suportada: $platformId');
